@@ -35,7 +35,7 @@ public class PaisCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 204);
+		setBounds(100, 100, 611, 185);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -67,26 +67,26 @@ public class PaisCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		JLabel lblCdigo = new JLabel("C\u00F3digo del pa\u00EDs");
-		lblCdigo.setBounds(10, 11, 88, 14);
+		JLabel lblCdigo = new JLabel("Abreviatura del país");
+		lblCdigo.setBounds(10, 11, 114, 14);
 		panelCuerpo.add(lblCdigo);
 
 		txtCodigo = new JTextField();
-		txtCodigo.setBounds(98, 8, 46, 20);
+		txtCodigo.setBounds(124, 8, 46, 20);
 		panelCuerpo.add(txtCodigo);
 		txtCodigo.setColumns(10);
 
 		JLabel lblNombre = new JLabel("Nombre del pa\u00EDs");
-		lblNombre.setBounds(10, 42, 88, 14);
+		lblNombre.setBounds(10, 42, 104, 14);
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField();
-		txtNombre.setBounds(98, 36, 210, 20);
+		txtNombre.setBounds(124, 36, 210, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(10);
 
 		lblEjEc = new JLabel("Ej: EC");
-		lblEjEc.setBounds(154, 11, 46, 14);
+		lblEjEc.setBounds(180, 11, 46, 14);
 		panelCuerpo.add(lblEjEc);
 	}
 

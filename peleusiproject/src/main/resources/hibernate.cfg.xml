@@ -32,6 +32,6 @@
 		<!-- Mapping files -->
 		<mapping class='ec.peleusi.models.entities.Pais' />
 		<mapping class='ec.peleusi.models.entities.UnidadMedida' />
-		<mapping class='ec.peleusi.models.entities.CategoriaProducto />
+		<mapping class='ec.peleusi.models.entities.CategoriaProducto' />
 	</session-factory>
 </hibernate-configuration>
