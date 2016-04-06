@@ -30,7 +30,6 @@
 		<property name="javax.persistence.validation.mode">none</property>
 
 		<!-- Mapping files -->
-		<mapping class='ec.peleusi.models.entities.TarifaIva' />
 		<mapping class='ec.peleusi.models.entities.Pais' />
 	</session-factory>
 </hibernate-configuration>
