@@ -25,7 +25,7 @@ public class Ciudad {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "nombre", unique = true, nullable = false, length = 5)
+	@Column(name = "nombre", unique = true, nullable = false, length = 50)
 	private String nombre;
 
 	public Integer getId() {
