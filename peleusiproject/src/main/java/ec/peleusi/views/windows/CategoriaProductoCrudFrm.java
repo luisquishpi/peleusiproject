@@ -27,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 
 public class CategoriaProductoCrudFrm extends JInternalFrame {
 
@@ -49,6 +50,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 	private JTextField txtNombre;
 	private JTextField txtDependencia;
 	private ec.peleusi.models.entities.CategoriaProducto categoriaProducto;
+	private JButton button;
 
 	public CategoriaProductoCrudFrm() {
 		setIconifiable(true);
@@ -205,7 +207,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 
 	private void crearControles() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 641, 336);
+		setBounds(100, 100, 833, 362);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -218,31 +220,41 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		panel_1 = new JPanel();
 		panel.add(panel_1, BorderLayout.NORTH);
 		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 
 		btnGuardar = new JButton("Guardar");
+		btnGuardar.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		
+		button = new JButton("Cancelar");
+		button.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1
-				.setHorizontalGroup(
-						gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
-										.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 122,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 113,
-												GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-						.addGap(43)));
-		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(btnNuevo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(btnGuardar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-						.addComponent(btnCancelar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
-				.addContainerGap(23, Short.MAX_VALUE)));
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(button, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+					.addGap(35))
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnNuevo, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+						.addComponent(btnGuardar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+						.addComponent(button, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+						.addComponent(btnCancelar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
+					.addGap(23))
+		);
 		panel_1.setLayout(gl_panel_1);
 
 		panel_2 = new JPanel();
@@ -254,23 +266,23 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		lblId.setVisible(false);
 
 		chbxContieneProductos = new JCheckBox("Contiene productos");
-		chbxContieneProductos.setBounds(10, 123, 162, 23);
+		chbxContieneProductos.setBounds(59, 123, 162, 23);
 		lblDepen = new JLabel("0");
-		lblDepen.setBounds(31, 163, 16, 14);
+		lblDepen.setBounds(71, 163, 16, 14);
 		lblDepen.setVisible(false);
 
 		lblNombre = new JLabel("Nombre:");
-		lblNombre.setBounds(10, 11, 41, 14);
+		lblNombre.setBounds(59, 11, 181, 14);
 
 		lblDependencia = new JLabel("Dependencia:");
-		lblDependencia.setBounds(10, 59, 66, 14);
+		lblDependencia.setBounds(59, 70, 210, 14);
 
 		txtNombre = new JTextField();
-		txtNombre.setBounds(10, 28, 304, 20);
+		txtNombre.setBounds(59, 28, 406, 20);
 		txtNombre.setColumns(10);
 
 		txtDependencia = new JTextField();
-		txtDependencia.setBounds(10, 88, 304, 20);
+		txtDependencia.setBounds(59, 88, 406, 20);
 		txtDependencia.setEditable(false);
 		txtDependencia.setColumns(10);
 		panel_2.setLayout(null);
@@ -289,5 +301,4 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		tree = new JTree();
 		scrollPane.setViewportView(tree);
 	}
-
 }
