@@ -28,5 +28,8 @@ public class DaoFactory {
 	public TipoGastoDeducibleDao getTipoGastoDeducibleDao() {
 		return new TipoGastoDeducibleDao();
 	}
+	public EmpresaDao getEmpresaDao() {
+		return new EmpresaDao();
+	}
 
 }
