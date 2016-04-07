@@ -11,32 +11,29 @@ import javax.persistence.Table;
 @Table(name = "unidamedida")
 
 public class UnidadMedida {
-	
-		public UnidadMedida()
-		{
-		
-		}
-	
-		public UnidadMedida(String nombre, String abreviatura)
-		{
-			super();
-			this.id = null;
-			this.nombre = nombre;
-			this.abreviatura = abreviatura;
-		}
-		
+
+	public UnidadMedida() {
+
+	}
+
+	public UnidadMedida(String nombre, String abreviatura) {
+		super();
+		this.id = null;
+		this.nombre = nombre;
+		this.abreviatura = abreviatura;
+	}
+
 	@Id
-	@GeneratedValue(strategy=IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
-	
-	@Column(name = "nombre", nullable = false, length = 50)
+
+	@Column(name = "nombre", unique = true, nullable = false, length = 50)
 	private String nombre;
-	
-	@Column(name = "abreviatura", nullable = false, length = 10)
+
+	@Column(name = "abreviatura", unique = true, nullable = false, length = 10)
 	private String abreviatura;
-	
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -52,19 +49,18 @@ public class UnidadMedida {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
-	public String getAbreviatura(){
-		return abreviatura;		
+
+	public String getAbreviatura() {
+		return abreviatura;
 	}
-	
-	public void setAbreviatura(String abreviatura){		
+
+	public void setAbreviatura(String abreviatura) {
 		this.abreviatura = abreviatura;
 	}
-	
+
 	@Override
-	public String toString()
-		{
-			return "[id=" + id + ", nombre=" + nombre + ", abreviatura=" + abreviatura +"]";			
-		}	
-	
+	public String toString() {
+		return "[id=" + id + ", nombre=" + nombre + ", abreviatura=" + abreviatura + "]";
+	}
+
 }
