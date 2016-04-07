@@ -6,7 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import ec.peleusi.views.windows.PaisCrudFrm;
+import ec.peleusi.views.windows.CiudadCrudFrm;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -18,7 +18,7 @@ public class PrincipalFrm extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private PaisCrudFrm paisCrudFrm;
+	private CiudadCrudFrm paisCrudFrm;
 	private JDesktopPane dpContenedor;
 
 	public static void main(String[] args) {
@@ -51,7 +51,7 @@ public class PrincipalFrm extends JFrame {
 		mntmPaiscrudfrm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (paisCrudFrm == null || paisCrudFrm.isClosed()) {
-					paisCrudFrm = new PaisCrudFrm();
+					paisCrudFrm = new CiudadCrudFrm();
 					dpContenedor.add(paisCrudFrm);
 					paisCrudFrm.show();
 				}

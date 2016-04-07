@@ -30,7 +30,7 @@
 		<property name="javax.persistence.validation.mode">none</property>
 
 		<!-- Mapping files -->
-		<mapping class='ec.peleusi.models.entities.Pais' />
+		<mapping class='ec.peleusi.models.entities.Ciudad' />
 		<mapping class='ec.peleusi.models.entities.UnidadMedida' />
 		<mapping class='ec.peleusi.models.entities.CategoriaProducto' />
 	</session-factory>

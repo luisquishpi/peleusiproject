@@ -14,8 +14,8 @@ public class DaoFactory {
 		return factory;
 	}
 
-	public PaisDao getPaisDao() {
-		return new PaisDao();
+	public CiudadDao getCiudadDao() {
+		return new CiudadDao();
 	}
 
 	public UnidadMedidaDao getUnidadMedidaDao() {

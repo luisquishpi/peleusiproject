@@ -8,6 +8,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
 
 import ec.peleusi.utils.HibernateUtil;
 
@@ -19,21 +21,36 @@ public abstract class GenericDao<T, ID extends Serializable> {
 		this.persistentClass = persistentClass;
 	}
 
-	public void create(T entity) {
+	public String create(T entity) {
+		String error=null;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
 			session.save(entity);
 			session.getTransaction().commit();
-		} catch (HibernateException e) {
+			error=null;
+		} catch (ConstraintViolationException  err) {
+			if (session.getTransaction() != null)
+				session.getTransaction().rollback();
+			err.printStackTrace();
+			error="Datos duplicados, ya existen en la base de datos";
+		}
+		catch (DataException  err) {
+			if (session.getTransaction() != null)
+				session.getTransaction().rollback();
+			err.printStackTrace();
+			error="Campos incorrectos, posible causa: sobrepasa número de carateres permitidos";
+		}catch (HibernateException e) {
 			if (session.getTransaction() != null)
 				session.getTransaction().rollback();
 			e.printStackTrace();
+			error="No se pudo guardar, consulte su administrador. Clave:"+e.getCause();
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
 			}
 		}
+		return error;
 	}
 
 	public T read(ID id) {

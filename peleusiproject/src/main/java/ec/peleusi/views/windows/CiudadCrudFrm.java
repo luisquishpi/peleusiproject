@@ -12,10 +12,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import ec.peleusi.controllers.PaisController;
-import ec.peleusi.models.entities.Pais;
+import ec.peleusi.controllers.CiudadController;
+import ec.peleusi.models.entities.Ciudad;
 
-public class PaisCrudFrm extends JInternalFrame {
+public class CiudadCrudFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -23,11 +23,9 @@ public class PaisCrudFrm extends JInternalFrame {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
-	private JTextField txtCodigo;
-	private JLabel lblEjEc;
 
-	public PaisCrudFrm() {
-		setTitle("Pais");
+	public CiudadCrudFrm() {
+		setTitle("Ciudad");
 		crearControles();
 		crearEventos();
 	}
@@ -35,7 +33,7 @@ public class PaisCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 185);
+		setBounds(100, 100, 611, 162);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -44,22 +42,22 @@ public class PaisCrudFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(PaisCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(PaisCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(PaisCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(PaisCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -67,27 +65,14 @@ public class PaisCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		JLabel lblCdigo = new JLabel("Abreviatura del país");
-		lblCdigo.setBounds(10, 11, 114, 14);
-		panelCuerpo.add(lblCdigo);
-
-		txtCodigo = new JTextField();
-		txtCodigo.setBounds(124, 8, 46, 20);
-		panelCuerpo.add(txtCodigo);
-		txtCodigo.setColumns(10);
-
-		JLabel lblNombre = new JLabel("Nombre del pa\u00EDs");
-		lblNombre.setBounds(10, 42, 104, 14);
+		JLabel lblNombre = new JLabel("Nombre de la ciudad");
+		lblNombre.setBounds(10, 11, 117, 14);
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField();
-		txtNombre.setBounds(124, 36, 210, 20);
+		txtNombre.setBounds(137, 8, 210, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(10);
-
-		lblEjEc = new JLabel("Ej: EC");
-		lblEjEc.setBounds(180, 11, 46, 14);
-		panelCuerpo.add(lblEjEc);
 	}
 
 	private void crearEventos() {
@@ -99,25 +84,20 @@ public class PaisCrudFrm extends JInternalFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No deje campos vac�os");
+					JOptionPane.showMessageDialog(null, "No deje campos vacíos");
 					return;
 				}
-				Pais pais = new Pais(txtCodigo.getText(), txtNombre.getText());
-				PaisController paisController = new PaisController();
-				System.out.println(":"+pais);
-				paisController.createPais(pais);
-				System.out.println(":::"+pais);
-				if (pais.getId() != null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente");
+				Ciudad ciudad = new Ciudad(txtNombre.getText());
+				CiudadController paisController = new CiudadController();
+				String error = paisController.createCiudad(ciudad);
+				if (error == null) {
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
+							JOptionPane.INFORMATION_MESSAGE);
 					limpiarCampos();
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-			}
 
-			private boolean isCamposLlenos() {
-				boolean llenos = true;
-				if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty())
-					llenos = false;
-				return llenos;
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
@@ -131,7 +111,13 @@ public class PaisCrudFrm extends JInternalFrame {
 	}
 
 	private void limpiarCampos() {
-		txtCodigo.setText("");
 		txtNombre.setText("");
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtNombre.getText().isEmpty())
+			llenos = false;
+		return llenos;
 	}
 }

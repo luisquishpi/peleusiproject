@@ -8,16 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "pais")
-public class Pais {
+@Table(name = "ciudad")
+public class Ciudad {
 
-	public Pais() {
+	public Ciudad() {
 	}
 
-	public Pais(String codigo, String nombre) {
+	public Ciudad(String nombre) {
 		super();
 		this.id = null;
-		this.abreviatura = codigo;
 		this.nombre = nombre;
 	}
 
@@ -26,10 +25,7 @@ public class Pais {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "abreviatura", nullable = false, length = 100)
-	private String abreviatura;
-
-	@Column(name = "nombre", nullable = false, length = 100)
+	@Column(name = "nombre", unique = true, nullable = false, length = 5)
 	private String nombre;
 
 	public Integer getId() {
@@ -38,14 +34,6 @@ public class Pais {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getAbreviatura() {
-		return abreviatura;
-	}
-
-	public void setAbreviatura(String abreviatura) {
-		this.abreviatura = abreviatura;
 	}
 
 	public String getNombre() {
@@ -58,6 +46,6 @@ public class Pais {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", abreviatura=" + abreviatura + ", nombre=" + nombre + "]";
+		return "[id=" + id + ", nombre=" + nombre + "]";
 	}
 }
