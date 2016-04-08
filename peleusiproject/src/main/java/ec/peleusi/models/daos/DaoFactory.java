@@ -43,5 +43,8 @@ public class DaoFactory {
 	public TipoIdentificacionDao getTipoIdentificacionDao() {
 		return new TipoIdentificacionDao();
 	}
+	public TipoPrecioDao getTipoPrecioDao() {
+		return new TipoPrecioDao();
+	}
 
 }
