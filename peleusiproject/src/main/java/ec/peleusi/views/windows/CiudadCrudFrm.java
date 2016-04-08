@@ -112,6 +112,8 @@ public class CiudadCrudFrm extends JInternalFrame {
 
 	private void limpiarCampos() {
 		txtNombre.setText("");
+		// txtNombre.grabFocus();
+		txtNombre.requestFocus();
 	}
 
 	private boolean isCamposLlenos() {
