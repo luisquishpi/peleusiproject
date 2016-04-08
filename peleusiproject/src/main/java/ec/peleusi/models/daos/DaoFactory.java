@@ -31,8 +31,11 @@ public class DaoFactory {
 	public EmpresaDao getEmpresaDao() {
 		return new EmpresaDao();
 	}*/
-	public TarifaIvaDao gettarifaIvaDao() {
+	public TarifaIvaDao getTarifaIvaDao() {
 		return new TarifaIvaDao();
+	}
+	public TarifaIceDao getTarifaIceDao() {
+		return new TarifaIceDao();
 	}
 
 }
