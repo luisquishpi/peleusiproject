@@ -15,13 +15,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.controllers.TarifaIvaController;
+import ec.peleusi.models.entities.TarifaIce;
 import ec.peleusi.models.entities.TarifaIva;
 import ec.peleusi.utils.Formatos;
 
 import javax.swing.JFormattedTextField;
 
-public class TarifaIvaCruFrm extends JInternalFrame {
+public class TarifaIceCruFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -34,8 +36,8 @@ public class TarifaIvaCruFrm extends JInternalFrame {
 	private JFormattedTextField txtPorcentaje;
 	int limitecaja = 15;
 
-	public TarifaIvaCruFrm() {
-		setTitle("Tarifa IVA");
+	public TarifaIceCruFrm() {
+		setTitle("Tarifa ICE");
 		crearControles();
 		crearEventos();
 	}
@@ -52,22 +54,22 @@ public class TarifaIvaCruFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -134,10 +136,10 @@ public class TarifaIvaCruFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				TarifaIva tarifaIva = new TarifaIva(txtCodigo.getText(), txtNombre.getText(),
+				TarifaIce tarifaIce = new TarifaIce(txtCodigo.getText(), txtNombre.getText(),
 						Double.parseDouble(txtPorcentaje.getText()));
-				TarifaIvaController tarifaIvaController = new TarifaIvaController();
-				String error = tarifaIvaController.createTarifaIva(tarifaIva);
+				TarifaIceController tarifaIceController = new TarifaIceController();
+				String error = tarifaIceController.createTarifaIce(tarifaIce);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);

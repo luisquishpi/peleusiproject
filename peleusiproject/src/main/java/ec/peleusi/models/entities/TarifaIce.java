@@ -28,7 +28,7 @@ public class TarifaIce {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "codigo", unique = true, nullable = false, length = 20)
+	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
 
 	@Column(name = "nombre", unique = true, nullable = false, length = 50)
