@@ -33,7 +33,6 @@
 		<mapping class='ec.peleusi.models.entities.Ciudad' />
 		<mapping class='ec.peleusi.models.entities.UnidadMedida' />
 		<mapping class='ec.peleusi.models.entities.CategoriaProducto' />
-		<mapping class='ec.peleusi.models.entities.TipoGastoDeducible' />
 		<mapping class='ec.peleusi.models.entities.TarifaIva' />
 		<mapping class='ec.peleusi.models.entities.TarifaIce' />
 		<mapping class='ec.peleusi.models.entities.Producto' />
