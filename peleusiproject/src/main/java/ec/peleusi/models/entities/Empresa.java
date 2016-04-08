@@ -2,6 +2,8 @@ package ec.peleusi.models.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.FileInputStream;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +19,7 @@ import com.mysql.jdbc.Blob;
 public class Empresa {
 	
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, Blob foto, Ciudad ciudad) {
+			String url, FileInputStream foto, String ruta, Ciudad ciudad) {
 		super();
 		this.id= null;
 		this.nombre = nombre;
@@ -29,6 +31,7 @@ public class Empresa {
 		this.url = url;
 		this.foto = foto;
 		this.ciudad = ciudad;
+		this.ruta=ruta;
 	}	
 
 	public Empresa() {
@@ -60,8 +63,11 @@ public class Empresa {
 	@Column(name = "url", unique = true, nullable = false, length = 100)
 	private String url;
 	
-	@Column(name = "foto", unique = true, nullable = false, length = 13)
-	private Blob foto;
+	@Column(name = "foto", unique = true, nullable = false, length = 200)
+	private FileInputStream foto;
+	
+	@Column(name = "ruta", unique = true, nullable = false, length = 200)
+	private String ruta;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
 	private Ciudad ciudad;
@@ -130,11 +136,11 @@ public class Empresa {
 		this.url = url;
 	}
 
-	public Blob getFoto() {
+	public FileInputStream getFoto() {
 		return foto;
 	}
 
-	public void setFoto(Blob foto) {
+	public void setFoto(FileInputStream foto) {
 		this.foto = foto;
 	}
 
@@ -146,8 +152,12 @@ public class Empresa {
 		this.ciudad = ciudad;
 	}
 
-	
-	
-	
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}	
 
 }
