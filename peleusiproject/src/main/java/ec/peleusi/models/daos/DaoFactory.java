@@ -37,5 +37,8 @@ public class DaoFactory {
 	public TarifaIceDao getTarifaIceDao() {
 		return new TarifaIceDao();
 	}
+	public ProductoDao getProductoDao() {
+		return new ProductoDao();
+	}
 
 }
