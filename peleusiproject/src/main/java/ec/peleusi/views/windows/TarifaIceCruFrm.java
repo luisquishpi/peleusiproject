@@ -16,11 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import ec.peleusi.controllers.TarifaIceController;
-import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.models.entities.TarifaIce;
-import ec.peleusi.models.entities.TarifaIva;
 import ec.peleusi.utils.Formatos;
-
 import javax.swing.JFormattedTextField;
 
 public class TarifaIceCruFrm extends JInternalFrame {
