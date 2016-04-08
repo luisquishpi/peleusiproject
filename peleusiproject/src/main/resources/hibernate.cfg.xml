@@ -37,6 +37,8 @@
 		<mapping class='ec.peleusi.models.entities.TarifaIva' />
 		<mapping class='ec.peleusi.models.entities.TarifaIce' />
 		<mapping class='ec.peleusi.models.entities.Producto' />
+		<mapping class='ec.peleusi.models.entities.TipoIdentificacion' />
+		
 		
 		
 	</session-factory>
