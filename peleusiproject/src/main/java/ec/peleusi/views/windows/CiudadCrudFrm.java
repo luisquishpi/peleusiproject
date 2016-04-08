@@ -94,7 +94,8 @@ public class CiudadCrudFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);
 					limpiarCampos();
-				} else {
+				} 
+				else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 

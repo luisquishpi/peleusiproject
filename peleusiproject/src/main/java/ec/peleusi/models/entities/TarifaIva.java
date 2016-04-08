@@ -29,13 +29,13 @@ public class TarifaIva {
 	private Integer id;
 	
 	
-	@Column(name = "codigo", unique = true, nullable = false, length = 20)
+	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
 	
 	@Column(name = "nombre", unique = true, nullable = false, length = 50)
 	private String nombre;
 
-	@Column(name = "porcentaje", unique = true, nullable = false, length = 10)
+	@Column(name = "porcentaje", nullable = false, length = 10)
 	private Double porcentaje;
 
 	public Integer getId() {
