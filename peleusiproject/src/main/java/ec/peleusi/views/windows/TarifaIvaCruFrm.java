@@ -8,24 +8,34 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import ec.peleusi.controllers.CiudadController;
-import ec.peleusi.models.entities.Ciudad;
 
-public class CiudadCrudFrm extends JInternalFrame {
+import ec.peleusi.controllers.TarifaIvaController;
+import ec.peleusi.models.entities.TarifaIva;
+import ec.peleusi.utils.Formatos;
+
+import javax.swing.JFormattedTextField;
+
+public class TarifaIvaCruFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
+	private JLabel lblNombre;
 	private JTextField txtNombre;
+	private JTextField txtCodigo;
+	private JFormattedTextField txtPorcentaje;
+	int limitecaja = 15;
 
-	public CiudadCrudFrm() {
-		setTitle("Ciudad");
+	public TarifaIvaCruFrm() {
+		setTitle("Tarifa IVA");
 		crearControles();
 		crearEventos();
 	}
@@ -33,7 +43,7 @@ public class CiudadCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 162);
+		setBounds(100, 100, 611, 262);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -42,22 +52,22 @@ public class CiudadCrudFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -65,14 +75,49 @@ public class CiudadCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		JLabel lblNombre = new JLabel("Nombre de la ciudad");
-		lblNombre.setBounds(10, 11, 117, 14);
+		lblNombre = new JLabel("Nombre");
+		lblNombre.setBounds(50, 70, 101, 14);
 		panelCuerpo.add(lblNombre);
 
-		txtNombre = new JTextField();
-		txtNombre.setBounds(137, 8, 210, 20);
+		txtNombre = new JTextField(50);
+		txtNombre.setBounds(133, 67, 214, 20);
 		panelCuerpo.add(txtNombre);
-		txtNombre.setColumns(10);
+		txtNombre.setColumns(50);
+
+		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		lblPorcentaje.setBounds(50, 112, 85, 14);
+		panelCuerpo.add(lblPorcentaje);
+
+		JLabel lblCodigo = new JLabel("Còdigo ");
+		lblCodigo.setBounds(50, 29, 46, 14);
+		panelCuerpo.add(lblCodigo);
+
+		txtCodigo = new JTextField();
+		txtCodigo.setToolTipText("");
+		txtCodigo.setBounds(133, 26, 141, 20);
+		panelCuerpo.add(txtCodigo);
+		txtCodigo.setColumns(15);
+
+		txtCodigo.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+				if (txtCodigo.getText().length() == limitecaja) {
+					e.consume();
+				}
+			}
+
+			public void keyPressed(KeyEvent arg0) {
+			}
+
+			public void keyReleased(KeyEvent arg0) {
+			}
+		});
+
+		txtPorcentaje = new JFormattedTextField();
+		txtPorcentaje.setToolTipText("");
+		txtPorcentaje.setSize(75, 20);
+		txtPorcentaje.setLocation(134, 109);
+		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
+		panelCuerpo.add(txtPorcentaje);
 	}
 
 	private void crearEventos() {
@@ -81,26 +126,29 @@ public class CiudadCrudFrm extends JInternalFrame {
 				limpiarCampos();
 			}
 		});
+
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No deje campos vacíos");
+					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				Ciudad ciudad = new Ciudad(txtNombre.getText());
-				CiudadController paisController = new CiudadController();
-				String error = paisController.createCiudad(ciudad);
+				TarifaIva tarifaIva = new TarifaIva(txtCodigo.getText(), txtNombre.getText(),
+						Double.parseDouble(txtPorcentaje.getText()));
+				TarifaIvaController tarifaIvaController = new TarifaIvaController();
+				String error = tarifaIvaController.createTarifaIva(tarifaIva);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);
 					limpiarCampos();
-				} 
-				else {
+				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
 		});
+
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -112,14 +160,14 @@ public class CiudadCrudFrm extends JInternalFrame {
 	}
 
 	private void limpiarCampos() {
+		txtCodigo.setText("");
 		txtNombre.setText("");
-		// txtNombre.grabFocus();
-		txtNombre.requestFocus();
+		txtPorcentaje.setText("0");
 	}
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtNombre.getText().isEmpty())
+		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
