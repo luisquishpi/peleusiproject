@@ -39,6 +39,7 @@
 		<mapping class='ec.peleusi.models.entities.Producto' />
 		<mapping class='ec.peleusi.models.entities.TipoIdentificacion' />
 		<mapping class='ec.peleusi.models.entities.TipoPrecio' />
+		<mapping class='ec.peleusi.models.entities.Empresa' />
 		
 		
 		
