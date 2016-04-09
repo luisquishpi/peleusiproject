@@ -12,14 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import ec.peleusi.models.entities.Ciudad;
-import com.mysql.jdbc.Blob;
 
 @Entity
 @Table(name = "empresa")
 public class Empresa {
 	
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, FileInputStream foto, String ruta, Ciudad ciudad) {
+			String url, byte[] foto, String ruta, Ciudad ciudad) {
 		super();
 		this.id= null;
 		this.nombre = nombre;
@@ -64,7 +63,7 @@ public class Empresa {
 	private String url;
 	
 	@Column(name = "foto", unique = true, nullable = false, length = 200)
-	private FileInputStream foto;
+	private byte[] foto;
 	
 	@Column(name = "ruta", unique = true, nullable = false, length = 200)
 	private String ruta;
@@ -136,11 +135,11 @@ public class Empresa {
 		this.url = url;
 	}
 
-	public FileInputStream getFoto() {
+	public byte[] getFoto() {
 		return foto;
 	}
 
-	public void setFoto(FileInputStream foto) {
+	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
 

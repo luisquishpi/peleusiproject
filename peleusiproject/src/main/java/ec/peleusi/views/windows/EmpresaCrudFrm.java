@@ -55,7 +55,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	public EmpresaCrudFrm() {
 		crearControles();
 		crearEventos();
-		//llenarCiudad();
+		llenarCiudad();
 
 	}
 	
@@ -119,19 +119,21 @@ public class EmpresaCrudFrm extends JInternalFrame {
 				
 				
 			
-				FileInputStream archivofoto=null;
-				
-				try {
-					
-					archivofoto= new FileInputStream(txtImagen.getText());
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}			
+				File file = new File(txtImagen.getText());
+		        byte[] bFile = new byte[(int) file.length()];
+		        
+		        try {
+			     FileInputStream fileInputStream = new FileInputStream(file);
+			     //convert file into array of bytes
+			     fileInputStream.read(bFile);
+			     fileInputStream.close();
+		        } catch (Exception err) {
+			     err.printStackTrace();
+		        }
 				
 				
 				Ciudad ciudad=(Ciudad) cmbCiudad.getSelectedItem();
-			   	Empresa empresa= new Empresa(txtNombreEmpresa.getText(), txtIdentificacion.getText(), txtDireccion.getText(), txtTelefono.getText(), txtFax.getText(), txtEMail.getText(), txtUrl.getText(),  archivofoto, txtImagen.getText(), ciudad);
+			   	Empresa empresa= new Empresa(txtNombreEmpresa.getText(), txtIdentificacion.getText(), txtDireccion.getText(), txtTelefono.getText(), txtFax.getText(), txtEMail.getText(), txtUrl.getText(),  bFile, txtImagen.getText(), ciudad);
 				EmpresaController empresaController= new EmpresaController();
 				String error= empresaController.createEmpresa(empresa);
 				if (error == null) {
