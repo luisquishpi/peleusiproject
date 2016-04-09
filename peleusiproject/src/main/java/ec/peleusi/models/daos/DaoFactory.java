@@ -54,4 +54,8 @@ public class DaoFactory {
 		return new TipoPrecioDao();
 	}
 
+	public TipoCalificacionPersonaDao getTipoCalificacionPersonaDao() {
+		return new TipoCalificacionPersonaDao();
+	}
+
 }
