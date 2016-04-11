@@ -16,13 +16,14 @@ public class TipoRetencion {
 
 	}
 
-	public TipoRetencion(String codigo, Integer tipo, Double porcentaje, String descripcion) {
+	public TipoRetencion(String codigo, String tipo, Double porcentaje, String descripcion) {
 		this.id = null;
 		this.codigo = codigo;
 		this.tipo = tipo;
 		this.porcentaje = porcentaje;
 		this.descripcion = descripcion;
 	}
+	
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -32,8 +33,8 @@ public class TipoRetencion {
 	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
 
-	@Column(name = "tipo", unique = true, nullable = false)
-	private Integer tipo;
+	@Column(name = "tipo", unique = true, nullable = false, length =50)
+	private String tipo;
 
 	@Column(name = "porcentaje", nullable = false, length = 15)
 	private Double porcentaje;
@@ -57,11 +58,11 @@ public class TipoRetencion {
 		this.codigo = codigo;
 	}
 
-	public Integer getTipo() {
+	public String getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
 

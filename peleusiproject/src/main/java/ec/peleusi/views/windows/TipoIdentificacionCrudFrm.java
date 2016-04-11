@@ -15,12 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import ec.peleusi.controllers.TarifaIceController;
-import ec.peleusi.models.entities.TarifaIce;
-import ec.peleusi.utils.Formatos;
-import javax.swing.JFormattedTextField;
+import ec.peleusi.controllers.TipoIdentificacionController;
+import ec.peleusi.models.entities.TipoIdentificacion;
 
-public class TarifaIceCruFrm extends JInternalFrame {
+public class TipoIdentificacionCrudFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -30,11 +28,11 @@ public class TarifaIceCruFrm extends JInternalFrame {
 	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
-	private JFormattedTextField txtPorcentaje;
+
 	int limitecaja = 15;
 
-	public TarifaIceCruFrm() {
-		setTitle("Tarifa ICE");
+	public TipoIdentificacionCrudFrm() {
+		setTitle("Tipo Identificaciòn");
 		crearControles();
 		crearEventos();
 	}
@@ -51,22 +49,25 @@ public class TarifaIceCruFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(
+				new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(
+				new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(TarifaIceCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(
+				new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -82,10 +83,6 @@ public class TarifaIceCruFrm extends JInternalFrame {
 		txtNombre.setBounds(133, 67, 214, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
-
-		JLabel lblPorcentaje = new JLabel("Porcentaje");
-		lblPorcentaje.setBounds(50, 112, 85, 14);
-		panelCuerpo.add(lblPorcentaje);
 
 		JLabel lblCodigo = new JLabel("Còdigo ");
 		lblCodigo.setBounds(50, 29, 46, 14);
@@ -111,12 +108,6 @@ public class TarifaIceCruFrm extends JInternalFrame {
 			}
 		});
 
-		txtPorcentaje = new JFormattedTextField();
-		txtPorcentaje.setToolTipText("");
-		txtPorcentaje.setSize(75, 20);
-		txtPorcentaje.setLocation(134, 109);
-		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
-		panelCuerpo.add(txtPorcentaje);
 	}
 
 	private void crearEventos() {
@@ -133,10 +124,10 @@ public class TarifaIceCruFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				TarifaIce tarifaIce = new TarifaIce(txtCodigo.getText(), txtNombre.getText(),
-						Double.parseDouble(txtPorcentaje.getText()));
-				TarifaIceController tarifaIceController = new TarifaIceController();
-				String error = tarifaIceController.createTarifaIce(tarifaIce);
+				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(),
+						txtNombre.getText());
+				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
+				String error = tipoIdentificacionController.createTipoIdentificacion(tipoIdentificacion);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -161,12 +152,11 @@ public class TarifaIceCruFrm extends JInternalFrame {
 	private void limpiarCampos() {
 		txtCodigo.setText("");
 		txtNombre.setText("");
-		txtPorcentaje.setText("0");
 	}
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
