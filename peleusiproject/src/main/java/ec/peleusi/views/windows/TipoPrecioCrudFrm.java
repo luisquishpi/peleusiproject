@@ -8,17 +8,17 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import ec.peleusi.controllers.TipoIdentificacionController;
-import ec.peleusi.models.entities.TipoIdentificacion;
+import ec.peleusi.controllers.TipoPrecioController;
+import ec.peleusi.models.entities.TipoPrecio;
+import ec.peleusi.utils.Formatos;
+import javax.swing.JFormattedTextField;
 
-public class TipoIdentificacionCruFrm extends JInternalFrame {
+public class TipoPrecioCrudFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -27,12 +27,11 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 	private JButton btnCancelar;
 	private JLabel lblNombre;
 	private JTextField txtNombre;
-	private JTextField txtCodigo;
-
-	int limitecaja = 15;
-
-	public TipoIdentificacionCruFrm() {
-		setTitle("Tipo Identificaciòn");
+	private JFormattedTextField txtPorcentaje;
+	
+	
+	public TipoPrecioCrudFrm() {
+		setTitle("Tipo de Precio");
 		crearControles();
 		crearEventos();
 	}
@@ -40,7 +39,7 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 262);
+		setBounds(100, 100, 611, 224);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -49,25 +48,22 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TipoIdentificacionCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(
-				new ImageIcon(TipoIdentificacionCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(
-				new ImageIcon(TipoIdentificacionCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(
-				new ImageIcon(TipoIdentificacionCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -76,38 +72,24 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 		panelCuerpo.setLayout(null);
 
 		lblNombre = new JLabel("Nombre");
-		lblNombre.setBounds(50, 70, 101, 14);
+		lblNombre.setBounds(50, 30, 75, 14);
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField(50);
-		txtNombre.setBounds(133, 67, 214, 20);
+		txtNombre.setBounds(133, 27, 214, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
-		JLabel lblCodigo = new JLabel("Còdigo ");
-		lblCodigo.setBounds(50, 29, 46, 14);
-		panelCuerpo.add(lblCodigo);
+		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		lblPorcentaje.setBounds(50, 72, 85, 14);
+		panelCuerpo.add(lblPorcentaje);
 
-		txtCodigo = new JTextField();
-		txtCodigo.setToolTipText("");
-		txtCodigo.setBounds(133, 26, 141, 20);
-		panelCuerpo.add(txtCodigo);
-		txtCodigo.setColumns(15);
-
-		txtCodigo.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {
-				if (txtCodigo.getText().length() == limitecaja) {
-					e.consume();
-				}
-			}
-
-			public void keyPressed(KeyEvent arg0) {
-			}
-
-			public void keyReleased(KeyEvent arg0) {
-			}
-		});
-
+		txtPorcentaje = new JFormattedTextField();
+		txtPorcentaje.setToolTipText("");
+		txtPorcentaje.setSize(75, 20);
+		txtPorcentaje.setLocation(134, 69);
+		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
+		panelCuerpo.add(txtPorcentaje);
 	}
 
 	private void crearEventos() {
@@ -124,16 +106,17 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(),
-						txtNombre.getText());
-				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-				String error = tipoIdentificacionController.createTipoIdentificacion(tipoIdentificacion);
+				TipoPrecio tipoPrecio = new TipoPrecio(txtNombre.getText(), Double.parseDouble(txtPorcentaje.getText())); 
+				TipoPrecioController tipoPrecioController = new TipoPrecioController();
+				String error = tipoPrecioController.createTipoPrecio(tipoPrecio);
+				
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+					limpiarCampos();
 				}
 
 			}
@@ -150,13 +133,13 @@ public class TipoIdentificacionCruFrm extends JInternalFrame {
 	}
 
 	private void limpiarCampos() {
-		txtCodigo.setText("");
 		txtNombre.setText("");
+		txtPorcentaje.setText("0");
 	}
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty())
+		if (txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
