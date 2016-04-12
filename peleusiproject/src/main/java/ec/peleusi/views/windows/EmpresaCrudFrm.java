@@ -1,6 +1,6 @@
 package ec.peleusi.views.windows;
 
-import java.awt.EventQueue;
+
 import java.awt.Image;
 
 import javax.swing.JInternalFrame;
@@ -13,14 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.mysql.jdbc.Blob;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -31,8 +27,6 @@ import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Empresa;
-import sun.nio.ch.IOUtil;
-
 
 
 public class EmpresaCrudFrm extends JInternalFrame {

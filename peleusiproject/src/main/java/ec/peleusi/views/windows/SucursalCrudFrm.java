@@ -5,11 +5,29 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import ec.peleusi.controllers.CiudadController;
+import ec.peleusi.controllers.EmpresaController;
+import ec.peleusi.models.entities.Ciudad;
+import ec.peleusi.models.entities.Empresa;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import ec.peleusi.models.entities.Ciudad;
+import ec.peleusi.models.entities.Empresa;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SucursalCrudFrm extends JInternalFrame {
 	
@@ -18,16 +36,19 @@ public class SucursalCrudFrm extends JInternalFrame {
 	private JTextField txtDireccion;
 	private JTextField txtTelefono;
 	private JTextField txtFax;
-	private JTextField txtMail;
+	private JTextField txtEmail;
 	private JTextField txtUrl;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnEliminar;
 	private JButton btnCancelar;
-	private JComboBox cmbLocal;
-	private JComboBox cmdCiudad;
+	@SuppressWarnings("rawtypes")	
+	private JComboBox cmbEmpresa;
+	@SuppressWarnings("rawtypes")
+	private JComboBox cmbCiudad;
 	private JLabel lblFoto;
 	private JButton btnSeleccionar;
+	private JTextField txtImagen;
 	
 
 	public SucursalCrudFrm() 
@@ -35,13 +56,85 @@ public class SucursalCrudFrm extends JInternalFrame {
 	   
 		crearControles() ;
 		crearEventos();
+		llenarCiudad();
+		llenarEmpresa();
    }
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void llenarCiudad()
+	{		
+		CiudadController ciudadController= new CiudadController();
+		List<Ciudad> lista;
+		lista=ciudadController.CiudadList();
+		cmbCiudad.setModel(new DefaultComboBoxModel(lista.toArray()));	
+	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void llenarEmpresa()
+	{		
+		EmpresaController empresaController= new EmpresaController();
+		List<Empresa> lista;
+		lista=empresaController.EmpresaList();
+		cmbEmpresa.setModel(new DefaultComboBoxModel(lista.toArray()));	
+	}
+	 private boolean isCamposLlenos() {
+	        boolean llenos = true;
+	        if ( txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty() || txtEmail.getText().isEmpty() || txtUrl.getText().isEmpty() || txtFax.getText().isEmpty() || txtImagen.getText().isEmpty())
+	            llenos = false;
+	        return llenos;
+	    }
+
+	 private void limpiarCampos()
+		{
+			
+			txtNombre.setText("");
+			txtDireccion.setText("");
+			txtTelefono.setText("");
+			txtFax.setText("");
+			txtEmail.setText("");
+			txtUrl.setText("");
+			txtImagen.setText("");			
+			txtNombre.requestFocus();		
+			
+		}	 
+	
+	private static byte[] readBytesFromFile(String filePath) throws IOException {
+	        File inputFile = new File(filePath);
+	        FileInputStream inputStream = new FileInputStream(inputFile);
+	         
+	        byte[] fileBytes = new byte[(int) inputFile.length()];
+	        inputStream.read(fileBytes);
+	        inputStream.close();	
+	        
+	        System.out.println("ruta " +fileBytes);
+	        return fileBytes;
+	        
+	    }
 	
 	public void crearEventos()
 	{
 		
-		
-		
+
+		btnSeleccionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				FileNameExtensionFilter filtro= new FileNameExtensionFilter("Formatos de Archivos JPEG (*.JPG; *.JPEG) ", "jpg","jpeg");				
+				JFileChooser archivo= new JFileChooser();
+				archivo.addChoosableFileFilter(filtro);
+				archivo.setDialogTitle("Abrir archivo");
+				int ventana= archivo.showOpenDialog(null) ;
+				if(ventana==JFileChooser.APPROVE_OPTION){
+					File file=archivo.getSelectedFile();
+					
+					txtImagen.setText(String.valueOf(file));
+					Image foto= getToolkit().getImage(txtImagen.getText());
+					foto=foto.getScaledInstance(110, 110, Image.SCALE_DEFAULT);
+					lblFoto.setIcon(new ImageIcon(foto));		
+					
+				}		
+				
+			}
+		});	
 	}
 	public void crearControles() {
 		
@@ -58,6 +151,10 @@ public class SucursalCrudFrm extends JInternalFrame {
 		panel.add(btnNuevo);
 		
 		btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnGuardar.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panel.add(btnGuardar);
@@ -89,17 +186,17 @@ public class SucursalCrudFrm extends JInternalFrame {
 		lblLocal.setBounds(39, 28, 46, 14);
 		panel_1.add(lblLocal);
 		
-		cmbLocal = new JComboBox();
-		cmbLocal.setBounds(95, 28, 249, 20);
-		panel_1.add(cmbLocal);
+		cmbEmpresa = new JComboBox<Empresa>();
+		cmbEmpresa.setBounds(95, 28, 249, 20);
+		panel_1.add(cmbEmpresa);
 		
 		JLabel lblCiudad = new JLabel("Ciudad");
 		lblCiudad.setBounds(39, 90, 46, 14);
 		panel_1.add(lblCiudad);
 		
-		cmdCiudad = new JComboBox();
-		cmdCiudad.setBounds(95, 87, 249, 20);
-		panel_1.add(cmdCiudad);
+		cmbCiudad = new JComboBox<Ciudad>();
+		cmbCiudad.setBounds(95, 87, 249, 20);
+		panel_1.add(cmbCiudad);
 		
 		JLabel lblDireccin = new JLabel("Dirección ");
 		lblDireccin.setBounds(39, 124, 46, 14);
@@ -132,10 +229,10 @@ public class SucursalCrudFrm extends JInternalFrame {
 		lblMail.setBounds(39, 217, 46, 14);
 		panel_1.add(lblMail);
 		
-		txtMail = new JTextField();
-		txtMail.setColumns(10);
-		txtMail.setBounds(95, 211, 249, 20);
-		panel_1.add(txtMail);
+		txtEmail = new JTextField();
+		txtEmail.setColumns(10);
+		txtEmail.setBounds(95, 211, 249, 20);
+		panel_1.add(txtEmail);
 		
 		JLabel lblUrl = new JLabel("Url");
 		lblUrl.setBounds(39, 248, 46, 14);
@@ -154,6 +251,12 @@ public class SucursalCrudFrm extends JInternalFrame {
 		btnSeleccionar.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnSeleccionar.setBounds(412, 217, 123, 44);
 		panel_1.add(btnSeleccionar);
+		
+		txtImagen = new JTextField();
+		txtImagen.setColumns(10);
+		txtImagen.setBounds(95, 259, 30, 20);
+		panel_1.add(txtImagen);
+		txtImagen.setVisible(false);
 
 	}
 }

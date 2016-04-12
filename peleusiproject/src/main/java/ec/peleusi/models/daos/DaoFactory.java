@@ -53,5 +53,9 @@ public class DaoFactory {
 	public TipoPrecioDao getTipoPrecioDao() {
 		return new TipoPrecioDao();
 	}
+	public SucursalDao getSucursalDao() {
+		return new SucursalDao();
+	}
+	
 
 }

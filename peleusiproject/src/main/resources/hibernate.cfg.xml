@@ -40,7 +40,7 @@
 		<mapping class='ec.peleusi.models.entities.TipoIdentificacion' />
 		<mapping class='ec.peleusi.models.entities.TipoPrecio' />
 		<mapping class='ec.peleusi.models.entities.Empresa' />
-		
+		<mapping class='ec.peleusi.models.entities.Sucursal' />	
 		
 		
 	</session-factory>
