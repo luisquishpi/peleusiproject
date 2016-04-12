@@ -40,10 +40,11 @@
 		<mapping class='ec.peleusi.models.entities.TipoIdentificacion' />
 		<mapping class='ec.peleusi.models.entities.TipoPrecio' />
 		<mapping class='ec.peleusi.models.entities.Empresa' />
-		<mapping class='ec.peleusi.models.entities.Sucursal' />	
+		<mapping class='ec.peleusi.models.entities.Sucursal' />
 		<mapping class='ec.peleusi.models.entities.TipoCalificacionPersona' />
 		<mapping class='ec.peleusi.models.entities.TipoRetencion' />
-		
-		
+		<mapping class='ec.peleusi.models.entities.TipoPago' />
+
+
 	</session-factory>
 </hibernate-configuration>

@@ -5,11 +5,8 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
-import ec.peleusi.models.daos.CategoriaProductoDao;
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.SucursalDao;
-import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.models.entities.Sucursal;
 import ec.peleusi.utils.HibernateUtil;
 

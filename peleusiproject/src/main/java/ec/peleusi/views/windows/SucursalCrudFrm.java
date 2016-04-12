@@ -24,8 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import ec.peleusi.models.entities.Ciudad;
-import ec.peleusi.models.entities.Empresa;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
