@@ -21,7 +21,7 @@ import ec.peleusi.utils.Formatos;
 
 import javax.swing.JFormattedTextField;
 
-public class TarifaIvaCruFrm extends JInternalFrame {
+public class TarifaIvaCrudFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -34,7 +34,7 @@ public class TarifaIvaCruFrm extends JInternalFrame {
 	private JFormattedTextField txtPorcentaje;
 	int limitecaja = 15;
 
-	public TarifaIvaCruFrm() {
+	public TarifaIvaCrudFrm() {
 		setTitle("Tarifa IVA");
 		crearControles();
 		crearEventos();
@@ -52,22 +52,22 @@ public class TarifaIvaCruFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TarifaIvaCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(new ImageIcon(TarifaIvaCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TarifaIvaCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(TarifaIvaCruFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TarifaIvaCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 

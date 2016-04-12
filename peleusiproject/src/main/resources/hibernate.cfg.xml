@@ -41,6 +41,7 @@
 		<mapping class='ec.peleusi.models.entities.TipoPrecio' />
 		<mapping class='ec.peleusi.models.entities.Empresa' />
 		<mapping class='ec.peleusi.models.entities.TipoCalificacionPersona' />
+		<mapping class='ec.peleusi.models.entities.TipoRetencion' />
 		
 		
 		
