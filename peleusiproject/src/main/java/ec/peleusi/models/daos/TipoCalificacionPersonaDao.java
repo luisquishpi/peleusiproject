@@ -1,7 +1,9 @@
 package ec.peleusi.models.daos;
 
-public class TipoCalificacionPersonaDao extends GenericDao<TipoCalificacionPersonaDao, Integer> {
+import ec.peleusi.models.entities.TipoCalificacionPersona;
+
+public class TipoCalificacionPersonaDao extends GenericDao<TipoCalificacionPersona, Integer> {
 	public TipoCalificacionPersonaDao() {
-		super(TipoCalificacionPersonaDao.class);
+		super(TipoCalificacionPersona.class);
 	}
 }
