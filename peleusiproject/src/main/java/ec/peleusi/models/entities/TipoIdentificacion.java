@@ -15,14 +15,15 @@ public class TipoIdentificacion {
 	public TipoIdentificacion() {
 
 	}
-
-	public TipoIdentificacion(String codigo, String nombre) {
+	
+	public TipoIdentificacion(String codigo, String nombre, Boolean valida) {
 		super();
 		this.id = null;
 		this.codigo = codigo;
 		this.nombre = nombre;
+		this.valida = valida;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -31,8 +32,11 @@ public class TipoIdentificacion {
 	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
 
-	@Column(name = "nombre", unique = true, nullable = false, length =50)
+	@Column(name = "nombre", unique = true, nullable = false, length = 50)
 	private String nombre;
+
+	@Column(name = "valida", nullable = false)
+	private Boolean valida;
 
 	public Integer getId() {
 		return id;
@@ -56,6 +60,14 @@ public class TipoIdentificacion {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Boolean getValida() {
+		return valida;
+	}
+
+	public void setValida(Boolean valida) {
+		this.valida = valida;
 	}
 
 	@Override

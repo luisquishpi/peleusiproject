@@ -54,12 +54,20 @@ public class DaoFactory {
 		return new TipoPrecioDao();
 	}
 
+	public SucursalDao getSucursalDao() {
+		return new SucursalDao();
+	}
+
 	public TipoCalificacionPersonaDao getTipoCalificacionPersonaDao() {
 		return new TipoCalificacionPersonaDao();
 	}
 
 	public TipoRetencionDao getTipoRetencionDao() {
 		return new TipoRetencionDao();
+	}
+
+	public TipoPagoDao getTipoPagoDao() {
+		return new TipoPagoDao();
 	}
 
 }

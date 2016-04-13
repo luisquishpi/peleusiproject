@@ -9,18 +9,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import ec.peleusi.models.entities.Ciudad;
 
 @Entity
-@Table(name = "empresa")
-public class Empresa {
-	
-	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, byte[] foto, String ruta, Ciudad ciudad) {
+@Table(name = "sucursal")
+public class Sucursal {
+		
+	public Sucursal() {
 		super();
-		this.id= null;
+	}
+	public Sucursal(Integer id, String nombre, String direccion, String telefono, String fax, String email, String url,
+			byte[] foto, Ciudad ciudad, Empresa empresa) {
+		super();
+		this.id = null;
 		this.nombre = nombre;
-		this.identificacion = identificacion;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.fax = fax;
@@ -28,27 +29,7 @@ public class Empresa {
 		this.url = url;
 		this.foto = foto;
 		this.ciudad = ciudad;
-		this.ruta=ruta;
-	}	
-	
-	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url,  String ruta, Ciudad ciudad) {
-		super();
-		this.id= null;
-		this.nombre = nombre;
-		this.identificacion = identificacion;
-		this.direccion = direccion;
-		this.telefono = telefono;
-		this.fax = fax;
-		this.email = email;
-		this.url = url;
-	
-		this.ciudad = ciudad;
-		this.ruta=ruta;
-	}	
-
-	public Empresa() {
-		
+		this.empresa = empresa;
 	}
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -57,10 +38,7 @@ public class Empresa {
 
 	@Column(name = "nombre",  nullable = true, length = 256)
 	private String nombre;
-
-	@Column(name = "identificacion",  nullable = true, length = 13)
-	private String identificacion;
-
+	
 	@Column(name = "direcion", nullable = true, length = 256)
 	private String direccion;
 	
@@ -77,13 +55,13 @@ public class Empresa {
 	private String url;
 	
 	@Column(name = "foto", nullable = true, length = 1024)
-	private byte[] foto;
-	
-	@Column(name = "ruta",  nullable = true, length = 512)
-	private String ruta;
-	
+	private byte[] foto= new byte[1024];
+
 	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
 	private Ciudad ciudad;
+	
+	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
+	private Empresa empresa;
 
 	public Integer getId() {
 		return id;
@@ -99,14 +77,6 @@ public class Empresa {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getIdentificacion() {
-		return identificacion;
-	}
-
-	public void setIdentificacion(String identificacion) {
-		this.identificacion = identificacion;
 	}
 
 	public String getDireccion() {
@@ -165,16 +135,12 @@ public class Empresa {
 		this.ciudad = ciudad;
 	}
 
-	public String getRuta() {
-		return ruta;
+	public Empresa getEmpresa() {
+		return empresa;
 	}
 
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
-	}
-	@Override
-	public String toString() {
-		return nombre ;
-	}
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}		
 
 }
