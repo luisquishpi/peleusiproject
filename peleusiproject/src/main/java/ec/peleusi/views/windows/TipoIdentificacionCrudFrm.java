@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.models.entities.TipoIdentificacion;
+import javax.swing.JCheckBox;
 
 public class TipoIdentificacionCrudFrm extends JInternalFrame {
 
@@ -28,8 +29,10 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
-
+	private JCheckBox chkValida; 
+ 
 	int limitecaja = 15;
+	
 
 	public TipoIdentificacionCrudFrm() {
 		setTitle("Tipo Identificaciòn");
@@ -40,7 +43,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 262);
+		setBounds(100, 100, 611, 223);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -80,7 +83,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField(50);
-		txtNombre.setBounds(133, 67, 214, 20);
+		txtNombre.setBounds(106, 70, 214, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
@@ -90,9 +93,13 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 
 		txtCodigo = new JTextField();
 		txtCodigo.setToolTipText("");
-		txtCodigo.setBounds(133, 26, 141, 20);
+		txtCodigo.setBounds(106, 29, 141, 20);
 		panelCuerpo.add(txtCodigo);
 		txtCodigo.setColumns(15);
+		
+		chkValida = new JCheckBox("Validar Dato");
+		chkValida.setBounds(348, 69, 97, 23);
+		panelCuerpo.add(chkValida);
 
 		txtCodigo.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
@@ -124,14 +131,13 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(),
-						txtNombre.getText());
+				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(), txtNombre.getText(), chkValida.isSelected());
 				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
 				String error = tipoIdentificacionController.createTipoIdentificacion(tipoIdentificacion);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.INFORMATION_MESSAGE);
-					limpiarCampos();
+					limpiarCampos();											
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -152,6 +158,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	private void limpiarCampos() {
 		txtCodigo.setText("");
 		txtNombre.setText("");
+		chkValida.setSelected(false);
 	}
 
 	private boolean isCamposLlenos() {
