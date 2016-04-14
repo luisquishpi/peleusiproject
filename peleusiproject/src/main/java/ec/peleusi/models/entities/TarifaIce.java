@@ -71,7 +71,7 @@ public class TarifaIce {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", codigo=" + codigo + " nombre=" + nombre + "]";
+		return nombre;
 	}
 
 }
