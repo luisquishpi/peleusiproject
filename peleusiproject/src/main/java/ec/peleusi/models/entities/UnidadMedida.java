@@ -60,7 +60,7 @@ public class UnidadMedida {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", nombre=" + nombre + ", abreviatura=" + abreviatura + "]";
+		return nombre+" ("+abreviatura+")";
 	}
 
 }

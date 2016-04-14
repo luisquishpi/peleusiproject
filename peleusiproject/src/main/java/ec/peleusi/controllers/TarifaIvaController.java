@@ -1,5 +1,7 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.TarifaIvaDao;
 import ec.peleusi.models.entities.TarifaIva;
@@ -14,6 +16,10 @@ public class TarifaIvaController {
 
 	public String createTarifaIva(TarifaIva tarifaIva) {
 		return tarifaIvaDao.create(tarifaIva);
+	}
+
+	public List<TarifaIva> tarifaIvaList() {
+		return tarifaIvaDao.findAll();
 	}
 
 }
