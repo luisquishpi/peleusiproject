@@ -44,6 +44,8 @@
 		<mapping class='ec.peleusi.models.entities.TipoCalificacionPersona' />
 		<mapping class='ec.peleusi.models.entities.TipoRetencion' />
 		<mapping class='ec.peleusi.models.entities.TipoPago' />
+		<mapping class='ec.peleusi.models.entities.Usuario' />
+		<mapping class='ec.peleusi.models.entities.Persona' />
 
 
 	</session-factory>

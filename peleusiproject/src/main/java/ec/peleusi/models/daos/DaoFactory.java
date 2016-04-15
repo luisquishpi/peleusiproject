@@ -70,4 +70,12 @@ public class DaoFactory {
 		return new TipoPagoDao();
 	}
 
+	public UsuarioDao getUsuarioDao() {
+		return new UsuarioDao();
+	}
+
+	public PersonaDao getPersonaDao() {
+		return new PersonaDao();
+	}
+
 }

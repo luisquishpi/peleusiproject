@@ -1,5 +1,7 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.TarifaIceDao;
 import ec.peleusi.models.entities.TarifaIce;
@@ -13,5 +15,9 @@ public class TarifaIceController {
 
 	public String createTarifaIce(TarifaIce tarifaIce) {
 		return tarifaIceDao.create(tarifaIce);
+	}
+
+	public List<TarifaIce> tarifaIceList() {
+		return tarifaIceDao.findAll();
 	}
 }

@@ -1,8 +1,10 @@
 package ec.peleusi.models.daos;
 
-public class TipoPagoDao extends GenericDao<TipoPagoDao, Integer> {
+import ec.peleusi.models.entities.TipoPago;
+
+public class TipoPagoDao extends GenericDao<TipoPago, Integer> {
 
 	public TipoPagoDao() {
-		super(TipoPagoDao.class);		
+		super(TipoPago.class);		
 	}
 }
