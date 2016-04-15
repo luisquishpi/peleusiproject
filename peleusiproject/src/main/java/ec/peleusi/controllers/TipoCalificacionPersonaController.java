@@ -1,5 +1,7 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.TipoCalificacionPersonaDao;
 import ec.peleusi.models.entities.TipoCalificacionPersona;
@@ -15,4 +17,7 @@ public class TipoCalificacionPersonaController {
 		return tipoCalificacionPersonaDao.create(tipoCalificacionPersona);
 	}
 
+	public List<TipoCalificacionPersona> tipoCalificacionPersonaList() {
+		return tipoCalificacionPersonaDao.findAll();
+	}
 }

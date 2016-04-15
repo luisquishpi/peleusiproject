@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -14,12 +15,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.TipoRetencionController;
 import ec.peleusi.models.entities.TipoRetencion;
 import ec.peleusi.utils.Formatos;
+import ec.peleusi.utils.TipoRet;
 
 import javax.swing.JFormattedTextField;
+import javax.swing.JComboBox;
 
 public class TipoRetencionCrudFrm extends JInternalFrame {
 
@@ -29,18 +31,24 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JLabel lblTipo;
-	private JTextField txtTipo;
 	private JTextField txtCodigo;
 	private JTextField txtDescripcion;
 	private JFormattedTextField txtPorcentaje;
-	
+	private JComboBox<TipoRet> cmbTipoRet;
 	
 	int limitecaja = 15;	
+	
 
 	public TipoRetencionCrudFrm() {
 		setTitle("Tipo de Retenciòn");
 		crearControles();
 		crearEventos();
+		cargarComboTipoRet();
+	}
+	
+	private void cargarComboTipoRet() {
+		cmbTipoRet.setModel(new DefaultComboBoxModel<TipoRet>(TipoRet.values()));
+
 	}
 
 	private void crearControles() {
@@ -79,25 +87,20 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		panelCuerpo.setLayout(null);
 
 		lblTipo = new JLabel("Tipo");
-		lblTipo.setBounds(20, 68, 91, 14);
+		lblTipo.setBounds(20, 65, 91, 14);
 		panelCuerpo.add(lblTipo);
 
-		txtTipo = new JTextField(50);
-		txtTipo.setBounds(96, 68, 195, 20);
-		panelCuerpo.add(txtTipo);
-		txtTipo.setColumns(50);
-
 		JLabel lblPorcentaje = new JLabel("Porcentaje");
-		lblPorcentaje.setBounds(20, 103, 91, 14);
+		lblPorcentaje.setBounds(20, 135, 91, 14);
 		panelCuerpo.add(lblPorcentaje);
 
 		JLabel lblCodigo = new JLabel("Còdigo ");
-		lblCodigo.setBounds(20, 33, 91, 14);
+		lblCodigo.setBounds(20, 30, 91, 14);
 		panelCuerpo.add(lblCodigo);
 
 		txtCodigo = new JTextField();
 		txtCodigo.setToolTipText("");
-		txtCodigo.setBounds(96, 33, 113, 20);
+		txtCodigo.setBounds(96, 30, 113, 20);
 		panelCuerpo.add(txtCodigo);
 		txtCodigo.setColumns(15);
 
@@ -118,18 +121,23 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		txtPorcentaje = new JFormattedTextField();
 		txtPorcentaje.setToolTipText("");
 		txtPorcentaje.setSize(75, 20);
-		txtPorcentaje.setLocation(96, 103);
+		txtPorcentaje.setLocation(96, 135);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
 		
-		JLabel lblDescripcin = new JLabel("Descripciòn");
-		lblDescripcin.setBounds(20, 138, 91, 14);
-		panelCuerpo.add(lblDescripcin);
+		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setBounds(20, 100, 91, 14);
+		panelCuerpo.add(lblNombre);
 		
 		txtDescripcion = new JTextField();
-		txtDescripcion.setBounds(96, 138, 467, 25);
+		txtDescripcion.setBounds(96, 100, 467, 20);
 		panelCuerpo.add(txtDescripcion);
 		txtDescripcion.setColumns(10);
+		
+		cmbTipoRet = new JComboBox<TipoRet>();
+		cmbTipoRet.setBounds(96, 65, 113, 20);
+		panelCuerpo.add(cmbTipoRet);	
+		
 	}
 
 	private void crearEventos() {
@@ -146,8 +154,10 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
 					return;
 				}
-				TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(), txtTipo.getText(),
-						Double.parseDouble(txtPorcentaje.getText()), txtDescripcion.getText());
+				
+				String por = txtPorcentaje.getText();
+				TipoRet tipoRet = (TipoRet) cmbTipoRet.getSelectedItem();   				
+				TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(),tipoRet, Double.parseDouble(por.toString()), txtDescripcion.getText());
 				TipoRetencionController tipoRetencionController = new TipoRetencionController();
 				String error = tipoRetencionController.createTipoRetencion(tipoRetencion);
 				
@@ -175,14 +185,13 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 
 	private void limpiarCampos() {
 		txtCodigo.setText("");
-		txtTipo.setText("");
 		txtPorcentaje.setText("0");
 		txtDescripcion.setText("");
 	}
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtTipo.getText().isEmpty() || txtPorcentaje.getText().isEmpty() || txtDescripcion.getText().isEmpty())
+		if (txtCodigo.getText().isEmpty() || txtPorcentaje.getText().isEmpty() || txtDescripcion.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
