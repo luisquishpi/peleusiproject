@@ -27,6 +27,7 @@ import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Empresa;
+import javax.swing.SwingConstants;
 
 
 public class EmpresaCrudFrm extends JInternalFrame {
@@ -82,6 +83,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 			txtEMail.setText("");
 			txtUrl.setText("");
 			txtImagen.setText("");			
+			lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
 			txtNombreEmpresa.requestFocus();		
 			
 		}
@@ -136,17 +138,13 @@ public class EmpresaCrudFrm extends JInternalFrame {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}					
+				}				
 				
 				Ciudad ciudad=(Ciudad) cmbCiudad.getSelectedItem();
 			    System.out.println("ciudad " + ciudad);
 			   	Empresa empresa= new Empresa(txtNombreEmpresa.getText(), txtIdentificacion.getText(), txtDireccion.getText(), txtTelefono.getText(), txtFax.getText(), txtEMail.getText(), txtUrl.getText(),photoBytes,  txtImagen.getText(), ciudad);
 				EmpresaController empresaController= new EmpresaController();
-				String error= empresaController.createEmpresa(empresa);
-				
-				
-			        
-				
+				String error= empresaController.createEmpresa(empresa);				
 				System.out.println("raiz " + error);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
@@ -173,6 +171,8 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	}
 	private void crearControles()
 	{
+		setIconifiable(true);
+		setClosable(true);
 		setBounds(100, 100, 599, 421);		
 		JPanel pnlCabecera = new JPanel();
 		pnlCabecera.setLayout(null);
@@ -282,12 +282,12 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		btnSeleccionar = new JButton("Seleccionar");
 		btnSeleccionar.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		
-		btnSeleccionar.setBounds(414, 267, 123, 44);
+		btnSeleccionar.setBounds(403, 230, 140, 44);
 		pnlCuerpo.add(btnSeleccionar);
 		
 		lblFoto = new JLabel("");
-		lblFoto.setIcon(new ImageIcon("C:\\Users\\Celia\\Pictures\\sac\\68257_1517396395235014_5107893767674406319_n.jpg"));
-		lblFoto.setBounds(393, 71, 150, 185);
+		lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
+		lblFoto.setBounds(393, 55, 166, 189);
 		pnlCuerpo.add(lblFoto);
 		
 	}

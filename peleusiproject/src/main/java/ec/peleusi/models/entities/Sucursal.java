@@ -17,17 +17,15 @@ public class Sucursal {
 	public Sucursal() {
 		super();
 	}
-	public Sucursal(Integer id, String nombre, String direccion, String telefono, String fax, String email, String url,
-			byte[] foto, Ciudad ciudad, Empresa empresa) {
+	public Sucursal(String nombre, String direccion, String telefono, String fax, String email, 
+			 Ciudad ciudad, Empresa empresa) {
 		super();
 		this.id = null;
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.fax = fax;
-		this.email = email;
-		this.url = url;
-		this.foto = foto;
+		this.email = email;	
 		this.ciudad = ciudad;
 		this.empresa = empresa;
 	}
@@ -36,7 +34,7 @@ public class Sucursal {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "nombre",  nullable = true, length = 256)
+	@Column(name = "nombre", unique = true, nullable = false, length = 256)
 	private String nombre;
 	
 	@Column(name = "direcion", nullable = true, length = 256)
@@ -50,12 +48,6 @@ public class Sucursal {
 	
 	@Column(name = "email",  nullable = true, length = 256)
 	private String email;
-	
-	@Column(name = "url",  nullable = true, length = 256)
-	private String url;
-	
-	@Column(name = "foto", nullable = true, length = 1024)
-	private byte[] foto= new byte[1024];
 
 	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
 	private Ciudad ciudad;
@@ -110,23 +102,7 @@ public class Sucursal {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public byte[] getFoto() {
-		return foto;
-	}
-
-	public void setFoto(byte[] foto) {
-		this.foto = foto;
-	}
-
+	
 	public Ciudad getCiudad() {
 		return ciudad;
 	}

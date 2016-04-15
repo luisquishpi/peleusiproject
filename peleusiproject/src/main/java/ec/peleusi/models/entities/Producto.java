@@ -21,23 +21,29 @@ public class Producto {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "codigo", nullable = false)
+	@Column(name = "codigo", nullable = false, length = 50)
 	private String codigo;
 
-	@Column(name = "nombre", nullable = false)
+	@Column(name = "nombre", nullable = false, length = 250)
 	private String nombre;
 
 	@Column(name = "peso", nullable = false)
 	private Double peso = 0.0;
 
+	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
+	private UnidadMedida unidadMedidaPeso;
+
 	@Column(name = "costo", nullable = false)
 	private Double costo = 0.0;
 
-	@Column(name = "foto", nullable = false)
-	private String foto;
+	@Column(name = "foto", nullable = false, length = 16777215)
+	private byte[] foto;
 
 	@Column(name = "esdeducible", nullable = false)
 	private Boolean esDeducible = false;
+
+	@ManyToOne(cascade = CascadeType.REFRESH, optional = true)
+	private TipoGastoDeducible tipoGastoDeducible;
 
 	@Column(name = "sepuedeFraccionar", nullable = false)
 	private Boolean sePuedeFraccionar = false;
@@ -51,7 +57,7 @@ public class Producto {
 	@Column(name = "stockMinimo", nullable = false)
 	private Double stockMinimo = 0.0;
 
-	@Column(name = "fechaActualizacion", nullable = false)
+	@Column(name = "fechaActualizacion", nullable = true)
 	private Date fechaActualizacion;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
@@ -64,19 +70,16 @@ public class Producto {
 	private TarifaIce tarifaIce;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private TipoGastoDeducible tipoGastoDeducible;
-
-	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private UnidadMedida unidadMedidaCompra;
 
 	@Column(name = "cantidadunidadmedidacompra", nullable = false)
-	private Double cantidadunidadmedidacompra = 0.0;
+	private Double cantidadUnidadMedidaCompra = 0.0;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private UnidadMedida unidadMedidaVenta;
 
 	@Column(name = "cantidadunidadmedidaventa", nullable = false)
-	private Double cantidadunidadmedidaventa = 0.0;
+	private Double cantidadUnidadMedidaVenta = 0.0;
 
 	public Integer getId() {
 		return id;
@@ -110,6 +113,14 @@ public class Producto {
 		this.peso = peso;
 	}
 
+	public UnidadMedida getUnidadMedidaPeso() {
+		return unidadMedidaPeso;
+	}
+
+	public void setUnidadMedidaPeso(UnidadMedida unidadMedidaPeso) {
+		this.unidadMedidaPeso = unidadMedidaPeso;
+	}
+
 	public Double getCosto() {
 		return costo;
 	}
@@ -118,11 +129,11 @@ public class Producto {
 		this.costo = costo;
 	}
 
-	public String getFoto() {
+	public byte[] getFoto() {
 		return foto;
 	}
 
-	public void setFoto(String foto) {
+	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
 
@@ -215,11 +226,11 @@ public class Producto {
 	}
 
 	public Double getCantidadunidadmedidacompra() {
-		return cantidadunidadmedidacompra;
+		return cantidadUnidadMedidaCompra;
 	}
 
-	public void setCantidadunidadmedidacompra(Double cantidadunidadmedidacompra) {
-		this.cantidadunidadmedidacompra = cantidadunidadmedidacompra;
+	public void setCantidadunidadmedidacompra(Double cantidadUnidadMedidaCompra) {
+		this.cantidadUnidadMedidaCompra = cantidadUnidadMedidaCompra;
 	}
 
 	public UnidadMedida getUnidadMedidaVenta() {
@@ -231,11 +242,11 @@ public class Producto {
 	}
 
 	public Double getCantidadunidadmedidaventa() {
-		return cantidadunidadmedidaventa;
+		return cantidadUnidadMedidaVenta;
 	}
 
-	public void setCantidadunidadmedidaventa(Double cantidadunidadmedidaventa) {
-		this.cantidadunidadmedidaventa = cantidadunidadmedidaventa;
+	public void setCantidadunidadmedidaventa(Double cantidadUnidadMedidaVenta) {
+		this.cantidadUnidadMedidaVenta = cantidadUnidadMedidaVenta;
 	}
 
 	@Override

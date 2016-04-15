@@ -106,8 +106,12 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		} else {
 			lblDepen.setText(lblId.getText());
 			txtDependencia.setText(txtNombre.getText());
+			txtDependencia.setText(nodo.toString());
 		}
-	}
+		
+		
+		
+	}	
 
 	private void agregarNodoArbol(CategoriaProducto categoriaProducto) {
 		DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -153,11 +157,24 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 
 		chbxContieneProductos.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
+				
+				categoriaProducto.getContieneProductos();
+				System.out.println("raiz " + categoriaProducto.getContieneProductos());
+				
 				if (chbxContieneProductos.isSelected() == true) {
 					btnNuevo.setEnabled(false);
 					
+					
 				} else {
-					btnNuevo.setEnabled(true);
+					
+					if(categoriaProducto.getContieneProductos()==true)
+					{
+						btnNuevo.setEnabled(false);
+					}
+					else
+					{
+						btnNuevo.setEnabled(true);
+					}
 				}
 			}
 		});
@@ -190,6 +207,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 					CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
 					if (categoriaProductoController.updateCategoriaProducto(categoriaProducto)) {
 						actualizarNodoArbol(categoriaProducto);
+						limpiarcampos();
 					} else {
 						JOptionPane.showMessageDialog(null, "Error, no es posible actualizar");
 						return;
