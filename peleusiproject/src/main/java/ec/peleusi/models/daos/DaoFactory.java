@@ -78,4 +78,12 @@ public class DaoFactory {
 		return new PersonaDao();
 	}
 
+	public CompraDao getCompraDao() {
+		return new CompraDao();
+	}
+
+	public DetalleCompraDao getDetalleCompraDao() {
+		return new DetalleCompraDao();
+	}
+
 }
