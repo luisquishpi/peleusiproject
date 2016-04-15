@@ -207,6 +207,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 					CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
 					if (categoriaProductoController.updateCategoriaProducto(categoriaProducto)) {
 						actualizarNodoArbol(categoriaProducto);
+						limpiarcampos();
 					} else {
 						JOptionPane.showMessageDialog(null, "Error, no es posible actualizar");
 						return;
