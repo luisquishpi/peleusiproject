@@ -9,17 +9,25 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.hibernate.Hibernate;
+
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
+import ec.peleusi.controllers.SucursalController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Empresa;
+import ec.peleusi.models.entities.Sucursal;
+
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
@@ -35,7 +43,6 @@ public class SucursalCrudFrm extends JInternalFrame {
 	private JTextField txtTelefono;
 	private JTextField txtFax;
 	private JTextField txtEmail;
-	private JTextField txtUrl;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnEliminar;
@@ -44,9 +51,6 @@ public class SucursalCrudFrm extends JInternalFrame {
 	private JComboBox cmbEmpresa;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbCiudad;
-	private JLabel lblFoto;
-	private JButton btnSeleccionar;
-	private JTextField txtImagen;
 	
 
 	public SucursalCrudFrm() 
@@ -76,7 +80,7 @@ public class SucursalCrudFrm extends JInternalFrame {
 	}
 	 private boolean isCamposLlenos() {
 	        boolean llenos = true;
-	        if ( txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty() || txtEmail.getText().isEmpty() || txtUrl.getText().isEmpty() || txtFax.getText().isEmpty() || txtImagen.getText().isEmpty())
+	        if ( txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty() || txtEmail.getText().isEmpty() ||  txtFax.getText().isEmpty() )
 	            llenos = false;
 	        return llenos;
 	    }
@@ -88,55 +92,52 @@ public class SucursalCrudFrm extends JInternalFrame {
 			txtDireccion.setText("");
 			txtTelefono.setText("");
 			txtFax.setText("");
-			txtEmail.setText("");
-			txtUrl.setText("");
-			txtImagen.setText("");			
-			txtNombre.requestFocus();		
+			txtEmail.setText("");				
+			txtNombre.requestFocus();	
+			
 			
 		}	 
 	
-	private static byte[] readBytesFromFile(String filePath) throws IOException {
-	        File inputFile = new File(filePath);
-	        FileInputStream inputStream = new FileInputStream(inputFile);
-	         
-	        byte[] fileBytes = new byte[(int) inputFile.length()];
-	        inputStream.read(fileBytes);
-	        inputStream.close();	
-	        
-	        System.out.println("ruta " +fileBytes);
-	        return fileBytes;
-	        
-	    }
 	
 	public void crearEventos()
 	{
 		
-
-		btnSeleccionar.addActionListener(new ActionListener() {
+		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				if (!isCamposLlenos()) {
+					JOptionPane.showMessageDialog(null, "No deje campos vacíos");
+					return;
+				}
+					
+				Ciudad ciudad=(Ciudad) cmbCiudad.getSelectedItem();
+				Empresa empresa=(Empresa) cmbEmpresa.getSelectedItem();
+			    System.out.println("ciudad " + ciudad);
+			   	Sucursal sucursal= new Sucursal(txtNombre.getText(), txtDireccion.getText(), txtTelefono.getText(), txtFax.getText(), txtEmail.getText(), ciudad, empresa);
+				SucursalController sucursalController= new SucursalController();
+				String error= sucursalController.createSucursal(sucursal);		
+				System.out.println("raiz " + error);
+				if (error == null) {
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
+							JOptionPane.INFORMATION_MESSAGE);
+					limpiarCampos();
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}			
 				
-				FileNameExtensionFilter filtro= new FileNameExtensionFilter("Formatos de Archivos JPEG (*.JPG; *.JPEG) ", "jpg","jpeg");				
-				JFileChooser archivo= new JFileChooser();
-				archivo.addChoosableFileFilter(filtro);
-				archivo.setDialogTitle("Abrir archivo");
-				int ventana= archivo.showOpenDialog(null) ;
-				if(ventana==JFileChooser.APPROVE_OPTION){
-					File file=archivo.getSelectedFile();
-					
-					txtImagen.setText(String.valueOf(file));
-					Image foto= getToolkit().getImage(txtImagen.getText());
-					foto=foto.getScaledInstance(110, 110, Image.SCALE_DEFAULT);
-					lblFoto.setIcon(new ImageIcon(foto));		
-					
-				}		
 				
 			}
-		});	
+		});
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpiarCampos();
+			}
+		});
 	}
 	public void crearControles() {
-		
-		setBounds(100, 100, 602, 389);		
+		setIconifiable(true);
+		setClosable(true);
+		setBounds(100, 100, 592, 360);		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setPreferredSize(new Dimension(200, 70));
@@ -144,15 +145,13 @@ public class SucursalCrudFrm extends JInternalFrame {
 		getContentPane().add(panel, BorderLayout.NORTH);
 		
 		btnNuevo = new JButton("Nuevo");
+		
 		btnNuevo.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panel.add(btnNuevo);
 		
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		
 		btnGuardar.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panel.add(btnGuardar);
@@ -163,6 +162,11 @@ public class SucursalCrudFrm extends JInternalFrame {
 		panel.add(btnEliminar);
 		
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		btnCancelar.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panel.add(btnCancelar);
@@ -172,89 +176,65 @@ public class SucursalCrudFrm extends JInternalFrame {
 		panel_1.setLayout(null);
 		
 		JLabel lblNombre = new JLabel("Nombre");
-		lblNombre.setBounds(39, 59, 46, 14);
+		lblNombre.setBounds(53, 59, 79, 14);
 		panel_1.add(lblNombre);
 		
 		txtNombre = new JTextField();
-		txtNombre.setBounds(95, 56, 249, 20);
+		txtNombre.setBounds(148, 56, 271, 20);
 		panel_1.add(txtNombre);
 		txtNombre.setColumns(10);
 		
 		JLabel lblLocal = new JLabel("Local");
-		lblLocal.setBounds(39, 28, 46, 14);
+		lblLocal.setBounds(53, 28, 91, 14);
 		panel_1.add(lblLocal);
 		
 		cmbEmpresa = new JComboBox<Empresa>();
-		cmbEmpresa.setBounds(95, 28, 249, 20);
+		cmbEmpresa.setBounds(148, 28, 271, 20);
 		panel_1.add(cmbEmpresa);
 		
 		JLabel lblCiudad = new JLabel("Ciudad");
-		lblCiudad.setBounds(39, 90, 46, 14);
+		lblCiudad.setBounds(53, 93, 72, 14);
 		panel_1.add(lblCiudad);
 		
 		cmbCiudad = new JComboBox<Ciudad>();
-		cmbCiudad.setBounds(95, 87, 249, 20);
+		cmbCiudad.setBounds(148, 87, 271, 20);
 		panel_1.add(cmbCiudad);
 		
 		JLabel lblDireccin = new JLabel("Dirección ");
-		lblDireccin.setBounds(39, 124, 46, 14);
+		lblDireccin.setBounds(53, 124, 79, 14);
 		panel_1.add(lblDireccin);
 		
 		txtDireccion = new JTextField();
 		txtDireccion.setColumns(10);
-		txtDireccion.setBounds(95, 118, 249, 20);
+		txtDireccion.setBounds(148, 118, 271, 20);
 		panel_1.add(txtDireccion);
 		
 		JLabel lblTelfono = new JLabel("Teléfono");
-		lblTelfono.setBounds(39, 155, 46, 14);
+		lblTelfono.setBounds(53, 155, 79, 14);
 		panel_1.add(lblTelfono);
 		
 		txtTelefono = new JTextField();
 		txtTelefono.setColumns(10);
-		txtTelefono.setBounds(95, 149, 249, 20);
+		txtTelefono.setBounds(148, 149, 271, 20);
 		panel_1.add(txtTelefono);
 		
 		JLabel lblFax = new JLabel("Fax");
-		lblFax.setBounds(39, 186, 46, 14);
+		lblFax.setBounds(53, 186, 79, 14);
 		panel_1.add(lblFax);
 		
 		txtFax = new JTextField();
 		txtFax.setColumns(10);
-		txtFax.setBounds(95, 180, 249, 20);
+		txtFax.setBounds(148, 180, 271, 20);
 		panel_1.add(txtFax);
 		
 		JLabel lblMail = new JLabel("Mail");
-		lblMail.setBounds(39, 217, 46, 14);
+		lblMail.setBounds(53, 217, 72, 14);
 		panel_1.add(lblMail);
 		
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(95, 211, 249, 20);
+		txtEmail.setBounds(148, 211, 271, 20);
 		panel_1.add(txtEmail);
-		
-		JLabel lblUrl = new JLabel("Url");
-		lblUrl.setBounds(39, 248, 46, 14);
-		panel_1.add(lblUrl);
-		
-		txtUrl = new JTextField();
-		txtUrl.setColumns(10);
-		txtUrl.setBounds(95, 242, 249, 20);
-		panel_1.add(txtUrl);
-		
-		lblFoto = new JLabel("foto");
-		lblFoto.setBounds(397, 28, 157, 187);
-		panel_1.add(lblFoto);
-		
-		btnSeleccionar = new JButton("Seleccionar");
-		btnSeleccionar.setIcon(new ImageIcon(SucursalCrudFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnSeleccionar.setBounds(412, 217, 123, 44);
-		panel_1.add(btnSeleccionar);
-		
-		txtImagen = new JTextField();
-		txtImagen.setColumns(10);
-		txtImagen.setBounds(95, 259, 30, 20);
-		panel_1.add(txtImagen);
-		txtImagen.setVisible(false);
 
 	}
 }

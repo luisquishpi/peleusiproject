@@ -76,7 +76,7 @@ public class Empresa {
 	@Column(name = "url",  nullable = true, length = 256)
 	private String url;
 	
-	@Column(name = "foto", nullable = true, length = 1024)
+	@Column(name = "foto", nullable = true, length = 16777215)
 	private byte[] foto;
 	
 	@Column(name = "ruta",  nullable = true, length = 512)
