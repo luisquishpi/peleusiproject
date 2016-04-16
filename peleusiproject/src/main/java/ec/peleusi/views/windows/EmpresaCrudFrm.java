@@ -51,12 +51,13 @@ public class EmpresaCrudFrm extends JInternalFrame {
 
 	
 	public EmpresaCrudFrm() {
+		
 		setTitle("Empresa");
 		crearControles();
 		crearEventos();
 		llenarCiudad();
-
-	}
+		txtNombreEmpresa.requestFocus();
+		}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void llenarCiudad()
