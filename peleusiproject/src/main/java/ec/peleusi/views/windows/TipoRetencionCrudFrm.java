@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import ec.peleusi.controllers.TipoRetencionController;
 import ec.peleusi.models.entities.TipoRetencion;
 import ec.peleusi.utils.Formatos;
-import ec.peleusi.utils.TipoRet;
+import ec.peleusi.utils.TipoRetencionEnum;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
@@ -34,7 +34,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	private JTextField txtCodigo;
 	private JTextField txtDescripcion;
 	private JFormattedTextField txtPorcentaje;
-	private JComboBox<TipoRet> cmbTipoRet;
+	private JComboBox<TipoRetencionEnum> cmbTipoRet;
 	
 	int limitecaja = 15;	
 	
@@ -47,7 +47,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	}
 	
 	private void cargarComboTipoRet() {
-		cmbTipoRet.setModel(new DefaultComboBoxModel<TipoRet>(TipoRet.values()));
+		cmbTipoRet.setModel(new DefaultComboBoxModel<TipoRetencionEnum>(TipoRetencionEnum.values()));
 
 	}
 
@@ -134,7 +134,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		panelCuerpo.add(txtDescripcion);
 		txtDescripcion.setColumns(10);
 		
-		cmbTipoRet = new JComboBox<TipoRet>();
+		cmbTipoRet = new JComboBox<TipoRetencionEnum>();
 		cmbTipoRet.setBounds(96, 65, 113, 20);
 		panelCuerpo.add(cmbTipoRet);	
 		
@@ -156,7 +156,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 				}
 				
 				String por = txtPorcentaje.getText();
-				TipoRet tipoRet = (TipoRet) cmbTipoRet.getSelectedItem();   				
+				TipoRetencionEnum tipoRet = (TipoRetencionEnum) cmbTipoRet.getSelectedItem();   				
 				TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(),tipoRet, Double.parseDouble(por.toString()), txtDescripcion.getText());
 				TipoRetencionController tipoRetencionController = new TipoRetencionController();
 				String error = tipoRetencionController.createTipoRetencion(tipoRetencion);

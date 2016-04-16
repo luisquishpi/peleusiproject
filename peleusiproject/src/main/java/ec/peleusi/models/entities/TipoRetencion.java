@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import ec.peleusi.utils.TipoRet;
+import ec.peleusi.utils.TipoRetencionEnum;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
 
@@ -14,7 +14,7 @@ import javax.persistence.Column;
 
 public class TipoRetencion {
 
-	public TipoRetencion(String codigo, TipoRet tipoRet, Double porcentaje, String descripcion) {
+	public TipoRetencion(String codigo, TipoRetencionEnum tipoRet, Double porcentaje, String descripcion) {
 		this.id = null;
 		this.codigo = codigo;
 		this.tipoRet = tipoRet;
@@ -35,7 +35,7 @@ public class TipoRetencion {
 	private String codigo;
 	
 	@Column(name = "tipo", nullable = false, length = 30)
-	private TipoRet tipoRet;
+	private TipoRetencionEnum tipoRet;
 	
 	@Column(name = "porcentaje", nullable = false, length = 15)
 	private Double porcentaje;
@@ -59,11 +59,11 @@ public class TipoRetencion {
 		this.codigo = codigo;
 	}
 
-	public TipoRet getTipoRet() {
+	public TipoRetencionEnum getTipoRet() {
 		return tipoRet;
 	}
 
-	public void setTipoRet(TipoRet tipoRet) {
+	public void setTipoRet(TipoRetencionEnum tipoRet) {
 		this.tipoRet = tipoRet;
 	}
 	
