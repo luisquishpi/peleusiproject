@@ -53,6 +53,7 @@ public class PersonaCrudFrm extends JInternalFrame {
 		crearControles();
 		crearEventos();
 		cargarCombos();
+		limpiarCampos();
 	}
 
 	private void cargarCombos() {
@@ -92,11 +93,9 @@ public class PersonaCrudFrm extends JInternalFrame {
 	}
 	
 	private void limpiarCampos() {
-		//cmbTipoCalificacionPersona.setSelectedItem("Seleccione");
-		cmbTipoPersona.removeAllItems();
 		txtIdentificacion.setText("");
 		txtRazonSocial.setText("");
-		txtDiasCredito.setText("");
+		txtDiasCredito.setText("0");
 		txtPorcentajeDescuento.setText("0");
 		txtDescripcion.setText("");
 
@@ -263,7 +262,7 @@ public class PersonaCrudFrm extends JInternalFrame {
 		panelCuerpo.add(cmbTipoPersona);
 
 		JLabel lblPorcentajeDescuento = new JLabel("Porcentaje Descuento");
-		lblPorcentajeDescuento.setBounds(29, 230, 111, 14);
+		lblPorcentajeDescuento.setBounds(29, 230, 143, 14);
 		panelCuerpo.add(lblPorcentajeDescuento);
 
 		cmbTipoIdentificacion = new JComboBox<TipoIdentificacion>();

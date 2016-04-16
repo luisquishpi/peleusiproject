@@ -62,7 +62,7 @@ public class Persona {
 	@Column(name = "porcentajeDescuento", nullable = false, length = 15)
 	private Double porcentajeDescuento;
 
-	@Column(name = "descripcion", nullable = false, length = 100)
+	@Column(name = "descripcion", length = 100)
 	private String descripcion;
 
 	@Column(name = "tipoPersona", nullable = false)

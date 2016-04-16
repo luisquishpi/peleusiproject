@@ -38,6 +38,7 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 		setTitle("Tarifa IVA");
 		crearControles();
 		crearEventos();
+		limpiarCampos();
 	}
 
 	private void crearControles() {
