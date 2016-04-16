@@ -44,6 +44,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		crearControles();
 		crearEventos();
 		cargarComboTipoRet();
+		limpiarCampos();
 	}
 	
 	private void cargarComboTipoRet() {

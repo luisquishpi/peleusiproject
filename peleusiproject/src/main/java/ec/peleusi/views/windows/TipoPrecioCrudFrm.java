@@ -34,6 +34,7 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 		setTitle("Tipo de Precio");
 		crearControles();
 		crearEventos();
+		limpiarCampos();
 	}
 
 	private void crearControles() {

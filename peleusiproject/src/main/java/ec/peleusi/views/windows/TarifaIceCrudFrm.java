@@ -37,6 +37,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 		setTitle("Tarifa ICE");
 		crearControles();
 		crearEventos();
+		limpiarCampos();
 	}
 
 	private void crearControles() {
