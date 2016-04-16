@@ -32,6 +32,7 @@ public class PrincipalFrm extends JFrame {
 	private TipoPagoCrudFrm tipoPagoCrudFrm;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm;
 	private TipoRetencionCrudFrm tipoRetencionCrudFrm;
+	private PersonaCrudFrm personaCrudFrm;
 	private JDesktopPane dpContenedor;
 
 	public static void main(String[] args) {
@@ -229,6 +230,18 @@ public class PrincipalFrm extends JFrame {
 			}
 		});
 		mnMaestros.add(mntmTiposDeRetencin);
+		
+		JMenuItem mntmPersonas = new JMenuItem("Personas");
+		mntmPersonas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (personaCrudFrm == null || personaCrudFrm.isClosed()) {
+					personaCrudFrm = new PersonaCrudFrm();
+					dpContenedor.add(personaCrudFrm);
+					personaCrudFrm.show();
+				}
+			}
+		});
+		mnMaestros.add(mntmPersonas);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

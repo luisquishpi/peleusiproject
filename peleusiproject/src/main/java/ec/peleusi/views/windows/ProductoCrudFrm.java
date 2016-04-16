@@ -26,6 +26,7 @@ import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.controllers.TipoGastoDeducibleController;
 import ec.peleusi.controllers.UnidadMedidaController;
+import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.models.entities.TarifaIce;
 import ec.peleusi.models.entities.TarifaIva;
 import ec.peleusi.models.entities.TipoGastoDeducible;
@@ -44,7 +45,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JPanel pnlDatosGenerales;
 	private JTextField txtCodigo;
 	private JTextField txtNombre;
-	private JTextField textField;
+	private JTextField txtCategoriaProducto;
 	private JTextField textField_1;
 	private JTextField txtStockMinimo;
 	private JButton btnBuscarCategoria;
@@ -60,6 +61,8 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JFormattedTextField txtContieneCompra;
 	private JFormattedTextField txtContieneVenta;
 	private JComboBox<TipoGastoDeducible> cmbTipoGastoDeducible;
+	private CategoriaProductoListModalFrm categoriaProductoListModalFrm = new CategoriaProductoListModalFrm();
+	private CategoriaProducto categoriaProducto;
 
 	public ProductoCrudFrm() {
 		setTitle("Productos");
@@ -193,11 +196,11 @@ public class ProductoCrudFrm extends JInternalFrame {
 		lblCategora.setBounds(10, 36, 68, 14);
 		pnlDatosGenerales.add(lblCategora);
 
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setBounds(82, 36, 478, 20);
-		pnlDatosGenerales.add(textField);
-		textField.setColumns(10);
+		txtCategoriaProducto = new JTextField();
+		txtCategoriaProducto.setEditable(false);
+		txtCategoriaProducto.setBounds(82, 36, 478, 20);
+		pnlDatosGenerales.add(txtCategoriaProducto);
+		txtCategoriaProducto.setColumns(10);
 
 		btnBuscarCategoria = new JButton("");
 		btnBuscarCategoria
@@ -332,6 +335,22 @@ public class ProductoCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		/* Para capturar desde el modal */
+		categoriaProductoListModalFrm.addConfirmListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				categoriaProducto = categoriaProductoListModalFrm.getCategoriaProducto();
+				if (categoriaProducto != null)
+					txtCategoriaProducto.setText(categoriaProducto.getNombre());
+			}
+		});
+		btnBuscarCategoria.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!categoriaProductoListModalFrm.isVisible()) {
+					categoriaProductoListModalFrm.setModal(true);
+					categoriaProductoListModalFrm.setVisible(true);
+				}
 			}
 		});
 	}
