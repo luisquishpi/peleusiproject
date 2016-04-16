@@ -14,11 +14,12 @@ import javax.persistence.Column;
 public class Persona {
 
 	public Persona() {
+		
 	}
 
 	public Persona(TipoIdentificacion tipoIdentificacion, String identificacion, String razonSocial,
-			TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona, Integer diasCredito,
-			Double porcentajeDescuento, String descripcion, String tipoPersona) {
+			TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona, String diasCredito,
+			Double porcentajeDescuento, String descripcion, Boolean tipoPersona) {
 		super();
 		this.id = null;
 		this.tipoIdentificacion = tipoIdentificacion;
@@ -53,19 +54,19 @@ public class Persona {
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private TipoCalificacionPersona tipoCalificacionPersona;
-	// idCalificacionPersona
+	//idCalificacionPersona
 
-	@Column(name = "diasCredito", unique = true, nullable = false, length = 50)
-	private Integer diasCredito;
+	@Column(name = "diasCredito", nullable = false, length = 50)
+	private String diasCredito;
 
-	@Column(name = "porcentajeDescuento", unique = true, nullable = false)
+	@Column(name = "porcentajeDescuento", nullable = false, length = 15)
 	private Double porcentajeDescuento;
 
-	@Column(name = "descripcion", unique = true, nullable = false)
+	@Column(name = "descripcion", nullable = false, length = 100)
 	private String descripcion;
 
-	@Column(name = "tipoPersona", unique = false, nullable = false)
-	private String tipoPersona;
+	@Column(name = "tipoPersona", nullable = false)
+	private Boolean tipoPersona;
 
 	public Integer getId() {
 		return id;
@@ -115,11 +116,11 @@ public class Persona {
 		this.tipoCalificacionPersona = tipoCalificacionPersona;
 	}
 
-	public Integer getDiasCredito() {
+	public String getDiasCredito() {
 		return diasCredito;
 	}
 
-	public void setDiasCredito(Integer diasCredito) {
+	public void setDiasCredito(String diasCredito) {
 		this.diasCredito = diasCredito;
 	}
 
@@ -139,17 +140,21 @@ public class Persona {
 		this.descripcion = descripcion;
 	}
 
-	public String getTipoPersona() {
+	public Boolean getTipoPersona() {
 		return tipoPersona;
 	}
 
-	public void setTipoPersona(String tipoPersona) {
+	public void setTipoPersona(Boolean tipoPersona) {
 		this.tipoPersona = tipoPersona;
 	}
-	@Override
-	
-	public String toString() {
-        return "Persona [id=" + id +",identificacion="+identificacion+", razonSocial=" + razonSocial+", tipoPrecio=" + tipoPrecio +", diasCredito="+diasCredito+", porcentajeDescuento="+porcentajeDescuento+", descripcion=" + descripcion +"]";
-    }
 
+	@Override
+
+	public String toString() {
+		return "Persona [id=" + id + ",identificacion=" + identificacion + ", razonSocial=" + razonSocial
+				+ ", tipoPrecio=" + tipoPrecio + ", diasCredito=" + diasCredito + ", porcentajeDescuento="
+				+ porcentajeDescuento + ", descripcion=" + descripcion + "]";
+	}
+
+	
 }

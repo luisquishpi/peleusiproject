@@ -1,5 +1,7 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.TipoPrecioDao;
 import ec.peleusi.models.entities.TipoPrecio;
@@ -14,7 +16,10 @@ public class TipoPrecioController {
 
 	public String createTipoPrecio(TipoPrecio tipoPrecio) {
 		return tipoPrecioDao.create(tipoPrecio);
-
+	}
+	
+	public List<TipoPrecio> tipoPrecioList() {
+		return tipoPrecioDao.findAll();
 	}
 
 }

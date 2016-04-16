@@ -42,7 +42,7 @@ public class TipoCalificacionPersona {
 	
 	@Override
 	public String toString() {
-		return "[id=" + id + ", nombre=" + nombre + "]";
+		return nombre;
 	}
 	}
 	

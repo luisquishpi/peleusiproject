@@ -4,26 +4,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import ec.peleusi.utils.TipoRetencionEnum;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
+
 
 @Entity
 @Table(name = "tiporetencion")
 
 public class TipoRetencion {
 
-	public TipoRetencion() {
-
-	}
-
-	public TipoRetencion(String codigo, String tipo, Double porcentaje, String descripcion) {
+	public TipoRetencion(String codigo, TipoRetencionEnum tipoRet, Double porcentaje, String descripcion) {
 		this.id = null;
 		this.codigo = codigo;
-		this.tipo = tipo;
+		this.tipoRet = tipoRet;
 		this.porcentaje = porcentaje;
 		this.descripcion = descripcion;
 	}
-	
+
+	public TipoRetencion() {
+
+	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -32,10 +33,10 @@ public class TipoRetencion {
 
 	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
-
-	@Column(name = "tipo", unique = true, nullable = false, length =50)
-	private String tipo;
-
+	
+	@Column(name = "tipo", nullable = false, length = 30)
+	private TipoRetencionEnum tipoRet;
+	
 	@Column(name = "porcentaje", nullable = false, length = 15)
 	private Double porcentaje;
 
@@ -58,14 +59,14 @@ public class TipoRetencion {
 		this.codigo = codigo;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public TipoRetencionEnum getTipoRet() {
+		return tipoRet;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setTipoRet(TipoRetencionEnum tipoRet) {
+		this.tipoRet = tipoRet;
 	}
-
+	
 	public Double getPorcentaje() {
 		return porcentaje;
 	}
@@ -84,6 +85,6 @@ public class TipoRetencion {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", tipo=" + tipo + "]";
+		return "[id=" + id + ", descripcion=" + descripcion + "]";
 	}
 }
