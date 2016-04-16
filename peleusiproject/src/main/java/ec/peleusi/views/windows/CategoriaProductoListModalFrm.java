@@ -35,6 +35,7 @@ public class CategoriaProductoListModalFrm extends javax.swing.JDialog {
 		crearControles();
 		crearEventos();
 		cargarArbolCategoriaProductos();
+		 btnAceptar.setEnabled(false);
 
 	}
 
@@ -63,7 +64,15 @@ public class CategoriaProductoListModalFrm extends javax.swing.JDialog {
 				DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 				if (nodo.getLevel() != 0) {
 					categoriaProducto = (CategoriaProducto) nodo.getUserObject();
-					System.out.println("Categoría seleccionado: " + categoriaProducto);
+					
+					if(categoriaProducto.getContieneProductos()==true)
+					{
+						btnAceptar.setEnabled(true);
+						System.out.println("Categoría seleccionado: " + categoriaProducto);
+					}
+					else btnAceptar.setEnabled(false);
+						
+					
 				}
 			}
 		});
