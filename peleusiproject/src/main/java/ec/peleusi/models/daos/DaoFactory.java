@@ -86,7 +86,7 @@ public class DaoFactory {
 		return new DetalleCompraDao();
 	}
 
-	public DireccionPersonaDao direccionPersonaDao() {
+	public DireccionPersonaDao getDireccionPersonaDao() {
 		return new DireccionPersonaDao();
 	}
 
