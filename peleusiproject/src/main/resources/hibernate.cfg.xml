@@ -48,6 +48,7 @@
 		<mapping class='ec.peleusi.models.entities.Persona' />
 		<mapping class='ec.peleusi.models.entities.Compra' />
 		<mapping class='ec.peleusi.models.entities.DetalleCompra' />
+		<mapping class='ec.peleusi.models.entities.DireccionPersona' />
 
 
 	</session-factory>
