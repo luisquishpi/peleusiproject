@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -14,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
-import ec.peleusi.controllers.PersonaControllers;
+import ec.peleusi.controllers.PersonaController;
 import ec.peleusi.controllers.TipoCalificacionPersonaController;
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.controllers.TipoPrecioController;
@@ -26,8 +25,9 @@ import ec.peleusi.utils.Formatos;
 import ec.peleusi.utils.TipoPersonaEnum;
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 
-public class PersonaCrudFrm extends JInternalFrame {
+public class PersonaCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -39,6 +39,7 @@ public class PersonaCrudFrm extends JInternalFrame {
 	private JTextField txtDiasCredito;
 	private JFormattedTextField txtPorcentajeDescuento;
 	private JTextField txtDescripcion;
+	private Persona personaRetorno;
 
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbTipoPrecio;
@@ -62,7 +63,11 @@ public class PersonaCrudFrm extends JInternalFrame {
 		CargarListaTipoCalificiacionPersona();
 		CargarListaTipoPrecio();
 	}
-
+	
+	public Persona getPersona() {
+		return personaRetorno;
+	}
+	
 	private void CargarComboTipoPersona() {
 		cmbTipoPersona.setModel(new DefaultComboBoxModel<TipoPersonaEnum>(TipoPersonaEnum.values()));
 
@@ -105,7 +110,7 @@ public class PersonaCrudFrm extends JInternalFrame {
 		boolean llenos = true;
 		if (txtIdentificacion.getText().isEmpty() || txtRazonSocial.getText().isEmpty()
 				|| txtDiasCredito.getText().isEmpty() || txtPorcentajeDescuento.getText().isEmpty()
-				|| txtDescripcion.getText().isEmpty())
+				)
 			llenos = false;
 		return llenos;
 	}
@@ -121,7 +126,7 @@ public class PersonaCrudFrm extends JInternalFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}											
 				Boolean tipoPersona = true;
@@ -130,14 +135,13 @@ public class PersonaCrudFrm extends JInternalFrame {
 				TipoCalificacionPersona tipoCalificacionPersona = (TipoCalificacionPersona) cmbTipoCalificacionPersona
 						.getSelectedItem();
 				Persona persona = new Persona(tipoIdentificacion, txtIdentificacion.getText(), txtRazonSocial.getText(),
-						tipoPrecio, tipoCalificacionPersona, txtDiasCredito.getText(),
+						tipoPrecio, tipoCalificacionPersona, Integer.parseInt(txtDiasCredito.getText()),
 						Double.parseDouble(txtPorcentajeDescuento.getText()), txtDescripcion.getText(), tipoPersona);
-				PersonaControllers personaControllers = new PersonaControllers();
+				PersonaController personaControllers = new PersonaController();
 				String error = personaControllers.createPersona(persona);
 
 				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -152,14 +156,13 @@ public class PersonaCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}
 
 	private void crearControles() {
-
-		setIconifiable(true);
-		setClosable(true);
+	
 		setBounds(100, 100, 611, 398);
 
 		JPanel panelCabecera = new JPanel();
@@ -270,4 +273,5 @@ public class PersonaCrudFrm extends JInternalFrame {
 		panelCuerpo.add(cmbTipoIdentificacion);
 
 	}
+
 }

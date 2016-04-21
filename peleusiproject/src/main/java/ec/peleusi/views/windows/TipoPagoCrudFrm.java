@@ -16,7 +16,6 @@ import javax.swing.JTextField;
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
 
-
 public class TipoPagoCrudFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -66,14 +65,14 @@ public class TipoPagoCrudFrm extends JInternalFrame {
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
-		
-		JLabel lblNombre = new JLabel("Nombre ");
-		lblNombre.setBounds(10, 39, 65, 14);
+
+		JLabel lblNombre = new JLabel("Nombre*");
+		lblNombre.setBounds(31, 39, 65, 14);
 		panelCuerpo.add(lblNombre);
-		
+
 		txtNombre = new JTextField();
 		txtNombre.setColumns(10);
-		txtNombre.setBounds(106, 36, 210, 20);
+		txtNombre.setBounds(106, 39, 210, 20);
 		panelCuerpo.add(txtNombre);
 	}
 
@@ -85,26 +84,26 @@ public class TipoPagoCrudFrm extends JInternalFrame {
 		});
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    if (!isCamposLlenos()){
-			    	JOptionPane.showMessageDialog(null, "No dejar campos vacíos");
-			    	return;
-			    }
-			    
-			  TipoPago tipoPago = new TipoPago(txtNombre.getText());
-			  TipoPagoController tipoPagoController = new TipoPagoController();
-			  String error = tipoPagoController.createTipoPago(tipoPago);
-						
-			  if (error == null) {
-				  JOptionPane.showMessageDialog(null, "Guardado Correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-				 
-				  limpiarCampos();
-			  }
-			  else {
-				  JOptionPane.showMessageDialog(null,  error, "Error", JOptionPane.ERROR_MESSAGE);
-				  limpiarCampos();
-			  }
+				if (!isCamposLlenos()) {
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				TipoPago tipoPago = new TipoPago(txtNombre.getText());
+				TipoPagoController tipoPagoController = new TipoPagoController();
+				String error = tipoPagoController.createTipoPago(tipoPago);
+
+				if (error == null) {
+					JOptionPane.showMessageDialog(null, "Guardado Correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+
+					limpiarCampos();
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+					limpiarCampos();
+				}
 			}
-			
+
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -112,19 +111,20 @@ public class TipoPagoCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}
 
 	private void limpiarCampos() {
-		txtNombre.setText(" ");		
+		txtNombre.setText(" ");
 	}
-	
+
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
 		if (txtNombre.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
-	
+
 }

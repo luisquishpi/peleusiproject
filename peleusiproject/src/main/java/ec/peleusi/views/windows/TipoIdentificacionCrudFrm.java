@@ -29,10 +29,9 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
-	private JCheckBox chkValida; 
- 
+	private JCheckBox chkValida;
+
 	int limitecaja = 15;
-	
 
 	public TipoIdentificacionCrudFrm() {
 		setTitle("Tipo Identificaciòn");
@@ -52,7 +51,8 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(
+				new ImageIcon(TipoIdentificacionCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
@@ -78,7 +78,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblNombre = new JLabel("Nombre");
+		lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(50, 70, 101, 14);
 		panelCuerpo.add(lblNombre);
 
@@ -87,7 +87,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
-		JLabel lblCodigo = new JLabel("Còdigo ");
+		JLabel lblCodigo = new JLabel("Còdigo*");
 		lblCodigo.setBounds(50, 29, 46, 14);
 		panelCuerpo.add(lblCodigo);
 
@@ -96,7 +96,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		txtCodigo.setBounds(106, 29, 141, 20);
 		panelCuerpo.add(txtCodigo);
 		txtCodigo.setColumns(15);
-		
+
 		chkValida = new JCheckBox("Validar Dato");
 		chkValida.setBounds(348, 69, 97, 23);
 		panelCuerpo.add(chkValida);
@@ -128,16 +128,17 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(), txtNombre.getText(), chkValida.isSelected());
+				TipoIdentificacion tipoIdentificacion = new TipoIdentificacion(txtCodigo.getText(), txtNombre.getText(),
+						chkValida.isSelected());
 				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
 				String error = tipoIdentificacionController.createTipoIdentificacion(tipoIdentificacion);
 				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
-					limpiarCampos();											
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE );
+					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -151,6 +152,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}
