@@ -18,7 +18,7 @@ public class Persona {
 	}
 
 	public Persona(TipoIdentificacion tipoIdentificacion, String identificacion, String razonSocial,
-			TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona, String diasCredito,
+			TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona, Integer diasCredito,
 			Double porcentajeDescuento, String descripcion, Boolean tipoPersona) {
 		super();
 		this.id = null;
@@ -57,7 +57,7 @@ public class Persona {
 	//idCalificacionPersona
 
 	@Column(name = "diasCredito", nullable = false, length = 50)
-	private String diasCredito;
+	private Integer diasCredito;
 
 	@Column(name = "porcentajeDescuento", nullable = false, length = 15)
 	private Double porcentajeDescuento;
@@ -116,11 +116,11 @@ public class Persona {
 		this.tipoCalificacionPersona = tipoCalificacionPersona;
 	}
 
-	public String getDiasCredito() {
+	public Integer getDiasCredito() {
 		return diasCredito;
 	}
 
-	public void setDiasCredito(String diasCredito) {
+	public void setDiasCredito(Integer diasCredito) {
 		this.diasCredito = diasCredito;
 	}
 
