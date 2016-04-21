@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -15,6 +16,9 @@ import javax.swing.JTextField;
 
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Usuario;
+import ec.peleusi.utils.TipoUsuarioEnum;
+
+import javax.swing.JComboBox;
 
 
 public class UsuarioCrudFrm extends JInternalFrame {
@@ -32,12 +36,16 @@ public class UsuarioCrudFrm extends JInternalFrame {
 	private JLabel lblContrasenia;
 	private JTextField txtContrasenia;
 	private JLabel lblTipoUsuario;
-	private JTextField txtTipousuario;
+	private JComboBox <TipoUsuarioEnum> cmbTipoUsuario;
 
 	public UsuarioCrudFrm() {
 		setTitle("Usuario");
 		crearControles();
 		crearEventos();
+		cargarComboTipoUsuario();
+	}
+	private void cargarComboTipoUsuario(){
+		cmbTipoUsuario.setModel(new DefaultComboBoxModel<TipoUsuarioEnum>(TipoUsuarioEnum.values()));
 	}
 
 	private void crearControles() {
@@ -115,10 +123,9 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		lblTipoUsuario.setBounds(10, 186, 65, 14);
 		panelCuerpo.add(lblTipoUsuario);
 		
-		txtTipousuario = new JTextField();
-		txtTipousuario.setColumns(10);
-		txtTipousuario.setBounds(106, 183, 210, 20);
-		panelCuerpo.add(txtTipousuario);
+		cmbTipoUsuario = new JComboBox<TipoUsuarioEnum>();
+		cmbTipoUsuario.setBounds(106, 183, 210, 20);
+		panelCuerpo.add(cmbTipoUsuario);
 	}
 
 	private void crearEventos() {
@@ -130,11 +137,12 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			    if (!isCamposLlenos()){
-			    	JOptionPane.showMessageDialog(null, "No dejar campos vacíos");
+			    	JOptionPane.showMessageDialog(null, "No hay datos para grabar");
 			    	return;
 			    }
-			    
-			  Usuario usuario = new Usuario(txtNombre.getText(), txtApellido.getText(), txtUsuario.getText(), txtContrasenia.getText(), txtTipousuario.getText());
+			   
+			  TipoUsuarioEnum tipoUsuario = (TipoUsuarioEnum) cmbTipoUsuario.getSelectedItem(); 
+			  Usuario usuario = new Usuario(txtNombre.getText(), txtApellido.getText(), txtUsuario.getText(), txtContrasenia.getText(), tipoUsuario);
 			  UsuarioController usuarioController = new UsuarioController();
 			  String error = usuarioController.createUsuario(usuario);
 			  
@@ -163,7 +171,6 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		txtNombre.setText(" ");
 		txtApellido.setText("");
 		txtUsuario.setText(" ");
-		txtTipousuario.setText("");
 		txtContrasenia.setText("");
 		txtNombre.requestFocus();
 		
@@ -171,9 +178,8 @@ public class UsuarioCrudFrm extends JInternalFrame {
 	
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtNombre.getText().isEmpty())
+		if (txtNombre.getText().isEmpty() || txtApellido.getText().isEmpty() || txtUsuario.getText().isEmpty() || txtContrasenia.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
-	
 }

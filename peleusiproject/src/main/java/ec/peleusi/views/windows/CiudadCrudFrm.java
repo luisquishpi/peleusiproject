@@ -87,6 +87,7 @@ public class CiudadCrudFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No deje campos vacíos");
 					return;
 				}
+				
 				Ciudad ciudad = new Ciudad(txtNombre.getText());
 				CiudadController paisController = new CiudadController();
 				String error = paisController.createCiudad(ciudad);
