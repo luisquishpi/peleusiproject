@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-//import ec.peleusi.utils.TipoRetencionEnum;
 import ec.peleusi.utils.TipoUsuarioEnum;
 
 
@@ -45,7 +44,7 @@ public class Usuario {
 	
 	@Column (name = "usuario", unique = true, nullable = false)
 	//@Column(name = "nombre", unique = true, nullable = false, length = 50)
-	private String nombre;
+	//private String nombre;
 	private String usuario;
 	
 	@Column (name = "contrasenia", nullable = false)

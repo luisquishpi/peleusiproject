@@ -147,7 +147,7 @@ public class UsuarioCrudFrm extends JInternalFrame {
 			  String error = usuarioController.createUsuario(usuario);
 			  
 			  if(error == null){
-				  JOptionPane.showMessageDialog(null, "Guardado Bien","Exito", JOptionPane.ERROR_MESSAGE);
+				  JOptionPane.showMessageDialog(null, "Guardado Bien","Exito", JOptionPane.PLAIN_MESSAGE);
 				  limpiarCampos();
 			  }
 			  else{
