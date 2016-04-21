@@ -30,7 +30,7 @@ public class TipoPrecio {
 	@Column(name = "nombre", unique = true, nullable = false, length = 50)
 	private String nombre;
 
-	@Column(name = "Porcentaje", unique = true, nullable = false, length = 10)
+	@Column(name = "Porcentaje", nullable = false, length = 10)
 	private Double porcentaje;
 
 	public Integer getId() {

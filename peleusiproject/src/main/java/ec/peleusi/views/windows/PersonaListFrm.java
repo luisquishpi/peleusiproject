@@ -180,9 +180,7 @@ public class PersonaListFrm extends JInternalFrame {
 			}
 		});
 		btnEditar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
+			public void actionPerformed(ActionEvent e) {	
 				
 				
 				
@@ -190,34 +188,10 @@ public class PersonaListFrm extends JInternalFrame {
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				/*PersonaController personaController = new PersonaController();
-				int fila=tablaPersona.getSelectedRow();
-				int idPersona = (Integer) modelo.getValueAt(fila, 0);
-				try {
-					personaController.delete(idPersona);
-				} catch (Exception ex) {
-					try {
-						TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-						Persona personaRemove = new Persona();
-						personaRemove.setId(idPersona);
-						boolean retorno = tipoIdentificacionController.deletePersonaPorIdPersona(personaRemove);
-						if (retorno == true) {
-							System.out.println("Eliminado precios");
-							personaController.delete(idPersona);
-							modelo.removeRow(fila);
-							modelo.fireTableDataChanged();
-							System.out.println("Eliminado producto");
-							//y si esta relacionado con otras entidades? ya no se elimina el producto pero quedó sin precios
-							//ERROR!!
-						}
-					} catch (Exception ex2) {
-						System.out.println("Error1: " + ex + "Error2: " + ex2);
-					}
-
-				}*/
-			}			
-		});		
+			public void actionPerformed(ActionEvent e) {	
+				
+			}
+						});		
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
