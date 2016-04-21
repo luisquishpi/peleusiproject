@@ -12,16 +12,55 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import ec.peleusi.utils.UnidadMedidaPesoEnum;
+
 @Entity
 @Table(name = "producto")
 public class Producto {
+
+	
+	public Producto() {
+		super();
+	}
+	
+
+	public Producto(String codigo, String nombre, Double peso, UnidadMedidaPesoEnum unidadMedidaPeso, Double costo, byte[] foto,
+			Boolean esDeducible, TipoGastoDeducible tipoGastoDeducible, Boolean sePuedeFraccionar,
+			Boolean manejaInventario, Double stock, Double stockMinimo, Date fechaActualizacion,
+			CategoriaProducto categoriaProducto, TarifaIva tarifaIva, TarifaIce tarifaIce,
+			UnidadMedida unidadMedidaCompra, Double cantidadUnidadMedidaCompra, UnidadMedida unidadMedidaVenta,
+			Double cantidadUnidadMedidaVenta) {
+		super();
+		this.id=null;
+		this.codigo = codigo;
+		this.nombre = nombre;
+		this.peso = peso;
+		this.unidadMedidaPeso = unidadMedidaPeso;
+		this.costo = costo;
+		this.foto = foto;
+		this.esDeducible = esDeducible;
+		this.tipoGastoDeducible = tipoGastoDeducible;
+		this.sePuedeFraccionar = sePuedeFraccionar;
+		this.manejaInventario = manejaInventario;
+		this.stock = stock;
+		this.stockMinimo = stockMinimo;
+		this.fechaActualizacion = fechaActualizacion;
+		this.categoriaProducto = categoriaProducto;
+		this.tarifaIva = tarifaIva;
+		this.tarifaIce = tarifaIce;
+		this.unidadMedidaCompra = unidadMedidaCompra;
+		this.cantidadUnidadMedidaCompra = cantidadUnidadMedidaCompra;
+		this.unidadMedidaVenta = unidadMedidaVenta;
+		this.cantidadUnidadMedidaVenta = cantidadUnidadMedidaVenta;
+	}
+
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "codigo", nullable = false, length = 50)
+	@Column(name = "codigo", unique = true, nullable = false, length = 50)
 	private String codigo;
 
 	@Column(name = "nombre", nullable = false, length = 250)
@@ -30,13 +69,13 @@ public class Producto {
 	@Column(name = "peso", nullable = false)
 	private Double peso = 0.0;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private UnidadMedida unidadMedidaPeso;
+	@Column(name = "unidadmedidapeso", nullable = false)
+	private UnidadMedidaPesoEnum unidadMedidaPeso;
 
 	@Column(name = "costo", nullable = false)
 	private Double costo = 0.0;
 
-	@Column(name = "foto", nullable = false, length = 16777215)
+	@Column(name = "foto", nullable = true, length = 16777215)
 	private byte[] foto;
 
 	@Column(name = "esdeducible", nullable = false)
@@ -113,11 +152,11 @@ public class Producto {
 		this.peso = peso;
 	}
 
-	public UnidadMedida getUnidadMedidaPeso() {
+	public UnidadMedidaPesoEnum getUnidadMedidaPeso() {
 		return unidadMedidaPeso;
 	}
 
-	public void setUnidadMedidaPeso(UnidadMedida unidadMedidaPeso) {
+	public void setUnidadMedidaPeso(UnidadMedidaPesoEnum unidadMedidaPeso) {
 		this.unidadMedidaPeso = unidadMedidaPeso;
 	}
 
