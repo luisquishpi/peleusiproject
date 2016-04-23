@@ -75,7 +75,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblNombre = new JLabel("Nombre");
+		lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(50, 70, 101, 14);
 		panelCuerpo.add(lblNombre);
 
@@ -84,11 +84,11 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
-		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		JLabel lblPorcentaje = new JLabel("Porcentaje*");
 		lblPorcentaje.setBounds(50, 112, 85, 14);
 		panelCuerpo.add(lblPorcentaje);
 
-		JLabel lblCodigo = new JLabel("Còdigo ");
+		JLabel lblCodigo = new JLabel("Còdigo*");
 		lblCodigo.setBounds(50, 29, 46, 14);
 		panelCuerpo.add(lblCodigo);
 
@@ -131,7 +131,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				TarifaIce tarifaIce = new TarifaIce(txtCodigo.getText(), txtNombre.getText(),
@@ -140,7 +140,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 				String error = tarifaIceController.createTarifaIce(tarifaIce);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -155,6 +155,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}

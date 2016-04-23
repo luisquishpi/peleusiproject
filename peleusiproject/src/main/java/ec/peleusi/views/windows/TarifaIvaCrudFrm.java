@@ -76,7 +76,7 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblNombre = new JLabel("Nombre");
+		lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(50, 70, 101, 14);
 		panelCuerpo.add(lblNombre);
 
@@ -85,11 +85,11 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
-		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		JLabel lblPorcentaje = new JLabel("Porcentaje*");
 		lblPorcentaje.setBounds(50, 112, 85, 14);
 		panelCuerpo.add(lblPorcentaje);
 
-		JLabel lblCodigo = new JLabel("Còdigo ");
+		JLabel lblCodigo = new JLabel("Còdigo*");
 		lblCodigo.setBounds(50, 29, 46, 14);
 		panelCuerpo.add(lblCodigo);
 
@@ -132,7 +132,7 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				TarifaIva tarifaIva = new TarifaIva(txtCodigo.getText(), txtNombre.getText(),
@@ -141,7 +141,7 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 				String error = tarifaIvaController.createTarifaIva(tarifaIva);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -156,6 +156,7 @@ public class TarifaIvaCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}

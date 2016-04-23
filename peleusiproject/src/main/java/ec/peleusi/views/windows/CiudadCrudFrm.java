@@ -87,15 +87,14 @@ public class CiudadCrudFrm extends JInternalFrame {
 					JOptionPane.showMessageDialog(null, "No deje campos vacíos");
 					return;
 				}
+				
 				Ciudad ciudad = new Ciudad(txtNombre.getText());
 				CiudadController paisController = new CiudadController();
 				String error = paisController.createCiudad(ciudad);
 				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
-				} 
-				else {
+				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 

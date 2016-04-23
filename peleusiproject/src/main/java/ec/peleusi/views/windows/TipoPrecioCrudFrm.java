@@ -104,7 +104,7 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				TipoPrecio tipoPrecio = new TipoPrecio(txtNombre.getText(), Double.parseDouble(txtPorcentaje.getText())); 
@@ -113,7 +113,7 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 				
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -129,6 +129,7 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}

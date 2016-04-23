@@ -34,7 +34,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	private JTextField txtCodigo;
 	private JTextField txtDescripcion;
 	private JFormattedTextField txtPorcentaje;
-	private JComboBox<TipoRetencionEnum> cmbTipoRet;
+	private JComboBox<TipoRetencionEnum> cmbTipoRetencion;
 	
 	int limitecaja = 15;	
 	
@@ -43,12 +43,12 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		setTitle("Tipo de Retenciòn");
 		crearControles();
 		crearEventos();
-		cargarComboTipoRet();
+		cargarComboTipoRetencion();
 		limpiarCampos();
 	}
 	
-	private void cargarComboTipoRet() {
-		cmbTipoRet.setModel(new DefaultComboBoxModel<TipoRetencionEnum>(TipoRetencionEnum.values()));
+	private void cargarComboTipoRetencion() {
+		cmbTipoRetencion.setModel(new DefaultComboBoxModel<TipoRetencionEnum>(TipoRetencionEnum.values()));
 
 	}
 
@@ -87,15 +87,15 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblTipo = new JLabel("Tipo");
+		lblTipo = new JLabel("Tipo*");
 		lblTipo.setBounds(20, 65, 91, 14);
 		panelCuerpo.add(lblTipo);
 
-		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		JLabel lblPorcentaje = new JLabel("Porcentaje*");
 		lblPorcentaje.setBounds(20, 135, 91, 14);
 		panelCuerpo.add(lblPorcentaje);
 
-		JLabel lblCodigo = new JLabel("Còdigo ");
+		JLabel lblCodigo = new JLabel("Còdigo*");
 		lblCodigo.setBounds(20, 30, 91, 14);
 		panelCuerpo.add(lblCodigo);
 
@@ -126,7 +126,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
 		
-		JLabel lblNombre = new JLabel("Nombre");
+		JLabel lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(20, 100, 91, 14);
 		panelCuerpo.add(lblNombre);
 		
@@ -135,9 +135,9 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		panelCuerpo.add(txtDescripcion);
 		txtDescripcion.setColumns(10);
 		
-		cmbTipoRet = new JComboBox<TipoRetencionEnum>();
-		cmbTipoRet.setBounds(96, 65, 113, 20);
-		panelCuerpo.add(cmbTipoRet);	
+		cmbTipoRetencion = new JComboBox<TipoRetencionEnum>();
+		cmbTipoRetencion.setBounds(96, 65, 113, 20);
+		panelCuerpo.add(cmbTipoRetencion);	
 		
 	}
 
@@ -152,19 +152,19 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No existen datos para grabar");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
 				String por = txtPorcentaje.getText();
-				TipoRetencionEnum tipoRet = (TipoRetencionEnum) cmbTipoRet.getSelectedItem();   				
+				TipoRetencionEnum tipoRet = (TipoRetencionEnum) cmbTipoRetencion.getSelectedItem();   				
 				TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(),tipoRet, Double.parseDouble(por.toString()), txtDescripcion.getText());
 				TipoRetencionController tipoRetencionController = new TipoRetencionController();
 				String error = tipoRetencionController.createTipoRetencion(tipoRetencion);
 				
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.PLAIN_MESSAGE);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -180,6 +180,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}
