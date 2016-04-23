@@ -19,7 +19,9 @@ public class Formatos {
     public AbstractFormatterFactory getDecimalFormat() {
         return decimalFormat;
     }
-
+    public AbstractFormatterFactory getNumericFormat() {
+        return numericFormat;
+    }
     public void setDecimalFormat(AbstractFormatterFactory decimalFormat) {
         this.decimalFormat = decimalFormat;
     }
@@ -41,5 +43,26 @@ public class Formatos {
             // formatter.setMaximum(9999.00);
             return formatter;
         }
+    };
+    private AbstractFormatterFactory numericFormat = new AbstractFormatterFactory() {
+        @Override
+        public AbstractFormatter getFormatter(JFormattedTextField tf) {
+           
+        	
+        	DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+            simbolos.setDecimalSeparator('.');
+            // simbolos.setGroupingSeparator(',');
+            NumberFormat format = new DecimalFormat("#", simbolos);
+            // NumberFormat format = DecimalFormat.getInstance();
+            format.setMinimumFractionDigits(0);
+            format.setMaximumFractionDigits(0);
+            format.setRoundingMode(RoundingMode.HALF_UP);
+            InternationalFormatter formatter = new InternationalFormatter(format);
+            formatter.setAllowsInvalid(false);
+            formatter.setMinimum(0);
+            // formatter.setMaximum(9999.00);
+            return formatter;
+        }
+        
     };
 }
