@@ -13,18 +13,16 @@ import javax.persistence.Column;
 @Table(name = "persona")
 public class Persona {
 
-	public Persona() {
-		
-	}
-
-	public Persona(TipoIdentificacion tipoIdentificacion, String identificacion, String razonSocial,
-			TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona, Integer diasCredito,
-			Double porcentajeDescuento, String descripcion, Boolean tipoPersona) {
+	public Persona(TipoIdentificacion tipoIdentificacion, String identificacion, String razonSocial, String direccion,
+			String telefono, TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona,
+			Integer diasCredito, Double porcentajeDescuento, String descripcion, Boolean tipoPersona) {
 		super();
-		this.id = null;
+		this.id = null; 
 		this.tipoIdentificacion = tipoIdentificacion;
 		this.identificacion = identificacion;
 		this.razonSocial = razonSocial;
+		this.direccion = direccion;
+		this.telefono = telefono;
 		this.tipoPrecio = tipoPrecio;
 		this.tipoCalificacionPersona = tipoCalificacionPersona;
 		this.diasCredito = diasCredito;
@@ -33,6 +31,11 @@ public class Persona {
 		this.tipoPersona = tipoPersona;
 	}
 
+	public Persona() {
+
+	}
+
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -48,13 +51,19 @@ public class Persona {
 	@Column(name = "razonSocial", unique = true, nullable = false, length = 50)
 	private String razonSocial;
 
+	@Column(name = "direccion", unique = true, nullable = false, length = 80)
+	private String direccion;
+
+	@Column(name = "telefono", unique = true, nullable = false, length = 20)
+	private String telefono;
+
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private TipoPrecio tipoPrecio;
 	// idTipoPrecio
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private TipoCalificacionPersona tipoCalificacionPersona;
-	//idCalificacionPersona
+	// idCalificacionPersona
 
 	@Column(name = "diasCredito", nullable = false, length = 50)
 	private Integer diasCredito;
@@ -98,6 +107,22 @@ public class Persona {
 
 	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
 	}
 
 	public TipoPrecio getTipoPrecio() {
@@ -156,5 +181,4 @@ public class Persona {
 				+ porcentajeDescuento + ", descripcion=" + descripcion + "]";
 	}
 
-	
 }

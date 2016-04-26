@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.PersonaController;
 import ec.peleusi.models.entities.Persona;
+import java.awt.Font;
 
 public class PersonaListFrm extends JInternalFrame {
 
@@ -31,7 +32,7 @@ public class PersonaListFrm extends JInternalFrame {
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
-	private JTable tablaPersona;
+	private JTable tblPersona;
 	private PersonaCrudFrm personaCrudFrm = new PersonaCrudFrm();
 
 	public PersonaListFrm() {
@@ -56,7 +57,7 @@ public class PersonaListFrm extends JInternalFrame {
 		};
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
-		tablaPersona = new JTable(modelo) {
+		tblPersona = new JTable(modelo) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -76,13 +77,13 @@ public class PersonaListFrm extends JInternalFrame {
 				}
 			}
 		};
-		tablaPersona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tablaPersona.setPreferredScrollableViewportSize(tablaPersona.getPreferredSize());
-		tablaPersona.getTableHeader().setReorderingAllowed(true);
-		tablaPersona.getColumnModel().getColumn(0).setPreferredWidth(100);
-		tablaPersona.getColumnModel().getColumn(1).setPreferredWidth(300);
-		tablaPersona.getColumnModel().getColumn(2).setPreferredWidth(150);
-		scrollPane.setViewportView(tablaPersona);
+		tblPersona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblPersona.setPreferredScrollableViewportSize(tblPersona.getPreferredSize());
+		tblPersona.getTableHeader().setReorderingAllowed(true);
+		tblPersona.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tblPersona.getColumnModel().getColumn(1).setPreferredWidth(300);
+		tblPersona.getColumnModel().getColumn(2).setPreferredWidth(150);
+		scrollPane.setViewportView(tblPersona);
 
 	}
 
@@ -109,7 +110,7 @@ public class PersonaListFrm extends JInternalFrame {
 		if (persona != null && persona.getId() != null) {
 			System.out.println("Captura Persona retornado: " + persona);
 			modelo.addRow(agregarDatosAFila(persona));
-			tablaPersona.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			tblPersona.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 	}
 
@@ -149,6 +150,7 @@ public class PersonaListFrm extends JInternalFrame {
 		panelCuerpo.setLayout(null);
 
 		txtBuscar = new JTextField();
+		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtBuscar.setBounds(10, 8, 446, 41);
 		panelCuerpo.add(txtBuscar);
 		txtBuscar.setColumns(10);
@@ -210,5 +212,4 @@ public class PersonaListFrm extends JInternalFrame {
 			}
 		});
 	}
-
 }

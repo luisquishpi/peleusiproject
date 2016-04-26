@@ -12,57 +12,55 @@ import javax.swing.text.InternationalFormatter;
 
 public class Formatos {
 
-    public Formatos() {
-        super();
-    }
+	static DecimalFormatSymbols simboloDecimal = new DecimalFormatSymbols();
 
-    public AbstractFormatterFactory getDecimalFormat() {
-        return decimalFormat;
-    }
-    public AbstractFormatterFactory getNumericFormat() {
-        return numericFormat;
-    }
-    public void setDecimalFormat(AbstractFormatterFactory decimalFormat) {
-        this.decimalFormat = decimalFormat;
-    }
+	public Formatos() {
+		super();
+		simboloDecimal.setDecimalSeparator('.');
+	}
 
-    private AbstractFormatterFactory decimalFormat = new AbstractFormatterFactory() {
-        @Override
-        public AbstractFormatter getFormatter(JFormattedTextField tf) {
-            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-            simbolos.setDecimalSeparator('.');
-            // simbolos.setGroupingSeparator(',');
-            NumberFormat format = new DecimalFormat("###.###", simbolos);
-            // NumberFormat format = DecimalFormat.getInstance();
-            format.setMinimumFractionDigits(2);
-            format.setMaximumFractionDigits(2);
-            format.setRoundingMode(RoundingMode.HALF_UP);
-            InternationalFormatter formatter = new InternationalFormatter(format);
-            formatter.setAllowsInvalid(false);
-            formatter.setMinimum(0.0);
-            // formatter.setMaximum(9999.00);
-            return formatter;
-        }
-    };
-    private AbstractFormatterFactory numericFormat = new AbstractFormatterFactory() {
-        @Override
-        public AbstractFormatter getFormatter(JFormattedTextField tf) {
-           
-        	
-        	DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-            simbolos.setDecimalSeparator('.');
-            // simbolos.setGroupingSeparator(',');
-            NumberFormat format = new DecimalFormat("#", simbolos);
-            // NumberFormat format = DecimalFormat.getInstance();
-            format.setMinimumFractionDigits(0);
-            format.setMaximumFractionDigits(0);
-            format.setRoundingMode(RoundingMode.HALF_UP);
-            InternationalFormatter formatter = new InternationalFormatter(format);
-            formatter.setAllowsInvalid(false);
-            formatter.setMinimum(0);
-            // formatter.setMaximum(9999.00);
-            return formatter;
-        }
-        
-    };
+	public AbstractFormatterFactory getDecimalFormat() {
+		return decimalFormat;
+	}
+
+	public AbstractFormatterFactory getIntegerFormat() {
+		return numericFormat;
+	}
+
+	public void setDecimalFormat(AbstractFormatterFactory decimalFormat) {
+		this.decimalFormat = decimalFormat;
+	}
+
+	private AbstractFormatterFactory decimalFormat = new AbstractFormatterFactory() {
+		@Override
+		public AbstractFormatter getFormatter(JFormattedTextField tf) {
+			NumberFormat format = new DecimalFormat("###.###", simboloDecimal);
+			format.setMinimumFractionDigits(2);
+			format.setMaximumFractionDigits(2);
+			format.setRoundingMode(RoundingMode.HALF_UP);
+			InternationalFormatter formatter = new InternationalFormatter(format);
+			formatter.setValueClass(Double.class);
+			formatter.setAllowsInvalid(false);
+			formatter.setMinimum(0.0);
+			formatter.setMaximum(Double.MAX_VALUE);
+			return formatter;
+		}
+	};
+	private AbstractFormatterFactory numericFormat = new AbstractFormatterFactory() {
+		@Override
+		public AbstractFormatter getFormatter(JFormattedTextField tf) {
+			NumberFormat format = new DecimalFormat("#");
+			format.setMinimumFractionDigits(0);
+			format.setMaximumFractionDigits(0);
+			format.setRoundingMode(RoundingMode.HALF_UP);
+			format.setGroupingUsed(false);
+			InternationalFormatter formatter = new InternationalFormatter(format);
+			formatter.setValueClass(Integer.class);
+			formatter.setAllowsInvalid(false);
+			formatter.setMinimum(0);
+			formatter.setMaximum(Integer.MAX_VALUE);
+			return formatter;
+		}
+
+	};
 }
