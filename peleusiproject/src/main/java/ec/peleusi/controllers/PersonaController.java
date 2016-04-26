@@ -12,6 +12,7 @@ import ec.peleusi.models.entities.Persona;
 import ec.peleusi.utils.HibernateUtil;
 
 
+
 public class PersonaController {
 	private PersonaDao personaDao;
 
@@ -42,9 +43,6 @@ public class PersonaController {
 		return personaDao.update(persona);
 	}
 
-	public boolean delete(Integer id) {
-		return personaDao.deleteById(id);
-	}
 	
 	public Persona getPersona(String codigo) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -88,5 +86,5 @@ public class PersonaController {
 		}
 		return null;
 	}
-	
+		
 }
