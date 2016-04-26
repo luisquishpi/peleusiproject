@@ -22,7 +22,7 @@ public class DetalleCompra {
 
 	public DetalleCompra(Compra compra, Producto producto, String codigoProducto, String nombreProducto,
 			Double costoProducto, Double valorDescuentoProducto, Double porcentajeDescuentoProducto,
-			Double porcentajeIvaProducto, Double valorIvaProducto, Double stock, Double subtotal) {
+			Double porcentajeIvaProducto, Double valorIvaProducto, Double stock, Double subtotal, Double porcentajeIceProducto, Double valorIceProducto) {
 		super();
 		this.id=null;
 		this.compra = compra;
@@ -36,6 +36,8 @@ public class DetalleCompra {
 		this.valorIvaProducto = valorIvaProducto;
 		Stock = stock;
 		this.subtotal = subtotal;
+		this.porcentajeIceProducto=porcentajeIceProducto;
+		this.valorIceProducto= valorIceProducto;
 	}
 
 	@Id
@@ -75,7 +77,14 @@ public class DetalleCompra {
 	
 	@Column(name = "subtotal", nullable = false)
 	private Double subtotal = 0.0;
+	
+	@Column(name = "porcentajeIceProducto", nullable = false)
+	private Double porcentajeIceProducto = 0.0;
+	
+	@Column(name = "valorIceProducto", nullable = false)
+	private Double valorIceProducto = 0.0;
 
+	
 	public Integer getId() {
 		return id;
 	}
@@ -171,5 +180,22 @@ public class DetalleCompra {
 	public void setSubtotal(Double subtotal) {
 		this.subtotal = subtotal;
 	}	
+	
+	public Double getPorcentajeIceProducto() {
+		return porcentajeIceProducto;
+	}
+
+	public void setPorcentajeIceProducto(Double porcentajeIceProducto) {
+		this.porcentajeIceProducto = porcentajeIceProducto;
+	}
+
+	public Double getValorIceProducto() {
+		return valorIceProducto;
+	}
+
+	public void setValorIceProducto(Double valorIceProducto) {
+		this.valorIceProducto = valorIceProducto;
+	}
+
 	
 	}

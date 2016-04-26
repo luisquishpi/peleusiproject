@@ -68,6 +68,7 @@ public class CompraCrudFrm extends JInternalFrame {
 	public Double totalFila=0.0;
 	public Double cantidadFila=1.0;
 	public Double porcentajeDescuentoFila=0.0;
+	public double valorIceFila=0.0;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnEliminar;
@@ -83,6 +84,8 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JDateChooser dtcFechaRegistro;
 	private JDateChooser dtcFechaEmision;
 	private JFormattedTextField txtDiasCredito;
+	private JButton btnBuscarPersona;
+	private PersonaListModalFrm personaListModalFrm = new PersonaListModalFrm();
 	
 	
 	public CompraCrudFrm() {
@@ -114,26 +117,40 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtMontoIce.setText("0.0");
 		txtMontoIva.setText("0.0");
 		txtTotal.setText("0.0");
+		txtDiasCredito.setText("0");
 		txtCodigoProducto.requestFocus();
 		
 	}
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Código", "Nombre","Cantidad","Precio Bruto","% Desc.","Descuento","Precio Neto", "Subtotal", "% Iva","Valor Iva","Total" };
+		Object[] cabecera = { "Id", "Código", "Nombre","Cantidad","Precio Bruto","% Desc.","Descuento","Precio Neto", "Subtotal", "% Iva","Valor Iva","Stock","% Ice","Valor Ice","Total"  };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 4 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10 || columnIndex == 11) {
+				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 4 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10 || columnIndex == 11 || columnIndex == 12 || columnIndex == 13 || columnIndex == 14) {
 					return false;
 				}
 				return true;
+			}
+			
+			@SuppressWarnings("unused")
+			public boolean isCellVisible(int rowIndex, int columnIndex)
+			{
+				if (columnIndex == 0 ) {
+					return false;
+				}
+				return true;
+				
 			}
 		};
 		tblProductos.setModel(modelo);
 		tblProductos.setPreferredScrollableViewportSize(tblProductos.getPreferredSize());
 		tblProductos.getTableHeader().setReorderingAllowed(true);
-		tblProductos.getColumnModel().getColumn(0).setPreferredWidth(1);
+		//tblProductos.getColumnModel().getColumn(0).setPreferredWidth(1);
+		tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
+		tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);	
 		tblProductos.getColumnModel().getColumn(1).setPreferredWidth(120);
 		tblProductos.getColumnModel().getColumn(2).setPreferredWidth(250);
 		tblProductos.getColumnModel().getColumn(3).setPreferredWidth(80);
@@ -143,8 +160,13 @@ public class CompraCrudFrm extends JInternalFrame {
 		tblProductos.getColumnModel().getColumn(7).setPreferredWidth(80);
 		tblProductos.getColumnModel().getColumn(8).setPreferredWidth(80);
 		tblProductos.getColumnModel().getColumn(9).setPreferredWidth(60);	
-		tblProductos.getColumnModel().getColumn(10).setPreferredWidth(80);
-		tblProductos.getColumnModel().getColumn(11).setPreferredWidth(80);				
+		tblProductos.getColumnModel().getColumn(10).setPreferredWidth(80);			
+		tblProductos.getColumnModel().getColumn(11).setMaxWidth(0);
+		tblProductos.getColumnModel().getColumn(11).setMinWidth(0);
+		tblProductos.getColumnModel().getColumn(11).setPreferredWidth(0);
+		tblProductos.getColumnModel().getColumn(12).setPreferredWidth(80);
+		tblProductos.getColumnModel().getColumn(13).setPreferredWidth(80);	
+		tblProductos.getColumnModel().getColumn(14).setPreferredWidth(80);		
 		scrollPane.setViewportView(tblProductos);
 		filaDatos = new Object[cabecera.length];
 		}
@@ -164,9 +186,11 @@ public class CompraCrudFrm extends JInternalFrame {
 				tblProductos.setValueAt(precioNetoFila, fila, 7);
 				tblProductos.setValueAt(subtotalFila, fila, 8);
 				valorIvaFila=subtotalFila*(Double.parseDouble(tblProductos.getValueAt(fila, 9).toString())/100);
+				valorIceFila=subtotalFila*(Double.parseDouble(tblProductos.getValueAt(fila, 12).toString())/100);
 				tblProductos.setValueAt(valorIvaFila, fila, 10);
-				Double totalIva= valorIvaFila+subtotalFila;
-				tblProductos.setValueAt(totalIva, fila, 11);
+				tblProductos.setValueAt(valorIvaFila, fila, 13);
+				Double totalIva= valorIvaFila+subtotalFila+valorIceFila;
+				tblProductos.setValueAt(totalIva, fila, 14);
 				calcularTotales() ;
 					
 			}
@@ -193,9 +217,11 @@ public class CompraCrudFrm extends JInternalFrame {
 				tblProductos.setValueAt(precioNetoFila, fila, 7);
 				tblProductos.setValueAt(subtotalFila, fila, 8);
 				valorIvaFila=subtotalFila*(Double.parseDouble(tblProductos.getValueAt(fila, 9).toString())/100);
+				valorIceFila=subtotalFila*(Double.parseDouble(tblProductos.getValueAt(fila, 12).toString())/100);
 				tblProductos.setValueAt(valorIvaFila, fila, 10);
-				Double totalIva= valorIvaFila+subtotalFila;
-				tblProductos.setValueAt(totalIva, fila, 11);		
+				tblProductos.setValueAt(valorIvaFila, fila, 13);
+				Double totalIva= valorIvaFila+subtotalFila+valorIceFila;
+				tblProductos.setValueAt(totalIva, fila, 14);		
 				calcularTotales() ;
 					
 			}
@@ -223,7 +249,12 @@ public class CompraCrudFrm extends JInternalFrame {
 			filaDatos[9] = 12;
 			valorIvaFila=subtotalFila*(Double.parseDouble(filaDatos[9].toString())/100);
 			filaDatos[10] = valorIvaFila;
-			filaDatos[11] = valorIvaFila+subtotalFila;
+			filaDatos[11] = 0;
+			filaDatos[12] = 0;
+			
+			valorIceFila=subtotalFila*(Double.parseDouble(filaDatos[12].toString())/100);
+			filaDatos[13] = valorIceFila;			
+			filaDatos[14] = valorIvaFila+subtotalFila+valorIceFila;			
 			modelo.addRow(filaDatos);
 			System.out.println(modelo);
 			tblProductos.setModel(modelo);	
@@ -254,7 +285,7 @@ public class CompraCrudFrm extends JInternalFrame {
 			
 			totalIva=totalIva+Double.parseDouble(modelo.getValueAt(i, 10).toString());
 			totalDescuento=totalDescuento+Double.parseDouble(modelo.getValueAt(i, 6).toString());
-			total=total+Double.parseDouble(modelo.getValueAt(i, 11).toString());			
+			total=total+Double.parseDouble(modelo.getValueAt(i, 14).toString());			
 			
 		}	
 		txtBaseImponibleIva0.setText(subtotalIva0.toString());
@@ -299,6 +330,28 @@ public class CompraCrudFrm extends JInternalFrame {
 				calcularFechaVencimiento();
 			}
 		});
+		
+		txtDiasCredito.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				calcularFechaVencimiento();
+			}
+		});
+		
+		btnBuscarPersona.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {			
+				
+						if (!personaListModalFrm.isVisible()) {
+							personaListModalFrm.setModal(true);
+							personaListModalFrm.setVisible(true);
+						}
+						}
+			});
+		
 	}
 	public void crearControles()
 	{		
@@ -340,7 +393,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Datos proveedor", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 255)));
-		panel_2.setBounds(480, 3, 670, 104);
+		panel_2.setBounds(10, 11, 646, 104);
 		panel_1.add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -380,7 +433,9 @@ public class CompraCrudFrm extends JInternalFrame {
 		lblDireccin.setBounds(199, 55, 94, 14);
 		panel_2.add(lblDireccin);
 		
-		JButton btnBuscarPersona = new JButton("");
+		btnBuscarPersona = new JButton("");
+		
+		
 		btnBuscarPersona.setVerticalAlignment(SwingConstants.TOP);
 		btnBuscarPersona.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/folder_user.png")));
 		btnBuscarPersona.setBounds(165, 31, 24, 26);
@@ -389,7 +444,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		JPanel panel_3 = new JPanel();
 		panel_3.setLayout(null);
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Datos factura", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 255)));
-		panel_3.setBounds(10, 3, 460, 135);
+		panel_3.setBounds(666, 11, 525, 135);
 		panel_1.add(panel_3);
 		
 		txtEstablecimiento = new JTextField();
@@ -459,29 +514,30 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel_3.add(lblDiasCrdito);
 		
 		txtDiasCredito = new JFormattedTextField();
+		
 		txtDiasCredito.setBounds(10, 107, 71, 20);
 		txtDiasCredito.setFormatterFactory(new Formatos().getNumericFormat());
 		panel_3.add(txtDiasCredito);
 		
 		JLabel lblProducto = new JLabel("Producto:");
-		lblProducto.setBounds(490, 118, 70, 14);
+		lblProducto.setBounds(20, 126, 70, 14);
 		panel_1.add(lblProducto);
 		
 		txtCodigoProducto = new JTextField();
 		txtCodigoProducto.setPreferredSize(new Dimension(420, 38));
 		txtCodigoProducto.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtCodigoProducto.setBounds(566, 109, 441, 29);
+		txtCodigoProducto.setBounds(90, 117, 515, 29);
 		panel_1.add(txtCodigoProducto);
 		
 		btnBuscarProducto = new JButton("");
 		btnBuscarProducto.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/search_16.png")));
-		btnBuscarProducto.setBounds(1006, 109, 28, 29);
+		btnBuscarProducto.setBounds(605, 117, 28, 29);
 		panel_1.add(btnBuscarProducto);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 143, 926, 319);
+		scrollPane.setBounds(10, 154, 926, 308);
 		panel_1.add(scrollPane);
 		
 		tblProductos = new JTable();
@@ -489,68 +545,73 @@ public class CompraCrudFrm extends JInternalFrame {
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_4.setBounds(946, 218, 245, 244);
+		panel_4.setBounds(946, 157, 245, 312);
 		panel_1.add(panel_4);
 		panel_4.setLayout(null);
 		
 		JLabel lblBaseImponibleIva = new JLabel("Base Imp.  Iva 0%");
-		lblBaseImponibleIva.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblBaseImponibleIva.setForeground(Color.BLUE);
+		lblBaseImponibleIva.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblBaseImponibleIva.setBounds(10, 11, 201, 14);
 		panel_4.add(lblBaseImponibleIva);
 		
 		txtBaseImponibleIva0 = new JFormattedTextField();
 		txtBaseImponibleIva0.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtBaseImponibleIva0.setText("0");
-		txtBaseImponibleIva0.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtBaseImponibleIva0.setBounds(10, 26, 201, 20);
+		txtBaseImponibleIva0.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtBaseImponibleIva0.setBounds(10, 26, 201, 29);
 		panel_4.add(txtBaseImponibleIva0);
 		txtBaseImponibleIva0.setColumns(10);
 		txtBaseImponibleIva0.setFormatterFactory(new Formatos().getDecimalFormat());
 		
 		JLabel lblBaseImponibleDiferente = new JLabel("Base Imp.  Iva Diferente  0%");
-		lblBaseImponibleDiferente.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblBaseImponibleDiferente.setBounds(10, 48, 201, 14);
+		lblBaseImponibleDiferente.setForeground(Color.BLUE);
+		lblBaseImponibleDiferente.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblBaseImponibleDiferente.setBounds(10, 58, 225, 14);
 		panel_4.add(lblBaseImponibleDiferente);
 		
 		txtBaseImponibleIvaDiferente0 = new JFormattedTextField();
 		txtBaseImponibleIvaDiferente0.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtBaseImponibleIvaDiferente0.setText("0");
-		txtBaseImponibleIvaDiferente0.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtBaseImponibleIvaDiferente0.setBounds(10, 63, 201, 20);
+		txtBaseImponibleIvaDiferente0.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtBaseImponibleIvaDiferente0.setBounds(10, 74, 201, 29);
 		panel_4.add(txtBaseImponibleIvaDiferente0);
 		txtBaseImponibleIvaDiferente0.setColumns(10);
 		txtBaseImponibleIvaDiferente0.setFormatterFactory(new Formatos().getDecimalFormat());
 		
 		
 		JLabel lblMontoIva = new JLabel("Descuento");
-		lblMontoIva.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblMontoIva.setBounds(10, 83, 201, 14);
+		lblMontoIva.setForeground(Color.BLUE);
+		lblMontoIva.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblMontoIva.setBounds(10, 104, 201, 14);
 		panel_4.add(lblMontoIva);
 		
 		txtDescuento = new JFormattedTextField();
 		txtDescuento.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtDescuento.setText("0");
-		txtDescuento.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtDescuento.setBounds(10, 98, 201, 20);
+		txtDescuento.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtDescuento.setBounds(10, 119, 201, 29);
 		panel_4.add(txtDescuento);
 		txtDescuento.setColumns(10);
 		txtDescuento.setFormatterFactory(new Formatos().getDecimalFormat());
 		
 		JLabel lblMontoIce = new JLabel("Monto ICE");
-		lblMontoIce.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblMontoIce.setBounds(10, 120, 201, 14);
+		lblMontoIce.setForeground(Color.BLUE);
+		lblMontoIce.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblMontoIce.setBounds(10, 150, 201, 14);
 		panel_4.add(lblMontoIce);
 		
 		JLabel lblMontoIva_1 = new JLabel("Monto IVA");
-		lblMontoIva_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblMontoIva_1.setBounds(10, 157, 201, 14);
+		lblMontoIva_1.setForeground(Color.BLUE);
+		lblMontoIva_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblMontoIva_1.setBounds(10, 195, 201, 14);
 		panel_4.add(lblMontoIva_1);
 		
 		txtMontoIce = new JFormattedTextField();
 		txtMontoIce.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtMontoIce.setText("0");
-		txtMontoIce.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtMontoIce.setBounds(10, 135, 201, 20);
+		txtMontoIce.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtMontoIce.setBounds(10, 165, 201, 29);
 		panel_4.add(txtMontoIce);
 		txtMontoIce.setColumns(10);
 		txtMontoIce.setFormatterFactory(new Formatos().getDecimalFormat());
@@ -558,22 +619,23 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtMontoIva = new JFormattedTextField();
 		txtMontoIva.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtMontoIva.setText("0");
-		txtMontoIva.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtMontoIva.setBounds(10, 172, 201, 20);
+		txtMontoIva.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtMontoIva.setBounds(10, 211, 201, 29);
 		panel_4.add(txtMontoIva);
 		txtMontoIva.setColumns(10);
 		txtMontoIva.setFormatterFactory(new Formatos().getDecimalFormat());
 		
 		JLabel lblTotal = new JLabel("TOTAL");
-		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblTotal.setBounds(10, 194, 201, 14);
+		lblTotal.setForeground(Color.BLUE);
+		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTotal.setBounds(10, 242, 201, 14);
 		panel_4.add(lblTotal);
 		
 		txtTotal = new JFormattedTextField();
 		txtTotal.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtTotal.setText("0");
-		txtTotal.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txtTotal.setBounds(10, 209, 201, 20);
+		txtTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
+		txtTotal.setBounds(10, 258, 201, 29);
 		panel_4.add(txtTotal);
 		txtTotal.setColumns(10);
 		txtTotal.setFormatterFactory(new Formatos().getDecimalFormat());
