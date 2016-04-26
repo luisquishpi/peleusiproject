@@ -85,6 +85,6 @@ public class TipoRetencion {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", descripcion=" + descripcion + "]";
+		return "[id=" + id + ", descripcion=" + descripcion + ", porcentaje="+porcentaje+", tipo="+ tipoRet+"]";
 	}
 }

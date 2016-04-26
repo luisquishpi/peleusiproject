@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import ec.peleusi.utils.TipoUsuarioEnum;
+
 
 @Entity
 @Table(name = "usuario")
@@ -18,14 +20,14 @@ public class Usuario {
 		
 	}
 	
-	public Usuario(String nombres, String apellidos, String usuario, String contrasenia, String tipousuario){
+	public Usuario(String nombres, String apellidos, String usuario, String contrasenia, TipoUsuarioEnum tipoUsuario ){
 		super();
 		this.id=null;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
 		this.usuario = usuario;
 		this.contrasenia = contrasenia;
-		this.tipousuario= tipousuario;
+		this.tipousuario = tipoUsuario;
 		
 	}
 	
@@ -40,14 +42,16 @@ public class Usuario {
 	@Column (name = "apellidos", nullable = false)
 	private String apellidos;
 	
-	@Column (name = "usuario", nullable = false)
+	@Column (name = "usuario", unique = true, nullable = false)
+	//@Column(name = "nombre", unique = true, nullable = false, length = 50)
+	//private String nombre;
 	private String usuario;
 	
 	@Column (name = "contrasenia", nullable = false)
 	private String contrasenia;
 	
 	@Column (name = "tipousuario", nullable = false)
-	private String tipousuario;
+	private TipoUsuarioEnum tipousuario;
 
 	public Integer getId() {
 		return id;
@@ -89,11 +93,11 @@ public class Usuario {
 		this.contrasenia = contrasenia;
 	}
 
-	public String getTipousuario() {
+	public TipoUsuarioEnum geTipoUsuario(){
 		return tipousuario;
 	}
-
-	public void setTipousuario(String tipousuario) {
+	
+	public void  settipousuario(TipoUsuarioEnum tipousuario){
 		this.tipousuario = tipousuario;
 	}
 	
