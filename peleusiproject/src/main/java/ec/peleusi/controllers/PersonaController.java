@@ -12,6 +12,7 @@ import ec.peleusi.models.entities.Persona;
 import ec.peleusi.utils.HibernateUtil;
 
 
+
 public class PersonaController {
 	private PersonaDao personaDao;
 
@@ -42,29 +43,11 @@ public class PersonaController {
 		return personaDao.update(persona);
 	}
 
-	public boolean delete(Integer id) {
-		return personaDao.deleteById(id);
-	}
 	
-	public Persona getPersona(String codigo) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		try {
-			session.beginTransaction();
-			Query query = session.createQuery("from Persona T WHERE T.codigo = :codigo");
-			query.setParameter("codigo", codigo);
-			if (!query.list().isEmpty()) {
-				return (Persona) query.list().get(0);
-			}
-			session.getTransaction().commit();
-		} catch (HibernateException e) {
-			if (session.getTransaction() != null)
-				e.printStackTrace();
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
-		return null;
+	public Persona getPersonaIdentificacion(String identificacion)
+	{
+		return personaDao.getPersonaIdentificacion(identificacion);		
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -87,6 +70,6 @@ public class PersonaController {
 			}
 		}
 		return null;
-	}
-	
+		}
+		
 }

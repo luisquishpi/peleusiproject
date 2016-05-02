@@ -11,55 +11,63 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table (name = "direccionPersona")
+@Table(name = "direccionPersona")
 
 public class DireccionPersona {
 
-	public DireccionPersona() {
-		
-	}
-
-	public DireccionPersona(Persona persona, String direccion, String telefono, String celular, String mail,
-			Ciudad cuidad, String codigoPostal) {
+	public DireccionPersona(Persona persona, String nombre, String direccion, String telefono, String celular,
+			String mail, Ciudad cuidad, String codigoPostal, Boolean porDefecto) {
 		super();
 		this.id = null;
 		this.persona = persona;
+		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.celular = celular;
 		this.mail = mail;
 		this.cuidad = cuidad;
 		this.codigoPostal = codigoPostal;
+		this.porDefecto = porDefecto;
 	}
 
-	@Id 
+	public DireccionPersona() {
+
+	}
+
+	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private Persona persona;
 	// idPersona
-	
+
+	@Column(name = "nombre", nullable = false, length = 50)
+	private String nombre;
+
 	@Column(name = "direccion", unique = true, nullable = false, length = 50)
 	private String direccion;
-	
-	@Column (name = "telefono", unique = true, nullable = false, length = 20)
+
+	@Column(name = "telefono", unique = true, nullable = false, length = 20)
 	private String telefono;
-		
-	@Column (name = "celular", length = 15)
+
+	@Column(name = "celular", length = 15)
 	private String celular;
-	
-	@Column (name = "mail", length = 40)
+
+	@Column(name = "mail", length = 40)
 	private String mail;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private Ciudad cuidad;
 	// idCiudad
-	
-	@Column (name = "codigoPostal", length = 30)
+
+	@Column(name = "codigoPostal", length = 30)
 	private String codigoPostal;
-	
+
+	@Column(name = "porDefecto", nullable = false)
+	private Boolean porDefecto;
+
 	public Integer getId() {
 		return id;
 	}
@@ -74,6 +82,14 @@ public class DireccionPersona {
 
 	public void setPersona(Persona persona) {
 		this.persona = persona;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public String getDireccion() {
@@ -123,12 +139,19 @@ public class DireccionPersona {
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
 	}
-	
+
+	public Boolean getPorDefecto() {
+		return porDefecto;
+	}
+
+	public void setPorDefecto(Boolean porDefecto) {
+		this.porDefecto = porDefecto;
+	}
+
 	@Override
-	
+
 	public String toString() {
-		return "DireccionPersona [id=" + id + ",direccion=" + direccion + ", telefono=" + telefono
-				+ ", celular=" + celular + ", mail=" + mail + ", codigoPostal="
-				+ codigoPostal + "]";
+		return "Persona [id=" + id + ",nombre=" + nombre + ", direccion=" + direccion
+				+ ", telefono=" + telefono + "]";
 	}
 }
