@@ -30,12 +30,11 @@ public class TipoRetencionListFrm extends JInternalFrame{
 	private Object [] filaDatos;
 	private JScrollPane ScrollPane;
 	private TipoRetencionCrudFrm tipoRetencionCrudFrm = new TipoRetencionCrudFrm();
-	private JButton btnAgregar;
+
 	private JButton btnEditar;
 	private JButton btnEliminar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private TipoRetencion tipoRetencion;
 	private JButton btnBuscar;
 	private JTextField txtBuscar;
 	
@@ -61,7 +60,7 @@ public class TipoRetencionListFrm extends JInternalFrame{
 			}
 		};
 		filaDatos = new Object[cabecera.length];
-		cargarTabla();
+		//cargarTabla();
 		
 		tablaTipoRetencion = new JTable(modelo){
 			private static final long serialVersionUID = 1L;
@@ -87,11 +86,11 @@ public class TipoRetencionListFrm extends JInternalFrame{
 		tablaTipoRetencion.setPreferredScrollableViewportSize(tablaTipoRetencion.getPreferredSize());
 		tablaTipoRetencion.getTableHeader().setReorderingAllowed(true);
 		//tablaTipoRetencion.getColumn(0).setPreferredWidth(100);
-		tablaTipoRetencion.getColumnModel().getColumn(0).setPreferredWidth(100);
-		tablaTipoRetencion.getColumnModel().getColumn(1).setPreferredWidth(300);
+		tablaTipoRetencion.getColumnModel().getColumn(0).setPreferredWidth(40);
+		tablaTipoRetencion.getColumnModel().getColumn(1).setPreferredWidth(70);
 		tablaTipoRetencion.getColumnModel().getColumn(2).setPreferredWidth(250);
-		tablaTipoRetencion.getColumnModel().getColumn(3).setPreferredWidth(150);
-		tablaTipoRetencion.getColumnModel().getColumn(4).setPreferredWidth(150);
+		tablaTipoRetencion.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tablaTipoRetencion.getColumnModel().getColumn(4).setPreferredWidth(100);
 		ScrollPane.setViewportView(tablaTipoRetencion);
 		
 		
@@ -106,7 +105,7 @@ public class TipoRetencionListFrm extends JInternalFrame{
 	}
 	public void cargarTabla(){
 		TipoRetencionController tipoRetencionController = new TipoRetencionController();
-		List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList();
+		List <TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList();
 		for (TipoRetencion tipoRetencion: listaTipoRetencion){
 			modelo.addRow(agregarDatosAFila(tipoRetencion));			
 		}	
@@ -114,21 +113,12 @@ public class TipoRetencionListFrm extends JInternalFrame{
 		System.out.println("Captura Tipo Retencion retornado" +listaTipoRetencion);
 		
 	}
-	private void capturaYAgregaTipoRetencionATabla(){
-		TipoRetencion tipoRetencion = new TipoRetencion();
-		tipoRetencion = tipoRetencionCrudFrm.getTipoRetencion; //REVISAR AQUI
-		if(tipoRetencion != null && tipoRetencion.getId()!= null) {
-			System.out.println("Captura Tipo Retencion retornado" +tipoRetencion);
-			modelo.addRow(agregarDatosAFila(tipoRetencion));
-			tablaTipoRetencion.setRowSelectionInterval(modelo.getRowCount()-1, modelo.getRowCount() -1);
-			}
-	};
 	
 	
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 379);
+		setBounds(100, 100, 742, 379);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -138,22 +128,22 @@ public class TipoRetencionListFrm extends JInternalFrame{
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(122, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(262, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(406, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(546, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -181,12 +171,11 @@ public class TipoRetencionListFrm extends JInternalFrame{
 		
 		
 		
-
 		btnNuevo.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				if(!tipoRetencionCrudFrm.isVisible()){
-					//tipoRetencionCrudFrm.setModal(true);
+					tipoRetencionCrudFrm.setModal(true);
 					tipoRetencionCrudFrm.setVisible(true);
 					
 				}
@@ -204,7 +193,6 @@ public class TipoRetencionListFrm extends JInternalFrame{
 		btnEliminar.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 		});
@@ -212,7 +200,7 @@ public class TipoRetencionListFrm extends JInternalFrame{
 			
 			public void actionPerformed(ActionEvent e) {
 				TipoRetencionController tipoRetencionController= new TipoRetencionController();
-				List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList();
+				List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for(TipoRetencion tipoRetencion: listaTipoRetencion){
