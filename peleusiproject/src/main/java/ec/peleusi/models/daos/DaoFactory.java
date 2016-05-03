@@ -90,4 +90,8 @@ public class DaoFactory {
 		return new DireccionPersonaDao();
 	}
 
+	public SeteosDao getSeteosDao() {
+		return new SeteosDao();
+	}
+
 }
