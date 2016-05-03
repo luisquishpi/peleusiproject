@@ -15,16 +15,17 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.PersonaController;
+import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.models.entities.Persona;
-import java.awt.Font;
 
-public class PersonaListFrm extends JInternalFrame {
+public class PersonaListModalFrm extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
-	private JButton btnEditar;
+	private JButton btnAceptar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtBuscar;
@@ -34,22 +35,24 @@ public class PersonaListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblPersona;
 	private PersonaCrudFrm personaCrudFrm = new PersonaCrudFrm();
+	private Persona persona;
+	// private CompraCrudFrm compraCrudFrm= new CompraCrudFrm();
 
-	public PersonaListFrm() {
+	public PersonaListModalFrm() {
 		setTitle("Listado Persona");
-		crearControles();		
+		crearControles();
 		crearEventos();
 		crearTabla();
-	}	
+	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Identificaciòn", "Razòn Social", "Tipo Precio" };
+		Object[] cabecera = { "Id", "Identificación", "Razón Social", "Dirección", "Teléfono" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
+				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3 || columnIndex == 4) {
 					return false;
 				}
 				return true;
@@ -80,9 +83,15 @@ public class PersonaListFrm extends JInternalFrame {
 		tblPersona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblPersona.setPreferredScrollableViewportSize(tblPersona.getPreferredSize());
 		tblPersona.getTableHeader().setReorderingAllowed(true);
-		tblPersona.getColumnModel().getColumn(0).setPreferredWidth(100);
-		tblPersona.getColumnModel().getColumn(1).setPreferredWidth(300);
-		tblPersona.getColumnModel().getColumn(2).setPreferredWidth(150);
+
+		tblPersona.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblPersona.getColumnModel().getColumn(0).setMinWidth(0);
+		tblPersona.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+		tblPersona.getColumnModel().getColumn(1).setPreferredWidth(130);
+		tblPersona.getColumnModel().getColumn(2).setPreferredWidth(280);
+		tblPersona.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tblPersona.getColumnModel().getColumn(4).setPreferredWidth(100);
 		scrollPane.setViewportView(tblPersona);
 
 	}
@@ -91,7 +100,8 @@ public class PersonaListFrm extends JInternalFrame {
 		filaDatos[0] = persona.getId();
 		filaDatos[1] = persona.getIdentificacion();
 		filaDatos[2] = persona.getRazonSocial();
-		filaDatos[3] = persona.getTipoPrecio().getNombre();
+		filaDatos[3] = persona.getDireccion();
+		filaDatos[4] = persona.getTelefono();
 		return filaDatos;
 	}
 
@@ -115,54 +125,56 @@ public class PersonaListFrm extends JInternalFrame {
 	}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
-		setBounds(100, 100, 611, 379);
 
-		JPanel panelCabecera = new JPanel();
-		panelCabecera.setPreferredSize(new Dimension(200, 70));
-		panelCabecera.setBackground(Color.LIGHT_GRAY);
-		getContentPane().add(panelCabecera, BorderLayout.NORTH);
-		panelCabecera.setLayout(null);
-
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
-		panelCabecera.add(btnNuevo);
-
-		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
-		panelCabecera.add(btnEditar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
-
-		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
-		panelCabecera.add(btnCancelar);
+		setBounds(100, 100, 611, 448);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
 		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtBuscar.setBounds(10, 8, 446, 41);
 		panelCuerpo.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setIcon(new ImageIcon(PersonaListModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnBuscar.setBounds(466, 8, 119, 41);
 		panelCuerpo.add(btnBuscar);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
+		scrollPane.setBounds(10, 60, 575, 269);
 		panelCuerpo.add(scrollPane);
+		JPanel panelCabecera = new JPanel();
+		panelCabecera.setBounds(0, 340, 595, 70);
+		panelCuerpo.add(panelCabecera);
+		panelCabecera.setPreferredSize(new Dimension(200, 70));
+		panelCabecera.setBackground(Color.LIGHT_GRAY);
+		panelCabecera.setLayout(null);
+
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setIcon(new ImageIcon(PersonaListModalFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setBounds(376, 11, 130, 39);
+		panelCabecera.add(btnNuevo);
+
+		btnAceptar = new JButton("Aceptar");
+		btnAceptar.setIcon(new ImageIcon(PersonaListModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
+		btnAceptar.setBounds(96, 11, 130, 39);
+		panelCabecera.add(btnAceptar);
+
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar
+				.setIcon(new ImageIcon(PersonaListModalFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setBounds(236, 11, 130, 39);
+		panelCabecera.add(btnCancelar);
+	}
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void addConfirmListener(ActionListener listener) {
+		btnAceptar.addActionListener(listener);
 	}
 
 	private void crearEventos() {
@@ -181,28 +193,36 @@ public class PersonaListFrm extends JInternalFrame {
 				}
 			}
 		});
-		btnEditar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {	
-				
-				
-				
-				
+		btnAceptar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int fila = tblPersona.getSelectedRow();
+
+				 System.out.println(">>>> " + fila + "<<<<<");
+				if (fila != -1) {
+					persona = new Persona();
+					 persona.setId(Integer.parseInt(modelo.getValueAt(tblPersona.getSelectedRow(),
+					 0).toString()));
+					 persona.setIdentificacion(modelo.getValueAt(tblPersona.getSelectedRow(),
+					 1).toString());
+					 persona.setRazonSocial(modelo.getValueAt(tblPersona.getSelectedRow(),
+					 2).toString());
+					 persona.setDireccion(modelo.getValueAt(tblPersona.getSelectedRow(),
+					 3).toString());
+					 persona.setTelefono(modelo.getValueAt(tblPersona.getSelectedRow(),
+					 4).toString());
+					 System.out.println(">>>> " + persona + "<<<<<");
+				}
+				dispose();
 			}
 		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {	
-				
-			}
-						});		
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-
 		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {							
-				PersonaController personaController = new PersonaController();				
+			public void actionPerformed(ActionEvent arg0) {
+				PersonaController personaController = new PersonaController();
 				List<Persona> listaPersona = personaController.PersonaList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
@@ -212,4 +232,5 @@ public class PersonaListFrm extends JInternalFrame {
 			}
 		});
 	}
+
 }

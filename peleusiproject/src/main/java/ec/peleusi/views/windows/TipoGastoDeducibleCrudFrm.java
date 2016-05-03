@@ -88,15 +88,15 @@ public class TipoGastoDeducibleCrudFrm extends JInternalFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "No se puede dejar campos vacíos");
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				TipoGastoDeducible tipogastodeducible = new TipoGastoDeducible(txtNombre.getText());
 				TipoGastoDeducibleController tipoGastoDeducibleController = new TipoGastoDeducibleController();
 				String error = tipoGastoDeducibleController.createTipoGastoDeducible(tipogastodeducible);
 				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado en Forma Correcta", "Bien",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
+							JOptionPane.DEFAULT_OPTION);
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -111,6 +111,7 @@ public class TipoGastoDeducibleCrudFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
 		});
 	}

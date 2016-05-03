@@ -56,7 +56,7 @@ public class Formatos {
 			format.setGroupingUsed(false);
 			InternationalFormatter formatter = new InternationalFormatter(format);
 			formatter.setValueClass(Integer.class);
-			formatter.setAllowsInvalid(false);
+			//formatter.setAllowsInvalid(false);
 			formatter.setMinimum(0);
 			formatter.setMaximum(Integer.MAX_VALUE);
 			return formatter;

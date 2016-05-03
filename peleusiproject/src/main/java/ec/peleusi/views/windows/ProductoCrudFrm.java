@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,23 +30,34 @@ import javax.swing.JFileChooser;
 
 import java.awt.Panel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.controllers.TipoGastoDeducibleController;
+import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.controllers.UnidadMedidaController;
 import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.TarifaIce;
 import ec.peleusi.models.entities.TarifaIva;
 import ec.peleusi.models.entities.TipoGastoDeducible;
+import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.models.entities.UnidadMedida;
 import ec.peleusi.utils.Formatos;
 import ec.peleusi.utils.UnidadMedidaPesoEnum;
 
 import javax.swing.UIManager;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class ProductoCrudFrm extends JInternalFrame {
 
@@ -54,7 +66,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTabbedPane tabPanel;
+	private JTabbedPane tpnlProductos;
 	private JPanel pnlConfigPrecios;
 	private JPanel pnlDatosGenerales;
 	private JTextField txtCodigo;
@@ -64,8 +76,6 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JButton btnBuscarCategoria;
 	private JFormattedTextField txtPeso;
 	private JComboBox<UnidadMedidaPesoEnum> cmbUnidadMedidaPeso;
-	private JComboBox<TarifaIva> cmbIva;
-	private JComboBox<TarifaIce> cmbIce;
 	private JCheckBox chkSePuedeFraccionar;
 	private JCheckBox chkManejaInventario;
 	private JCheckBox chkEsDeducible;
@@ -79,6 +89,29 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JLabel lblFoto;
 	private JButton btnSeleccionar;
 	private JTextField txtImagen;
+	private JFormattedTextField txtCostoUnitario;
+	private JLabel lblPrecios;
+	private DefaultTableModel modelo;
+	private Object[] filaDatos;
+	private JTable tblPreciosUnitario;
+	private JTable tblPreciosLote;
+	List<TipoPrecio> listaTipoPrecio;
+	Double porcentaje = 0.0;
+	Double subtotal = 0.0;
+	Double iva = 0.0;
+	Double ice = 0.0;
+	Double total = 0.0;
+	Double utilidad = 0.0;
+	private TarifaIva tarifaIva = new TarifaIva();
+	private TarifaIce tarifaIce = new TarifaIce();
+	private JComboBox<TarifaIce> cmbIce;
+	private JComboBox<TarifaIva> cmbIva;
+	private JLabel label;
+	private JLabel label_1;
+	private JLabel lblCostoLote;
+	private JFormattedTextField txtCostoLote;
+	private JLabel lblPrecioDeCompra;
+	private JFormattedTextField txtCostoCompra;
 
 	public ProductoCrudFrm() {
 		setTitle("Productos");
@@ -89,6 +122,131 @@ public class ProductoCrudFrm extends JInternalFrame {
 		cargarComboTarifaIce();
 		cargarComboTipoGastoDeducible();
 		limpiarCampos();
+		crearTablaPreciosUnitario();
+		tarifaIva = (TarifaIva) cmbIva.getSelectedItem();
+		tarifaIce = (TarifaIce) cmbIce.getSelectedItem();
+		Double costoProducto = Double.parseDouble(txtCostoUnitario.getText());
+		cargarTablaPreciosUnitario(costoProducto, tarifaIva, tarifaIce);
+		/*
+		 * if (costoProducto != 0) { cargarTabla(costoProducto, tarifaIva,
+		 * tarifaIce); } else { tpnlProductos.setEnabledAt(1, false); }
+		 */
+	}
+
+	private void crearTablaPreciosUnitario() {
+		Object[] cabecera = { "Tipo Precio", "% Util.", "Subtotal", "ICE", "IVA", "Total", "Utilidad" };
+
+		modelo = new DefaultTableModel(null, cabecera) {
+			private static final long serialVersionUID = 1L;
+			/*@SuppressWarnings("rawtypes")
+			Class[] types = new Class[] { java.lang.String.class, java.lang.Double.class, java.lang.Double.class,
+					java.lang.Double.class, java.lang.Double.class, java.lang.Double.class };
+					*/
+			boolean[] canEdit = new boolean[] { false, true, false, false, false, true, false };
+
+			/*
+			 * @Override public boolean isCellEditable(int rowIndex, int
+			 * columnIndex) { if (columnIndex == 0 || columnIndex == 2 ||
+			 * columnIndex == 3 || columnIndex == 4 || columnIndex == 6) {
+			 * return false; } return true; }
+			 */
+
+			/*
+			 * @SuppressWarnings({ "unchecked", "rawtypes" })
+			 * 
+			 * @Override public Class getColumnClass(int columnIndex) { return
+			 * types[columnIndex]; }
+			 */
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit[columnIndex];
+			}
+		};
+		tblPreciosUnitario.setModel(modelo);
+		tblPreciosUnitario.getTableHeader().setReorderingAllowed(false);
+		tblPreciosUnitario.getColumnModel().getColumn(0).setPreferredWidth(130);
+		filaDatos = new Object[cabecera.length];
+
+	}
+
+	private void cargarTablaPreciosUnitario(Double costoProducto, TarifaIva tarifaIva, TarifaIce tarifaIce) {
+		TipoPrecioController tipoPrecioController = new TipoPrecioController();
+		listaTipoPrecio = tipoPrecioController.tipoPrecioList();
+		for (TipoPrecio tipoPrecio : listaTipoPrecio) {
+			porcentaje = tipoPrecio.getPorcentaje();
+			calcularFila(costoProducto, porcentaje, tarifaIva, tarifaIce);
+			filaDatos[0] = tipoPrecio.getNombre();
+			filaDatos[1] = porcentaje;
+			filaDatos[2] = subtotal;
+			filaDatos[3] = iva;
+			filaDatos[4] = ice;
+			filaDatos[5] = total;
+			filaDatos[6] = utilidad;
+			modelo.addRow(filaDatos);
+		}
+
+	}
+
+	private void calcularFila(Double costoProducto, Double porcentajeAplicar, TarifaIva tarifaIva,
+			TarifaIce tarifaIce) {
+		if (tarifaIva == null || tarifaIce == null)
+			return;
+		subtotal = (costoProducto * (porcentaje / 100)) + costoProducto;
+		ice = subtotal * (tarifaIce.getPorcentaje() / 100);
+		iva = (subtotal + ice) * (tarifaIva.getPorcentaje() / 100);
+		total = subtotal + ice + iva;
+		utilidad = subtotal - costoProducto;
+	}
+
+	private void calcularFilaInversa(Double total, TarifaIva tarifaIva, TarifaIce tarifaIce) {
+		Double subtotalConIva = total / ((tarifaIva.getPorcentaje() / 100) + 1);
+		iva = total - subtotalConIva;
+		Double subtotalConIce = subtotalConIva / ((tarifaIce.getPorcentaje() / 100) + 1);
+		ice = subtotalConIva - subtotalConIce;
+		subtotal = subtotalConIce;
+		Double costoProducto = Double.parseDouble(txtCostoUnitario.getText());
+		porcentaje = ((subtotal - costoProducto) / costoProducto) * 100;
+		utilidad = subtotal - costoProducto;
+	}
+
+	private void actualizarValoresTable(int fila) {
+		int inicio = 0;
+		if (fila == -1) {
+			fila = tblPreciosUnitario.getRowCount()-1;
+		} else {
+			inicio = fila;
+		}
+		for (int i = inicio; i <= fila; i++) {
+			porcentaje = Double.parseDouble(modelo.getValueAt(i, 1).toString());
+			tarifaIva = (TarifaIva) cmbIva.getSelectedItem();
+			tarifaIce = (TarifaIce) cmbIce.getSelectedItem();
+			calcularFila(Double.parseDouble(txtCostoUnitario.getText()), porcentaje, tarifaIva, tarifaIce);
+			modelo.setValueAt(subtotal, i, 2);
+			modelo.setValueAt(ice, i, 3);
+			modelo.setValueAt(iva, i, 4);
+			modelo.setValueAt(total, i, 5);
+			modelo.setValueAt(utilidad, i, 6);
+		}
+
+	}
+
+	private void actualizarValoresTableInversa(int fila) {
+		int inicio = 0;
+		if (fila == -1) {
+			fila = tblPreciosUnitario.getRowCount()-1;
+		} else {
+			inicio = fila;
+		}
+		for (int i = inicio; i <= fila; i++) {
+			total = Double.parseDouble(modelo.getValueAt(i, 5).toString());
+			calcularFilaInversa(total, (TarifaIva) cmbIva.getSelectedItem(), (TarifaIce) cmbIce.getSelectedItem());
+			modelo.setValueAt(porcentaje, i, 1);
+			modelo.setValueAt(subtotal, i, 2);
+			modelo.setValueAt(ice, i, 3);
+			modelo.setValueAt(iva, i, 4);
+			modelo.setValueAt(utilidad, i, 6);
+		}
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -105,6 +263,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		List<TarifaIce> listaTarifaIce;
 		listaTarifaIce = tarifaIceController.tarifaIceList();
 		cmbIce.setModel(new DefaultComboBoxModel(listaTarifaIce.toArray()));
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -113,6 +272,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		List<TarifaIva> listaTarifaIva;
 		listaTarifaIva = tarifaIvaController.tarifaIvaList();
 		cmbIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -160,12 +320,12 @@ public class ProductoCrudFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		tabPanel = new JTabbedPane(JTabbedPane.TOP);
-		tabPanel.setBounds(10, 11, 644, 289);
-		panelCuerpo.add(tabPanel);
+		tpnlProductos = new JTabbedPane(JTabbedPane.TOP);
+		tpnlProductos.setBounds(10, 11, 644, 289);
+		panelCuerpo.add(tpnlProductos);
 
 		pnlDatosGenerales = new JPanel();
-		tabPanel.addTab("Datos Generales", null, pnlDatosGenerales, null);
+		tpnlProductos.addTab("Datos Generales", null, pnlDatosGenerales, null);
 		pnlDatosGenerales.setLayout(null);
 
 		JLabel lblCdigo = new JLabel("Código*");
@@ -181,17 +341,17 @@ public class ProductoCrudFrm extends JInternalFrame {
 		pnlDatosGenerales.add(lblPeso);
 
 		chkEsDeducible = new JCheckBox("Es deducible");
-		chkEsDeducible.setBounds(455, 144, 161, 23);
+		chkEsDeducible.setBounds(455, 152, 161, 23);
 		pnlDatosGenerales.add(chkEsDeducible);
 
 		chkSePuedeFraccionar = new JCheckBox("Se puede fraccionar");
-		chkSePuedeFraccionar.setBounds(455, 92, 161, 23);
+		chkSePuedeFraccionar.setBounds(455, 100, 161, 23);
 		pnlDatosGenerales.add(chkSePuedeFraccionar);
 
 		chkManejaInventario = new JCheckBox("Maneja Inventario");
 		chkManejaInventario.setToolTipText(
 				"Ej: Los servicios no manejan inventarios porque su cantidad no tienes un stock fijo sino es ilimitado ");
-		chkManejaInventario.setBounds(455, 118, 161, 23);
+		chkManejaInventario.setBounds(455, 126, 161, 23);
 		pnlDatosGenerales.add(chkManejaInventario);
 
 		txtCodigo = new JTextField();
@@ -237,38 +397,14 @@ public class ProductoCrudFrm extends JInternalFrame {
 		txtStockMinimo.setColumns(10);
 
 		cmbTipoGastoDeducible = new JComboBox<TipoGastoDeducible>();
-		cmbTipoGastoDeducible.setBounds(455, 174, 161, 20);
+		cmbTipoGastoDeducible.setBounds(455, 182, 161, 20);
 		pnlDatosGenerales.add(cmbTipoGastoDeducible);
-
-		JPanel panel = new JPanel();
-		panel.setBounds(10, 92, 430, 57);
-		panel.setBorder(new TitledBorder(null, "Impuestos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-
-		pnlDatosGenerales.add(panel);
-		panel.setLayout(null);
-
-		cmbIce = new JComboBox<TarifaIce>();
-		cmbIce.setBounds(225, 21, 131, 20);
-		panel.add(cmbIce);
-
-		cmbIva = new JComboBox<TarifaIva>();
-		cmbIva.setBounds(41, 21, 131, 20);
-		panel.add(cmbIva);
-
-		JLabel lblIva = new JLabel("IVA*");
-		lblIva.setBounds(10, 24, 46, 14);
-		panel.add(lblIva);
-		lblIva.setHorizontalAlignment(SwingConstants.LEFT);
-
-		JLabel lblIce = new JLabel("ICE*");
-		lblIce.setBounds(194, 24, 46, 14);
-		panel.add(lblIce);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(
 				new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Medida en compra y Medida para la venta",
 						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(10, 156, 430, 86);
+		panel_1.setBounds(10, 96, 430, 154);
 		pnlDatosGenerales.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -277,53 +413,165 @@ public class ProductoCrudFrm extends JInternalFrame {
 		panel_1.add(lblSeCompraEn);
 
 		cmbUnidadMedidaCompra = new JComboBox<UnidadMedida>();
-		cmbUnidadMedidaCompra.setBounds(97, 22, 166, 20);
+		cmbUnidadMedidaCompra.setBounds(97, 22, 274, 20);
 		panel_1.add(cmbUnidadMedidaCompra);
 
 		JLabel lblContiene = new JLabel("Contiene*");
-		lblContiene.setBounds(273, 22, 62, 14);
+		lblContiene.setBounds(10, 48, 62, 14);
 		panel_1.add(lblContiene);
 
 		txtCantidadCompra = new JFormattedTextField();
 		txtCantidadCompra.setFormatterFactory(new Formatos().getDecimalFormat());
-		txtCantidadCompra.setBounds(345, 19, 75, 20);
+		txtCantidadCompra.setBounds(97, 50, 75, 20);
 		panel_1.add(txtCantidadCompra);
 
 		JLabel lblSeVendeEn = new JLabel("Se vende en*");
-		lblSeVendeEn.setBounds(10, 53, 88, 14);
+		lblSeVendeEn.setBounds(10, 82, 88, 14);
 		panel_1.add(lblSeVendeEn);
 
 		cmbUnidadMedidaVenta = new JComboBox<UnidadMedida>();
-		cmbUnidadMedidaVenta.setBounds(97, 50, 166, 20);
+		cmbUnidadMedidaVenta.setBounds(97, 79, 274, 20);
 		panel_1.add(cmbUnidadMedidaVenta);
 
 		JLabel lblContiene_1 = new JLabel("Contiene*");
-		lblContiene_1.setBounds(273, 50, 62, 14);
+		lblContiene_1.setBounds(10, 112, 62, 14);
 		panel_1.add(lblContiene_1);
 
 		txtCantidadVenta = new JFormattedTextField();
 		txtCantidadVenta.setFormatterFactory(new Formatos().getDecimalFormat());
-		txtCantidadVenta.setBounds(345, 47, 75, 20);
+		txtCantidadVenta.setBounds(97, 109, 75, 20);
 		panel_1.add(txtCantidadVenta);
+		
+		lblPrecioDeCompra = new JLabel("Costo de compra*");
+		lblPrecioDeCompra.setToolTipText("");
+		lblPrecioDeCompra.setBounds(185, 53, 111, 14);
+		panel_1.add(lblPrecioDeCompra);
+		
+		txtCostoCompra = new JFormattedTextField();
+		txtCostoCompra.setFormatterFactory(new Formatos().getDecimalFormat());
+		txtCostoCompra.setToolTipText("Precio sin impuestos");
+		txtCostoCompra.setBounds(296, 53, 75, 20);
+		DocumentListener documentListenerCostoCompra = new DocumentListener() {
+			public void changedUpdate(DocumentEvent documentEvent) {
+			}
+
+			public void insertUpdate(DocumentEvent documentEvent) {
+				printIt(documentEvent);
+			}
+
+			public void removeUpdate(DocumentEvent documentEvent) {
+			}
+
+			private void printIt(DocumentEvent documentEvent) {
+				txtCostoLote.setText(txtCostoCompra.getText());
+				Double costoUnitario=(Double.parseDouble(txtCostoCompra.getText())*Double.parseDouble(txtCantidadVenta.getText()))/Double.parseDouble(txtCantidadCompra.getText());
+				txtCostoUnitario.setText(costoUnitario.toString());
+				actualizarValoresTable(-1);
+			}
+		};
+		txtCostoCompra.getDocument().addDocumentListener(documentListenerCostoCompra);
+		panel_1.add(txtCostoCompra);
 
 		cmbUnidadMedidaPeso = new JComboBox<UnidadMedidaPesoEnum>();
 		cmbUnidadMedidaPeso.setBounds(178, 64, 161, 20);
 		pnlDatosGenerales.add(cmbUnidadMedidaPeso);
 
 		pnlConfigPrecios = new JPanel();
-		tabPanel.addTab("Configuración de precios", null, pnlConfigPrecios, null);
+		tpnlProductos.addTab("Configuración de precios", null, pnlConfigPrecios, null);
 		pnlConfigPrecios.setLayout(null);
 
-		JLabel label_2 = new JLabel("Costo");
-		label_2.setBounds(10, 14, 46, 14);
-		pnlConfigPrecios.add(label_2);
+		JLabel lblCostoUnitario = new JLabel("Costo Unitario");
+		lblCostoUnitario.setBounds(10, 45, 92, 14);
+		pnlConfigPrecios.add(lblCostoUnitario);
 
-		JFormattedTextField formattedTextField = new JFormattedTextField();
-		formattedTextField.setBounds(82, 11, 86, 20);
-		pnlConfigPrecios.add(formattedTextField);
+		txtCostoUnitario = new JFormattedTextField();
+		txtCostoUnitario.setEditable(false);
+		txtCostoUnitario.setFormatterFactory(new Formatos().getDecimalFormat());
+		txtCostoUnitario.setBounds(102, 42, 86, 20);
+		pnlConfigPrecios.add(txtCostoUnitario);
+
+		lblPrecios = new JLabel("Precios Unitarios");
+		lblPrecios.setBounds(10, 69, 164, 14);
+		pnlConfigPrecios.add(lblPrecios);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 86, 609, 57);
+		pnlConfigPrecios.add(scrollPane);
+
+		final CustomCellRenderer renderer = new CustomCellRenderer();
+		tblPreciosUnitario = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public TableCellRenderer getCellRenderer(int row, int column) {
+				return renderer;
+			}
+		};
+		CellEditorListener changeNotification = new CellEditorListener() {
+			public void editingStopped(ChangeEvent e) {
+				if (tblPreciosUnitario.getSelectedColumn() == 5) {
+					actualizarValoresTableInversa(tblPreciosUnitario.getSelectedRow());
+				} else {
+					actualizarValoresTable(tblPreciosUnitario.getSelectedRow());
+				}
+			}
+
+			public void editingCanceled(ChangeEvent arg0) {
+			}
+		};
+		tblPreciosUnitario.getDefaultEditor(String.class).addCellEditorListener(changeNotification);
+		scrollPane.setViewportView(tblPreciosUnitario);
+
+		JLabel lblPreciosPorLote = new JLabel("Precios por Lote");
+		lblPreciosPorLote.setBounds(10, 175, 103, 14);
+		pnlConfigPrecios.add(lblPreciosPorLote);
+
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 193, 609, 57);
+		pnlConfigPrecios.add(scrollPane_1);
+
+		tblPreciosLote = new JTable();
+		scrollPane_1.setViewportView(tblPreciosLote);
+		
+		lblCostoLote = new JLabel("Costo por Lote");
+		lblCostoLote.setBounds(10, 154, 92, 14);
+		pnlConfigPrecios.add(lblCostoLote);
+		
+		label = new JLabel("IVA*");
+		label.setBounds(10, 11, 46, 14);
+		pnlConfigPrecios.add(label);
+		label.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		cmbIva = new JComboBox<TarifaIva>();
+		cmbIva.setBounds(46, 11, 131, 20);
+		pnlConfigPrecios.add(cmbIva);
+		
+		cmbIce = new JComboBox<TarifaIce>();
+		cmbIce.setBounds(230, 11, 131, 20);
+		pnlConfigPrecios.add(cmbIce);
+		
+		label_1 = new JLabel("ICE*");
+		label_1.setBounds(199, 14, 46, 14);
+		pnlConfigPrecios.add(label_1);
+		
+		txtCostoLote = new JFormattedTextField();
+		txtCostoLote.setEditable(false);
+		txtCostoLote.setText("0");
+		txtCostoLote.setBounds(102, 154, 86, 20);
+		pnlConfigPrecios.add(txtCostoLote);
+		cmbIce.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actualizarValoresTable(-1);
+			}
+		});
+		cmbIva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actualizarValoresTable(-1);
+			}
+		});
 
 		Panel pnlOpcionales = new Panel();
-		tabPanel.addTab("Opcionales", null, pnlOpcionales, null);
+		tpnlProductos.addTab("Opcionales", null, pnlOpcionales, null);
 		pnlOpcionales.setLayout(null);
 
 		lblFoto = new JLabel("");
@@ -477,6 +725,9 @@ public class ProductoCrudFrm extends JInternalFrame {
 		chkEsDeducible.setSelected(false);
 		cmbTipoGastoDeducible.setVisible(false);
 		lblFoto.setIcon(new ImageIcon(ProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
+		txtCostoUnitario.setText("0");
+		txtCostoLote.setText("0");
+		txtCostoCompra.setText("0");
 		txtCodigo.requestFocus();
 	}
 
@@ -493,5 +744,20 @@ public class ProductoCrudFrm extends JInternalFrame {
 			llenos = false;
 		}
 		return llenos;
+	}
+
+	private class CustomCellRenderer extends DefaultTableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
+
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			Component rendererComp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+					column);
+			rendererComp.setForeground(Color.BLACK);
+			rendererComp.setBackground(Color.WHITE);
+			return rendererComp;
+		}
+
 	}
 }
