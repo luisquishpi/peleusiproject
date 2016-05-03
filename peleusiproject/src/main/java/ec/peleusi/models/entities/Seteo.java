@@ -11,17 +11,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "empresa")
+@Table(name = "seteos")
 
-public class Seteos {
+public class Seteo {
 
-	public Seteos() {
+	public Seteo() {
 		super();
 	}
 
-	public Seteos(TarifaIva tarifaIva, Integer numeroDecimales, Integer identificacionDecimal, Integer signoMoneda,
+	public Seteo(TarifaIva tarifaIva, Integer numeroDecimales, Integer identificacionDecimal, Integer signoMoneda,
 			Persona persona, Integer numeroItemsFactura, Double porcentajeServicioAdicional,
-			Boolean actualizacionAutomaticaPrecio, Integer tipoInvenatrio) {
+			Boolean actualizacionAutomaticaPrecio, Integer tipoInventario) {
 		this.id = null;
 		this.tarifaIva = tarifaIva;
 		this.numeroDecimales = numeroDecimales;
@@ -31,7 +31,7 @@ public class Seteos {
 		this.numeroItemsFactura = numeroItemsFactura;
 		this.porcentajeServicioAdicional = porcentajeServicioAdicional;
 		this.actualizacionAutomaticaPrecio = actualizacionAutomaticaPrecio;
-		this.tipoInvenatrio = tipoInvenatrio;
+		this.tipoInventario = tipoInventario;
 	}
 
 	public Integer getId() {
@@ -106,12 +106,12 @@ public class Seteos {
 		this.actualizacionAutomaticaPrecio = actualizacionAutomaticaPrecio;
 	}
 
-	public Integer getTipoInvenatrio() {
-		return tipoInvenatrio;
+	public Integer getTipoInventario() {
+		return tipoInventario;
 	}
 
-	public void setTipoInvenatrio(Integer tipoInvenatrio) {
-		this.tipoInvenatrio = tipoInvenatrio;
+	public void setTipoInventario(Integer tipoInvenatrio) {
+		this.tipoInventario = tipoInvenatrio;
 	}
 
 	@Id
@@ -144,6 +144,6 @@ public class Seteos {
 	private Boolean actualizacionAutomaticaPrecio;
 
 	@Column(name = "tipoIventario", nullable = true, length = 8)
-	private Integer tipoInvenatrio;
+	private Integer tipoInventario;
 
 }
