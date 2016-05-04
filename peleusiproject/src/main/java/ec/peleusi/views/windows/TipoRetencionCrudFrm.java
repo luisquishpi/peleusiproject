@@ -23,7 +23,7 @@ import ec.peleusi.utils.TipoRetencionEnum;
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
 
-public class TipoRetencionCrudFrm extends JInternalFrame {
+public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -36,7 +36,8 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	private JFormattedTextField txtPorcentaje;
 	private JComboBox<TipoRetencionEnum> cmbTipoRetencion;
 	
-	int limitecaja = 15;	
+	int limitecaja = 15;
+	public TipoRetencion getTipoRetencion;	
 	
 
 	public TipoRetencionCrudFrm() {
@@ -53,8 +54,7 @@ public class TipoRetencionCrudFrm extends JInternalFrame {
 	}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
+		
 		setBounds(100, 100, 611, 301);
 
 		JPanel panelCabecera = new JPanel();
