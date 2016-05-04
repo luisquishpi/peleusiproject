@@ -1,20 +1,25 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.SeteoDao;
 import ec.peleusi.models.entities.Seteo;
 
-
 public class SeteoController {
-	
-private SeteoDao seteosDao;
-	
+
+	private SeteoDao seteoDao;
+
 	public SeteoController() {
-		seteosDao = new DaoFactory().getSeteoDao();
+		seteoDao = new DaoFactory().getSeteoDao();
 	}
-	
-	public String createSeteos(Seteo seteos){
-		return seteosDao.create(seteos);
+
+	public String createSeteos(Seteo seteos) {
+		return seteoDao.create(seteos);
+	}
+
+	public List<Seteo> SeteoList() {
+		return seteoDao.findAll();
 	}
 
 }

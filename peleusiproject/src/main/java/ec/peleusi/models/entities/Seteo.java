@@ -12,16 +12,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "seteo")
-
 public class Seteo {
 
 	public Seteo() {
 		super();
 	}
 
-	public Seteo(TarifaIva tarifaIva, Integer numeroDecimales, Integer identificacionDecimal, Integer signoMoneda,
-			Persona persona, Integer numeroItemsFactura, Double porcentajeServicioAdicional,
-			Boolean actualizacionAutomaticaPrecio, Integer tipoInventario) {
+	public Seteo(TarifaIva tarifaIva, Integer numeroDecimales, String identificacionDecimal, String signoMoneda,
+			Persona persona, Integer numeroItemsFactura, Double porcentajeServicioAdicional, Integer tipoInventario) {
+		super();
 		this.id = null;
 		this.tarifaIva = tarifaIva;
 		this.numeroDecimales = numeroDecimales;
@@ -30,9 +29,37 @@ public class Seteo {
 		this.persona = persona;
 		this.numeroItemsFactura = numeroItemsFactura;
 		this.porcentajeServicioAdicional = porcentajeServicioAdicional;
-		this.actualizacionAutomaticaPrecio = actualizacionAutomaticaPrecio;
 		this.tipoInventario = tipoInventario;
 	}
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	private Integer id;
+
+	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
+	private TarifaIva tarifaIva;
+
+	@Column(name = "numeroDecimales", nullable = false)
+	private Integer numeroDecimales;
+
+	@Column(name = "identificacionDecimal", nullable = false, length = 8)
+	private String identificacionDecimal;
+
+	@Column(name = "signoMoneda", nullable = false, length = 8)
+	private String signoMoneda;
+
+	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
+	private Persona persona;
+
+	@Column(name = "numeroItemsFactura", nullable = true, length = 8)
+	private Integer numeroItemsFactura;
+
+	@Column(name = "porcentajeServicioAdicionalVenta", nullable = true, length = 8)
+	private Double porcentajeServicioAdicional;
+
+	@Column(name = "tipoIventario", nullable = true, length = 8)
+	private Integer tipoInventario;
 
 	public Integer getId() {
 		return id;
@@ -58,19 +85,19 @@ public class Seteo {
 		this.numeroDecimales = numeroDecimales;
 	}
 
-	public Integer getIdentificacionDecimal() {
+	public String getIdentificacionDecimal() {
 		return identificacionDecimal;
 	}
 
-	public void setIdentificacionDecimal(Integer identificacionDecimal) {
+	public void setIdentificacionDecimal(String identificacionDecimal) {
 		this.identificacionDecimal = identificacionDecimal;
 	}
 
-	public Integer getSignoMoneda() {
+	public String getSignoMoneda() {
 		return signoMoneda;
 	}
 
-	public void setSignoMoneda(Integer signoMoneda) {
+	public void setSignoMoneda(String signoMoneda) {
 		this.signoMoneda = signoMoneda;
 	}
 
@@ -98,52 +125,12 @@ public class Seteo {
 		this.porcentajeServicioAdicional = porcentajeServicioAdicional;
 	}
 
-	public Boolean getActualizacionAutomaticaPrecio() {
-		return actualizacionAutomaticaPrecio;
-	}
-
-	public void setActualizacionAutomaticaPrecio(Boolean actualizacionAutomaticaPrecio) {
-		this.actualizacionAutomaticaPrecio = actualizacionAutomaticaPrecio;
-	}
-
 	public Integer getTipoInventario() {
 		return tipoInventario;
 	}
 
-	public void setTipoInventario(Integer tipoInvenatrio) {
-		this.tipoInventario = tipoInvenatrio;
+	public void setTipoInventario(Integer tipoInventario) {
+		this.tipoInventario = tipoInventario;
 	}
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private Integer id;
-
-	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private TarifaIva tarifaIva;
-
-	@Column(name = "numeroDecimales", nullable = true, length = 8)
-	private Integer numeroDecimales;
-
-	@Column(name = "identificacionDecimal", nullable = true, length = 8)
-	private Integer identificacionDecimal;
-
-	@Column(name = "signoMoneda", nullable = true, length = 8)
-	private Integer signoMoneda;
-
-	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private Persona persona;
-
-	@Column(name = "numeroItemsFactura", nullable = true, length = 8)
-	private Integer numeroItemsFactura;
-
-	@Column(name = "porcentajeServicioAdicionalVenta", nullable = true, length = 8)
-	private Double porcentajeServicioAdicional;
-
-	@Column(name = "actualizacionAutomaticaPrecio", nullable = true, length = 1)
-	private Boolean actualizacionAutomaticaPrecio;
-
-	@Column(name = "tipoIventario", nullable = true, length = 8)
-	private Integer tipoInventario;
 
 }
