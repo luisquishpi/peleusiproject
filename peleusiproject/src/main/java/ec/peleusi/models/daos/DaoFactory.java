@@ -1,5 +1,7 @@
 package ec.peleusi.models.daos;
 
+import ec.peleusi.models.entities.Cliente;
+
 public class DaoFactory {
 	public static DaoFactory factory = null;
 
@@ -92,6 +94,9 @@ public class DaoFactory {
 
 	public SeteoDao getSeteoDao() {
 		return new SeteoDao();
+	}
+	public ClienteDao getClienteDao() {
+		return new ClienteDao();
 	}
 
 }
