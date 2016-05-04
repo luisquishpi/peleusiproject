@@ -93,12 +93,10 @@ public class SucursalCrudFrm extends JInternalFrame {
 			txtTelefono.setText("");
 			txtFax.setText("");
 			txtEmail.setText("");				
-			txtNombre.requestFocus();	
-			
+			txtNombre.requestFocus();				
 			
 		}	 
-	
-	
+		
 	public void crearEventos()
 	{
 		

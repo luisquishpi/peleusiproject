@@ -90,4 +90,20 @@ public class DaoFactory {
 		return new DireccionPersonaDao();
 	}
 
+	public SeteoDao getSeteoDao() {
+		return new SeteoDao();
+	}
+
+	public ClienteDao getClienteDao() {
+		return new ClienteDao();
+	}
+
+	public ProveedorDao getProveedorDao() {
+		return new ProveedorDao();
+	}
+
+	public DireccionProveedorDao getDireccionProveedorDao() {
+		return new DireccionProveedorDao();
+	}
+
 }

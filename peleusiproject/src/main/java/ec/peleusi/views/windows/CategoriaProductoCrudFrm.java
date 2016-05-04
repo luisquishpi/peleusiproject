@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -17,6 +18,9 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.controllers.CategoriaProductoController;
 import javax.swing.event.TreeSelectionListener;
@@ -86,7 +90,8 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		lblId.setText("0");
 		txtNombre.setText("");
 		chbxContieneProductos.setSelected(false);
-		chbxContieneProductos.setEnabled(true);		
+		// chbxContieneProductos.setEnabled(true);
+		chbxContieneProductos.setEnabled(false);
 		txtNombre.requestFocus();
 
 	}
@@ -106,25 +111,27 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		} else {
 			lblDepen.setText(lblId.getText());
 			txtDependencia.setText(txtNombre.getText());
+			System.out.println("opcion1" + txtNombre.getText());
 			txtDependencia.setText(nodo.toString());
+			System.out.println("opcion2 " + nodo.toString());
+		//	txtDependencia.setText(nodo.getParent().toString());
+			System.out.println("opcion3 " + nodo.getParent().toString());
 		}
-		
-		
-		
-	}	
 
+	}
+	
 	private void agregarNodoArbol(CategoriaProducto categoriaProducto) {
 		DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		model.insertNodeInto(new DefaultMutableTreeNode(categoriaProducto), nodo, model.getChildCount(nodo));
-
+		
 	}
 
 	private void actualizarNodoArbol(CategoriaProducto categoriaProducto) {
 		DefaultMutableTreeNode nodo = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 		nodo.setUserObject(categoriaProducto);
 		((DefaultTreeModel) tree.getModel()).nodeChanged(nodo);
-
+		System.out.println("raiz " + nodo.getParent());		
 	}
 
 	private void crearEventos() {
@@ -143,36 +150,25 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 						chbxContieneProductos.setEnabled(false);
 					} else {
 						chbxContieneProductos.setEnabled(true);
-					}
-
-					System.out.println("raiz " + nodo.getParent());
-					System.out.println("Cate: " + categoriaProducto);
-					System.out.println("Cate: " + nodo.getChildCount());
-					System.out.println("nivel: " + nodo);
-					
-
+					}				
 				}
 			}
 		});
 
 		chbxContieneProductos.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				
+
 				categoriaProducto.getContieneProductos();
 				System.out.println("raiz " + categoriaProducto.getContieneProductos());
-				
+
 				if (chbxContieneProductos.isSelected() == true) {
 					btnNuevo.setEnabled(false);
-					
-					
+
 				} else {
-					
-					if(categoriaProducto.getContieneProductos()==true)
-					{
+
+					if (categoriaProducto.getContieneProductos() == true) {
 						btnNuevo.setEnabled(false);
-					}
-					else
-					{
+					} else {
 						btnNuevo.setEnabled(true);
 					}
 				}
@@ -182,6 +178,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				verificarUbicacionNodoNuevo();
 				limpiarcampos();
+				btnGuardar.setText("Guardar");
 			}
 
 		});
@@ -199,6 +196,11 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 					if (categoriaProducto.getId() != 0) {
 						agregarNodoArbol(categoriaProducto);
 						limpiarcampos();
+					//	lblId.setText(categoriaProducto.getId().toString());
+						
+						JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
+								JOptionPane.PLAIN_MESSAGE);
+
 					}
 				} else {
 					CategoriaProducto categoriaProducto = new CategoriaProducto(Integer.parseInt(lblId.getText()),
@@ -241,38 +243,39 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 		btnNuevo.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setIcon(
+				new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		
+		btnCancelar.setIcon(
+				new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+
 		button = new JButton("Cancelar");
-		button.setIcon(new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		button.setIcon(
+				new ImageIcon(CategoriaProductoCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(button, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-					.addGap(35))
-		);
-		gl_panel_1.setVerticalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnNuevo, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-						.addComponent(btnGuardar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-						.addComponent(button, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-						.addComponent(btnCancelar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
-					.addGap(23))
-		);
+		gl_panel_1
+				.setHorizontalGroup(
+						gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
+										.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 133,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 135,
+												GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(button, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+						.addGap(35)));
+		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
+				gl_panel_1.createSequentialGroup().addContainerGap()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnNuevo, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+								.addComponent(btnGuardar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+								.addComponent(button, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+								.addComponent(btnCancelar, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
+						.addGap(23)));
 		panel_1.setLayout(gl_panel_1);
 
 		panel_2 = new JPanel();
@@ -318,5 +321,6 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 
 		tree = new JTree();
 		scrollPane.setViewportView(tree);
+
 	}
 }
