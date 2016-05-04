@@ -51,6 +51,7 @@
 		<mapping class='ec.peleusi.models.entities.DireccionPersona' />
 		<mapping class='ec.peleusi.models.entities.Seteo' />
 		<mapping class='ec.peleusi.models.entities.Cliente' />
+		<mapping class='ec.peleusi.models.entities.Proveedor' />
 
 
 	</session-factory>
