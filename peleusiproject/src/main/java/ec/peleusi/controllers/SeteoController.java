@@ -18,7 +18,7 @@ public class SeteoController {
 		return seteoDao.create(seteos);
 	}
 
-	public List<Seteo> SeteoList() {
+	public List<Seteo> seteoList() {
 		return seteoDao.findAll();
 	}
 
