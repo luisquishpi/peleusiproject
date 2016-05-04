@@ -102,4 +102,8 @@ public class DaoFactory {
 		return new ProveedorDao();
 	}
 
+	public DireccionProveedorDao getDireccionProveedorDao() {
+		return new DireccionProveedorDao();
+	}
+
 }
