@@ -27,7 +27,7 @@ import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Empresa;
-import javax.swing.SwingConstants;
+
 
 
 public class EmpresaCrudFrm extends JInternalFrame {

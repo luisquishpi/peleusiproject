@@ -49,13 +49,13 @@ public class Cliente {
 	@Column(name = "identificacion", unique = true, nullable = false, length = 25)
 	private String identificacion;
 
-	@Column(name = "razonSocial", unique = true, nullable = false, length = 50)
+	@Column(name = "razonSocial", unique = false, nullable = false, length = 250)
 	private String razonSocial;
 
-	@Column(name = "direccion", unique = true, nullable = false, length = 80)
+	@Column(name = "direccion", unique = false, nullable = false, length = 100)
 	private String direccion;
 
-	@Column(name = "telefono", unique = true, nullable = false, length = 20)
+	@Column(name = "telefono", unique = false, nullable = false, length = 30)
 	private String telefono;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
@@ -70,13 +70,13 @@ public class Cliente {
 	@Column(name = "porcentajeDescuento", nullable = false, length = 15)
 	private Double porcentajeDescuento;
 
-	@Column(name = "descripcion", length = 100)
+	@Column(name = "descripcion",unique = false, nullable = true ,length = 100)
 	private String descripcion;
 
-	@Column(name = "Email", unique = true, nullable = false, length = 20)
+	@Column(name = "Email", unique = false, nullable = true, length = 100)
 	private String email;
 
-	@Column(name = "Celular", unique = true, nullable = false, length = 20)
+	@Column(name = "Celular", unique = false, nullable = true, length = 30)
 	private String celular;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)

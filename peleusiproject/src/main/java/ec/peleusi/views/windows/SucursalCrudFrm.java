@@ -5,21 +5,14 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
+
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.hibernate.Hibernate;
 
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
@@ -29,7 +22,7 @@ import ec.peleusi.models.entities.Empresa;
 import ec.peleusi.models.entities.Sucursal;
 
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
