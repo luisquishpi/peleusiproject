@@ -14,7 +14,7 @@ public class ClienteDao extends GenericDao<Cliente, Integer>{
 		super(Cliente.class);
 		
 	}		
-	public Cliente getPersonaIdentificacion(String identificacion) {
+	public Cliente getClienteIdentificacion(String identificacion) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			session.beginTransaction();

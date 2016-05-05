@@ -19,19 +19,18 @@ public class Seteo {
 	}
 
 	public Seteo(TarifaIva tarifaIva, Integer numeroDecimales, String identificacionDecimal, String signoMoneda,
-			Persona persona, Integer numeroItemsFactura, Double porcentajeServicioAdicional, Integer tipoInventario) {
+			Cliente cliente, String nombrePercentajeServicioAdicional, Double porcentajeServicioAdicional, Integer tipoInventario) {
 		super();
 		this.id = null;
 		this.tarifaIva = tarifaIva;
 		this.numeroDecimales = numeroDecimales;
 		this.identificacionDecimal = identificacionDecimal;
 		this.signoMoneda = signoMoneda;
-		this.persona = persona;
-		this.numeroItemsFactura = numeroItemsFactura;
+		this.cliente = cliente;
+		this.nombrePercentajeServicioAdicional = nombrePercentajeServicioAdicional;
 		this.porcentajeServicioAdicional = porcentajeServicioAdicional;
 		this.tipoInventario = tipoInventario;
 	}
-
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -50,10 +49,10 @@ public class Seteo {
 	private String signoMoneda;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private Persona persona;
+	private Cliente cliente;
 
-	@Column(name = "numeroItemsFactura", nullable = true, length = 8)
-	private Integer numeroItemsFactura;
+	@Column(name = "nombrePercentajeServicioAdicional", nullable = true, length=100)
+	private String nombrePercentajeServicioAdicional;
 
 	@Column(name = "porcentajeServicioAdicionalVenta", nullable = true, length = 8)
 	private Double porcentajeServicioAdicional;
@@ -101,20 +100,20 @@ public class Seteo {
 		this.signoMoneda = signoMoneda;
 	}
 
-	public Persona getPersona() {
-		return persona;
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setPersona(Persona persona) {
-		this.persona = persona;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
-	public Integer getNumeroItemsFactura() {
-		return numeroItemsFactura;
+	public String getNombrePercentajeServicioAdicional() {
+		return nombrePercentajeServicioAdicional;
 	}
 
-	public void setNumeroItemsFactura(Integer numeroItemsFactura) {
-		this.numeroItemsFactura = numeroItemsFactura;
+	public void setNumeroItemsFactura(String nombrePercentajeServicioAdicional) {
+		this.nombrePercentajeServicioAdicional = nombrePercentajeServicioAdicional;
 	}
 
 	public Double getPorcentajeServicioAdicional() {
