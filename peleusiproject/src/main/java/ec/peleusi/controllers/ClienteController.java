@@ -31,7 +31,7 @@ public class ClienteController {
 		return clienteDao.read(cliente.getId()) != null;
 	}
 	
-	public List<Cliente> PersonaList() {
+	public List<Cliente> ClienteList() {
 		return clienteDao.findAll();
 	}
 	
@@ -43,7 +43,6 @@ public class ClienteController {
 	public boolean update(Cliente cliente) {
 		return clienteDao.update(cliente);
 	}
-
 	
 	public Cliente getClienteIdentificacion(String identificacion)
 	{

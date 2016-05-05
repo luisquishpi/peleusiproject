@@ -4,6 +4,7 @@ import java.util.List;
 
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.SeteoDao;
+import ec.peleusi.models.entities.Cliente;
 import ec.peleusi.models.entities.Seteo;
 
 public class SeteoController {
@@ -14,12 +15,20 @@ public class SeteoController {
 		seteoDao = new DaoFactory().getSeteoDao();
 	}
 
-	public String createSeteos(Seteo seteos) {
-		return seteoDao.create(seteos);
+	public String createSeteos(Seteo seteo) {
+		return seteoDao.create(seteo);
 	}
 
 	public List<Seteo> seteoList() {
 		return seteoDao.findAll();
+	}
+	public boolean update(Seteo seteo) {
+		return seteoDao.update(seteo);
+	}
+	public Seteo getSeteo(Integer id)
+	{
+		return seteoDao.getSeteo(id);		
+		
 	}
 
 }
