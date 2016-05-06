@@ -55,14 +55,17 @@ public class SeteoCrudFrm extends JInternalFrame {
 	private JButton btnCliente;
 	ClienteListModal clienteListModal = new ClienteListModal();
 	Cliente cliente;
-	private JTextField txtNombreCampoServicioAdicional;
 	private JFormattedTextField txtPorcentajeServicioAdicional;
 	private JFormattedTextField txtNumeroDecimales;
 	private JButton btnCancelar;
 	private JButton btnGuardar;
 	private JCheckBox chkConServicioAdicional;
 	private JPanel pnlServicioAdicional;
-	private DefaultTableModel modelo;
+	
+	private JTextField txtNombreCampoServicioAdicional;
+	Seteo seteo = new Seteo();
+	SeteoController seteoController = new SeteoController();
+	String error = "";
 
 	public SeteoCrudFrm() {
 
@@ -74,16 +77,13 @@ public class SeteoCrudFrm extends JInternalFrame {
 		cargarTipoInventarioEnum();
 		txtNumeroDecimales.setText("0");
 		txtPorcentajeServicioAdicional.setText("0.00");
-		
-		cargarDatosSeteos(0);
-		
 
 		txtNombreCampoServicioAdicional = new JTextField();
-		txtNombreCampoServicioAdicional.setToolTipText("\"Ejm: Propina, transporte, servicios de envio, etc.\"");
-		txtNombreCampoServicioAdicional.setText("");
-		txtNombreCampoServicioAdicional.setColumns(10);
 		txtNombreCampoServicioAdicional.setBounds(104, 34, 438, 20);
 		pnlServicioAdicional.add(txtNombreCampoServicioAdicional);
+		txtNombreCampoServicioAdicional.setColumns(10);
+
+		cargarDatosSeteos();
 
 	}
 
@@ -94,16 +94,38 @@ public class SeteoCrudFrm extends JInternalFrame {
 		listaTarifaIva = tarifaIvaController.tarifaIvaList();
 		cmdIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
 	}
-	private void cargarDatosSeteos(Integer id)
-	{
-		SeteoController seteoController= new SeteoController();		
-		 Seteo seteo = new	Seteo(); 
-		seteo=	 seteoController.getSeteo(id);
+
+	private void cargarDatosSeteos() {
+		seteo = new Seteo();		
+		List<Seteo> listaSeteo;
+		listaSeteo=seteoController.seteoList();
 		
-		txtIdentificacion.setText(seteo.getCliente().getIdentificacion());
-		System.out.println("Categoría seleccionado: " + seteo);
-		
-		
+		if (listaSeteo.size()!=0) {
+			seteo=listaSeteo.get(0);
+
+			txtIdentificacion.setText( seteo.getCliente().getIdentificacion());
+			txtRazonSocial.setText(seteo.getCliente().getRazonSocial());				
+			cmdIva.getModel().setSelectedItem(seteo.getTarifaIva());
+			txtNumeroDecimales.setText(seteo.getNumeroDecimales().toString());
+			cmbIdentifiacionDecimal.setSelectedItem(seteo.getIdentificacionDecimal());
+			cmbSignoMoneda.setSelectedItem(seteo.getSignoMoneda());
+			cliente = seteo.getCliente();
+			if (seteo.getConServicioAdicional() == true) {
+				pnlServicioAdicional.setVisible(true);	
+				chkConServicioAdicional.setSelected(true);				
+				txtNombreCampoServicioAdicional.setText(seteo.getNombrePercentajeServicioAdicional());				
+				txtPorcentajeServicioAdicional.setText(seteo.getPorcentajeServicioAdicional().toString());
+			}
+			else
+			{
+				chkConServicioAdicional.setSelected(false);	
+				pnlServicioAdicional.setVisible(false);				
+				
+			}
+			cmbTipoInventario.setSelectedItem(seteo.getTipoInventario());			
+		}
+		else seteo=null;
+
 	}
 
 	private void cargarIdentificacionDecimalEnum() {
@@ -138,19 +160,33 @@ public class SeteoCrudFrm extends JInternalFrame {
 
 				try {
 
+					 
 					TarifaIva tarifaIva = (TarifaIva) cmdIva.getSelectedItem();
 					IdentificacionDecimalEnum identificacionDecimal = (IdentificacionDecimalEnum) cmbIdentifiacionDecimal
 							.getSelectedItem();
 					SignoMonedaEnum signoMoneda = (SignoMonedaEnum) cmbSignoMoneda.getSelectedItem();
 					TipoInventarioEnum tipoInventario = (TipoInventarioEnum) cmbTipoInventario.getSelectedItem();
+					if (seteo == null) {
+						Seteo seteo = new Seteo(tarifaIva, Integer.parseInt(txtNumeroDecimales.getText()),
+								identificacionDecimal, signoMoneda, cliente, txtNombreCampoServicioAdicional.getText(),
+								Double.parseDouble(txtPorcentajeServicioAdicional.getText()), tipoInventario,
+								chkConServicioAdicional.isSelected());
+						error = seteoController.createSeteos(seteo);
+					} else {
 
-					Seteo seteo = new Seteo(tarifaIva, Integer.parseInt(txtNumeroDecimales.getText()),
-							identificacionDecimal, signoMoneda, cliente, txtNombreCampoServicioAdicional.getText(),
-							Double.parseDouble(txtPorcentajeServicioAdicional.getText()), tipoInventario,
-							chkConServicioAdicional.isSelected());
-
-					SeteoController seteoController = new SeteoController();
-					String error = seteoController.createSeteos(seteo);
+						seteo.setTarifaIva(tarifaIva);
+						seteo.setNumeroDecimales(Integer.parseInt(txtNumeroDecimales.getText()));
+						seteo.setIdentificacionDecimal(identificacionDecimal);
+						seteo.setSignoMoneda(signoMoneda);
+						seteo.setCliente(cliente);
+						seteo.setNombrePercentajeServicioAdicional(txtNombreCampoServicioAdicional.getText());
+						seteo.setPorcentajeServicioAdicional(
+								Double.parseDouble(txtPorcentajeServicioAdicional.getText()));
+						seteo.setTipoInventario(tipoInventario);
+						seteo.setConServicioAdicional(chkConServicioAdicional.isSelected());
+						System.out.println("Categoría seleccionado: " + chkConServicioAdicional.isSelected());
+						seteoController.update(seteo);
+					}
 
 					if (error == null) {
 						JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
@@ -163,11 +199,11 @@ public class SeteoCrudFrm extends JInternalFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
 			}
 		});
-		chkConServicioAdicional.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
+
+		chkConServicioAdicional.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
 				if (chkConServicioAdicional.isSelected() == true) {
 					pnlServicioAdicional.setEnabled(true);
@@ -176,9 +212,9 @@ public class SeteoCrudFrm extends JInternalFrame {
 					pnlServicioAdicional.setEnabled(false);
 					pnlServicioAdicional.setVisible(false);
 				}
-
 			}
 		});
+
 	}
 
 	private void llamarVentanaPersona() {
@@ -188,12 +224,11 @@ public class SeteoCrudFrm extends JInternalFrame {
 		}
 		cliente = clienteListModal.getCliente();
 		if (cliente != null) {
-			System.out.println("Categoría seleccionado: " + cliente);
-
 			txtIdentificacion.setText(cliente.getIdentificacion());
 			txtRazonSocial.setText(cliente.getRazonSocial());
 
 		}
+
 	}
 
 	private void crearControles() {
@@ -305,6 +340,7 @@ public class SeteoCrudFrm extends JInternalFrame {
 		panel_3.add(label_1);
 
 		txtRazonSocial = new JTextField();
+		txtRazonSocial.setEnabled(false);
 		txtRazonSocial.setText("");
 		txtRazonSocial.setColumns(10);
 		txtRazonSocial.setBounds(199, 33, 343, 20);
@@ -341,6 +377,7 @@ public class SeteoCrudFrm extends JInternalFrame {
 		chkConServicioAdicional = new JCheckBox("Agregar rubro adicional a la factura de venta");
 
 		chkConServicioAdicional.setBounds(10, 92, 297, 23);
+
 		panel_1.add(chkConServicioAdicional);
 
 		JPanel panel_2 = new JPanel();

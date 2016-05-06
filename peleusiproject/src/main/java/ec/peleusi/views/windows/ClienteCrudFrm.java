@@ -2,6 +2,8 @@ package ec.peleusi.views.windows;
 
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,6 +15,8 @@ import ec.peleusi.models.entities.TipoIdentificacion;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.ClienteController;
 import ec.peleusi.controllers.TipoCalificacionPersonaController;
@@ -285,7 +289,7 @@ public class ClienteCrudFrm extends JDialog {
 		txtDescripcion.setForeground(UIManager.getColor("InternalFrame.inactiveTitleForeground"));
 		txtDescripcion.setBackground(Color.WHITE);
 		txtDescripcion.setText("");
-		txtDescripcion.setBounds(101, 145, 507, 44);
+		txtDescripcion.setBounds(101, 145, 507, 44);		
 		panel_2.add(txtDescripcion);
 
 		JLabel lblEmail = new JLabel("E-mail");
