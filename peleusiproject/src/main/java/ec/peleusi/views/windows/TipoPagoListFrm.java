@@ -26,7 +26,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 	private static final long serialVersionUID = 1L;
 	private DefaultTableModel modelo;
 	private JTable tablaTipoPago;
-	private Object [] filaDatos;
+	private Object[] filaDatos;
 	private JScrollPane ScrollPane;
 	private TipoPagoCrudFrm tipoPagoCrudFrm = new TipoPagoCrudFrm();
 	private JButton btnEditar;
@@ -42,13 +42,13 @@ public class TipoPagoListFrm extends JInternalFrame{
 		crearControles();
 		crearEventos();
 		crearTabla();
-		//capturaYAgregaTipoRetencionATabla();
+		
 		cargarTabla();
 	}
 	private void crearTabla(){
-		Object[] cabecera = {"Id","codigo"};
+		Object[] cabecera = {"Id","descripcion"};
 		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 12;
+			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex){
 				if(columnIndex==0 || columnIndex==1 ) {
@@ -83,12 +83,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 		
 	}
 		
-		//tablaTipoPago.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		/*
 		
-		
-		
-		}*/
 	private Object[] agregarDatosAFila(TipoPago tipoPago){
 		filaDatos[0] = tipoPago.getId();
 		filaDatos[1] = tipoPago.getNombre();
@@ -105,8 +100,6 @@ public class TipoPagoListFrm extends JInternalFrame{
 		System.out.println("Captura Tipo Pago retornado" +listaTipoPago);
 		
 	}
-	
-	
 	
 	
 	private void crearControles() {
@@ -161,16 +154,14 @@ public class TipoPagoListFrm extends JInternalFrame{
 	
 		
 	private void crearEventos() {
-		
-		
-		
+								
 		btnNuevo.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				if(!tipoPagoCrudFrm.isVisible());{
-					
+				 	
 				//tipoPagoCrudFrm.setModal(true);
-					tipoPagoCrudFrm.setVisible(true);
+				  tipoPagoCrudFrm.setVisible(true);
 				
 				}
 				
@@ -194,9 +185,8 @@ public class TipoPagoListFrm extends JInternalFrame{
 			
 			public void actionPerformed(ActionEvent e) {
 				TipoPagoController tipoPagoController = new TipoPagoController();
-				List<TipoPago> listaTipoPago = tipoPagoController.tipoPagoList();
+				List<TipoPago> listaTipoPago = tipoPagoController.tipoPagoList(txtBuscar.getText());
 				
-				//List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for(TipoPago tipoPago: listaTipoPago){
