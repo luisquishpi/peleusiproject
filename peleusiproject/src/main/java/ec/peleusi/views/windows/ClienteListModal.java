@@ -103,7 +103,7 @@ public class ClienteListModal extends javax.swing.JDialog {
 
 	private void cargarTabla() {
 		ClienteController clienteController = new ClienteController();
-		List<Cliente> listaCliente = clienteController.PersonaList();
+		List<Cliente> listaCliente = clienteController.ClienteList();
 		for (Cliente cliente : listaCliente) {
 			modelo.addRow(agregarDatosAFila(cliente));
 		}
