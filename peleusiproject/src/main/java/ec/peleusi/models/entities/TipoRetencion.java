@@ -8,16 +8,15 @@ import ec.peleusi.utils.TipoRetencionEnum;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
 
-
 @Entity
 @Table(name = "tiporetencion")
 
 public class TipoRetencion {
 
-	public TipoRetencion(String codigo, TipoRetencionEnum tipoRet, Double porcentaje, String descripcion) {
+	public TipoRetencion(String codigo, TipoRetencionEnum tipoRetencionEnum, Double porcentaje, String descripcion) {
 		this.id = null;
 		this.codigo = codigo;
-		this.tipoRet = tipoRet;
+		this.tipoRetencionEnum = tipoRetencionEnum;
 		this.porcentaje = porcentaje;
 		this.descripcion = descripcion;
 	}
@@ -33,10 +32,10 @@ public class TipoRetencion {
 
 	@Column(name = "codigo", unique = true, nullable = false, length = 15)
 	private String codigo;
-	
+
 	@Column(name = "tipo", nullable = false, length = 30)
-	private TipoRetencionEnum tipoRet;
-	
+	private TipoRetencionEnum tipoRetencionEnum;
+
 	@Column(name = "porcentaje", nullable = false, length = 15)
 	private Double porcentaje;
 
@@ -59,14 +58,14 @@ public class TipoRetencion {
 		this.codigo = codigo;
 	}
 
-	public TipoRetencionEnum getTipoRet() {
-		return tipoRet;
+	public TipoRetencionEnum getTipoRetencionEnum() {
+		return tipoRetencionEnum;
 	}
 
-	public void setTipoRet(TipoRetencionEnum tipoRet) {
-		this.tipoRet = tipoRet;
+	public void setTipoRetencionEnum(TipoRetencionEnum tipoRetencionEnum) {
+		this.tipoRetencionEnum = tipoRetencionEnum;
 	}
-	
+
 	public Double getPorcentaje() {
 		return porcentaje;
 	}
@@ -85,6 +84,6 @@ public class TipoRetencion {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", descripcion=" + descripcion + ", porcentaje="+porcentaje+", tipo="+ tipoRet+"]";
+		return "[id=" + id + ", descripcion=" + descripcion + ", porcentaje=" + porcentaje + ", tipo=" + tipoRetencionEnum + "]";
 	}
 }
