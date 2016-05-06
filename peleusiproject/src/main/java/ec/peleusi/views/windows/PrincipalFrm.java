@@ -31,7 +31,7 @@ public class PrincipalFrm extends JFrame {
 	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm;
 	private TipoPagoCrudFrm tipoPagoCrudFrm;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm;
-	private TipoRetencionCrudFrm tipoRetencionCrudFrm;
+	private TipoRetencionListFrm tipoRetencionListFrm;
 	private JDesktopPane dpContenedor;
 
 	public static void main(String[] args) {
@@ -218,13 +218,13 @@ public class PrincipalFrm extends JFrame {
 		});
 		mnMaestros.add(mntmTiposDePrecios);
 
-		JMenuItem mntmTiposDeRetencin = new JMenuItem("Tipos de Retención");
+		JMenuItem mntmTiposDeRetencin = new JMenuItem("Lista Tipos de Retención");
 		mntmTiposDeRetencin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoRetencionCrudFrm == null || tipoRetencionCrudFrm.isClosed()) {
-					tipoRetencionCrudFrm = new TipoRetencionCrudFrm();
-					dpContenedor.add(tipoRetencionCrudFrm);
-					tipoRetencionCrudFrm.show();
+				if (tipoRetencionListFrm == null || tipoRetencionListFrm.isClosed()) {
+					tipoRetencionListFrm = new TipoRetencionListFrm();
+					dpContenedor.add(tipoRetencionListFrm);
+					tipoRetencionListFrm.show();
 				}
 			}
 		});
