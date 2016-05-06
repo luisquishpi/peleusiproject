@@ -17,7 +17,7 @@ public class UnidadMedidaDao extends GenericDao<UnidadMedida, Integer> {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			session.beginTransaction();
-			Query query = session.createQuery("from Proveedor T WHERE T.id = :id");
+			Query query = session.createQuery("from UnidadMedida T WHERE T.id = :id");
 			query.setParameter("id", id);
 			if (!query.list().isEmpty()) {
 				return (UnidadMedida) query.list().get(0);
