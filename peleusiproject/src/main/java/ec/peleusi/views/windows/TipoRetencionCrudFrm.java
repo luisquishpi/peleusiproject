@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
@@ -35,10 +34,10 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 	private JTextField txtDescripcion;
 	private JFormattedTextField txtPorcentaje;
 	private JComboBox<TipoRetencionEnum> cmbTipoRetencion;
-	
-	int limitecaja = 15;
-	public TipoRetencion getTipoRetencion;	
-	
+	private TipoRetencion tipoRetencionReturn;
+
+	final int limitecaja = 15;
+	public TipoRetencion getTipoRetencion;
 
 	public TipoRetencionCrudFrm() {
 		setTitle("Tipo de Retenciòn");
@@ -47,14 +46,14 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 		cargarComboTipoRetencion();
 		limpiarCampos();
 	}
-	
+
 	private void cargarComboTipoRetencion() {
 		cmbTipoRetencion.setModel(new DefaultComboBoxModel<TipoRetencionEnum>(TipoRetencionEnum.values()));
 
 	}
 
 	private void crearControles() {
-		
+
 		setBounds(100, 100, 611, 301);
 
 		JPanel panelCabecera = new JPanel();
@@ -74,12 +73,14 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 		panelCabecera.add(btnGuardar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TipoRetencionCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar
+				.setIcon(new ImageIcon(TipoRetencionCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(TipoRetencionCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar
+				.setIcon(new ImageIcon(TipoRetencionCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -125,20 +126,37 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 		txtPorcentaje.setLocation(96, 135);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
-		
+
 		JLabel lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(20, 100, 91, 14);
 		panelCuerpo.add(lblNombre);
-		
+
 		txtDescripcion = new JTextField();
 		txtDescripcion.setBounds(96, 100, 467, 20);
 		panelCuerpo.add(txtDescripcion);
 		txtDescripcion.setColumns(10);
-		
+
 		cmbTipoRetencion = new JComboBox<TipoRetencionEnum>();
 		cmbTipoRetencion.setBounds(96, 65, 113, 20);
-		panelCuerpo.add(cmbTipoRetencion);	
-		
+		panelCuerpo.add(cmbTipoRetencion);
+
+	}
+
+	private void guardarNuevoTipoRetencion() {
+		String por = txtPorcentaje.getText();
+		TipoRetencionEnum tipoRetencionEnum = (TipoRetencionEnum) cmbTipoRetencion.getSelectedItem();
+		TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(), tipoRetencionEnum,
+				Double.parseDouble(por.toString()), txtDescripcion.getText());
+		TipoRetencionController tipoRetencionController = new TipoRetencionController();
+		String error = tipoRetencionController.createTipoRetencion(tipoRetencion);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			tipoRetencionReturn = tipoRetencion;
+			limpiarCampos();
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void crearEventos() {
@@ -150,27 +168,12 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atención",
+							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				
-				String por = txtPorcentaje.getText();
-				TipoRetencionEnum tipoRet = (TipoRetencionEnum) cmbTipoRetencion.getSelectedItem();   				
-				TipoRetencion tipoRetencion = new TipoRetencion(txtCodigo.getText(),tipoRet, Double.parseDouble(por.toString()), txtDescripcion.getText());
-				TipoRetencionController tipoRetencionController = new TipoRetencionController();
-				String error = tipoRetencionController.createTipoRetencion(tipoRetencion);
-				
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.PLAIN_MESSAGE);
-					limpiarCampos();
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-					limpiarCampos();
-				}
-
+				guardarNuevoTipoRetencion();
 			}
 		});
 
@@ -196,5 +199,9 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 		if (txtCodigo.getText().isEmpty() || txtPorcentaje.getText().isEmpty() || txtDescripcion.getText().isEmpty())
 			llenos = false;
 		return llenos;
+	}
+
+	public TipoRetencion getTipoRetencion() {
+		return tipoRetencionReturn;
 	}
 }
