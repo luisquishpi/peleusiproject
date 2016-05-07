@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -16,7 +15,7 @@ import javax.swing.JTextField;
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
 
-public class TipoPagoCrudFrm extends JInternalFrame {
+public class TipoPagoCrudFrm extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -74,6 +73,16 @@ public class TipoPagoCrudFrm extends JInternalFrame {
 		txtNombre.setColumns(10);
 		txtNombre.setBounds(106, 39, 210, 20);
 		panelCuerpo.add(txtNombre);
+	}
+
+	private void setClosable(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setIconifiable(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void crearEventos() {

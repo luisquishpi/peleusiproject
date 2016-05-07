@@ -20,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class TipoPagoListFrm extends JInternalFrame{
@@ -51,7 +53,8 @@ public class TipoPagoListFrm extends JInternalFrame{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex){
-				if(columnIndex==0 || columnIndex==1 ) {
+				if(columnIndex==0){
+				//if(columnIndex==0 || columnIndex==1 ) {
 					return false;
 				}
 				return true;
@@ -67,8 +70,8 @@ public class TipoPagoListFrm extends JInternalFrame{
 				switch(column){
 				case 0:
 					return String.class;
-				case 1:
-					return String.class;
+				//case 1:
+					//return String.class;
 				default:
 					return String.class;
 				}
@@ -77,15 +80,18 @@ public class TipoPagoListFrm extends JInternalFrame{
 		tablaTipoPago.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tablaTipoPago.setPreferredScrollableViewportSize(tablaTipoPago.getPreferredSize());
 		tablaTipoPago.getTableHeader().setReorderingAllowed(true);
-		tablaTipoPago.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tablaTipoPago.getColumnModel().getColumn(0).setMinWidth(0);
+		tablaTipoPago.getColumnModel().getColumn(0).setMaxWidth(0);
+		tablaTipoPago.getColumnModel().getColumn(0).setPreferredWidth(0);
 		tablaTipoPago.getColumnModel().getColumn(1).setPreferredWidth(200);
+		
 		ScrollPane.setViewportView(tablaTipoPago);
 		
 	}
 		
 		
 	private Object[] agregarDatosAFila(TipoPago tipoPago){
-		filaDatos[0] = tipoPago.getId();
+		//filaDatos[0] = tipoPago.getId();
 		filaDatos[1] = tipoPago.getNombre();
 		return filaDatos;
 			
@@ -114,23 +120,43 @@ public class TipoPagoListFrm extends JInternalFrame{
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
+		btnNuevo.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+		});
 		btnNuevo.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(122, 11, 130, 39);
+		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
+		btnEditar.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+		});
 		btnEditar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(262, 11, 130, 39);
+		btnEditar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
+		btnEliminar.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+		});
 		btnEliminar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(406, 11, 130, 39);
+		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+		});
 		btnCancelar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(546, 11, 130, 39);
+		btnCancelar.setBounds(432, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -160,7 +186,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 			public void actionPerformed(ActionEvent e) {
 				if(!tipoPagoCrudFrm.isVisible());{
 				 	
-				//tipoPagoCrudFrm.setModal(true);
+				  tipoPagoCrudFrm.setModal(true);
 				  tipoPagoCrudFrm.setVisible(true);
 				
 				}
