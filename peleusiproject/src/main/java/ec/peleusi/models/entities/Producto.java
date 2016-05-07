@@ -18,42 +18,9 @@ import ec.peleusi.utils.UnidadMedidaPesoEnum;
 @Table(name = "producto")
 public class Producto {
 
-	
 	public Producto() {
 		super();
 	}
-	
-
-	public Producto(String codigo, String nombre, Double peso, UnidadMedidaPesoEnum unidadMedidaPeso, Double costo, byte[] foto,
-			Boolean esDeducible, TipoGastoDeducible tipoGastoDeducible, Boolean sePuedeFraccionar,
-			Boolean manejaInventario, Double stock, Double stockMinimo, Date fechaActualizacion,
-			CategoriaProducto categoriaProducto, TarifaIva tarifaIva, TarifaIce tarifaIce,
-			UnidadMedida unidadMedidaCompra, Double cantidadUnidadMedidaCompra, UnidadMedida unidadMedidaVenta,
-			Double cantidadUnidadMedidaVenta) {
-		super();
-		this.id=null;
-		this.codigo = codigo;
-		this.nombre = nombre;
-		this.peso = peso;
-		this.unidadMedidaPeso = unidadMedidaPeso;
-		this.costo = costo;
-		this.foto = foto;
-		this.esDeducible = esDeducible;
-		this.tipoGastoDeducible = tipoGastoDeducible;
-		this.sePuedeFraccionar = sePuedeFraccionar;
-		this.manejaInventario = manejaInventario;
-		this.stock = stock;
-		this.stockMinimo = stockMinimo;
-		this.fechaActualizacion = fechaActualizacion;
-		this.categoriaProducto = categoriaProducto;
-		this.tarifaIva = tarifaIva;
-		this.tarifaIce = tarifaIce;
-		this.unidadMedidaCompra = unidadMedidaCompra;
-		this.cantidadUnidadMedidaCompra = cantidadUnidadMedidaCompra;
-		this.unidadMedidaVenta = unidadMedidaVenta;
-		this.cantidadUnidadMedidaVenta = cantidadUnidadMedidaVenta;
-	}
-
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -120,6 +87,9 @@ public class Producto {
 	@Column(name = "cantidadunidadmedidaventa", nullable = false)
 	private Double cantidadUnidadMedidaVenta = 0.0;
 
+	@Column(name = "tieneiva", nullable = false)
+	private Boolean tieneIva;
+
 	public Integer getId() {
 		return id;
 	}
@@ -182,6 +152,14 @@ public class Producto {
 
 	public void setEsDeducible(Boolean esDeducible) {
 		this.esDeducible = esDeducible;
+	}
+
+	public TipoGastoDeducible getTipoGastoDeducible() {
+		return tipoGastoDeducible;
+	}
+
+	public void setTipoGastoDeducible(TipoGastoDeducible tipoGastoDeducible) {
+		this.tipoGastoDeducible = tipoGastoDeducible;
 	}
 
 	public Boolean getSePuedeFraccionar() {
@@ -248,14 +226,6 @@ public class Producto {
 		this.tarifaIce = tarifaIce;
 	}
 
-	public TipoGastoDeducible getTipoGastoDeducible() {
-		return tipoGastoDeducible;
-	}
-
-	public void setTipoGastoDeducible(TipoGastoDeducible tipoGastoDeducible) {
-		this.tipoGastoDeducible = tipoGastoDeducible;
-	}
-
 	public UnidadMedida getUnidadMedidaCompra() {
 		return unidadMedidaCompra;
 	}
@@ -264,11 +234,11 @@ public class Producto {
 		this.unidadMedidaCompra = unidadMedidaCompra;
 	}
 
-	public Double getCantidadunidadmedidacompra() {
+	public Double getCantidadUnidadMedidaCompra() {
 		return cantidadUnidadMedidaCompra;
 	}
 
-	public void setCantidadunidadmedidacompra(Double cantidadUnidadMedidaCompra) {
+	public void setCantidadUnidadMedidaCompra(Double cantidadUnidadMedidaCompra) {
 		this.cantidadUnidadMedidaCompra = cantidadUnidadMedidaCompra;
 	}
 
@@ -280,12 +250,20 @@ public class Producto {
 		this.unidadMedidaVenta = unidadMedidaVenta;
 	}
 
-	public Double getCantidadunidadmedidaventa() {
+	public Double getCantidadUnidadMedidaVenta() {
 		return cantidadUnidadMedidaVenta;
 	}
 
-	public void setCantidadunidadmedidaventa(Double cantidadUnidadMedidaVenta) {
+	public void setCantidadUnidadMedidaVenta(Double cantidadUnidadMedidaVenta) {
 		this.cantidadUnidadMedidaVenta = cantidadUnidadMedidaVenta;
+	}
+
+	public Boolean getTieneIva() {
+		return tieneIva;
+	}
+
+	public void setTieneIva(Boolean tieneIva) {
+		this.tieneIva = tieneIva;
 	}
 
 	@Override
