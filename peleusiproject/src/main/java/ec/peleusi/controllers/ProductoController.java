@@ -1,5 +1,7 @@
 package ec.peleusi.controllers;
 
+import java.util.List;
+
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.ProductoDao;
 import ec.peleusi.models.entities.Producto;
@@ -16,4 +18,7 @@ public class ProductoController {
 		return productoDao.create(producto);
 	}
 
+	public List<Producto> productoList() {
+		return productoDao.findAll();
+	}
 }

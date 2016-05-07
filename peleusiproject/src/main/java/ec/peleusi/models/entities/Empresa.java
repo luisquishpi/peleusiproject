@@ -14,11 +14,11 @@ import ec.peleusi.models.entities.Ciudad;
 @Entity
 @Table(name = "empresa")
 public class Empresa {
-	
+
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
 			String url, byte[] foto, String ruta, Ciudad ciudad) {
 		super();
-		this.id= null;
+		this.id = null;
 		this.nombre = nombre;
 		this.identificacion = identificacion;
 		this.direccion = direccion;
@@ -28,13 +28,13 @@ public class Empresa {
 		this.url = url;
 		this.foto = foto;
 		this.ciudad = ciudad;
-		this.ruta=ruta;
-	}	
-	
+		this.rutaFotoProducto = ruta;
+	}
+
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url,  String ruta, Ciudad ciudad) {
+			String url, String rutaFotoProducto, Ciudad ciudad) {
 		super();
-		this.id= null;
+		this.id = null;
 		this.nombre = nombre;
 		this.identificacion = identificacion;
 		this.direccion = direccion;
@@ -42,47 +42,47 @@ public class Empresa {
 		this.fax = fax;
 		this.email = email;
 		this.url = url;
-	
 		this.ciudad = ciudad;
-		this.ruta=ruta;
-	}	
+		this.rutaFotoProducto = rutaFotoProducto;
+	}
 
 	public Empresa() {
-		
+
 	}
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
 
-	@Column(name = "nombre",  nullable = true, length = 256)
+	@Column(name = "nombre", unique = true, nullable = false, length = 256)
 	private String nombre;
 
-	@Column(name = "identificacion",  nullable = true, length = 13)
+	@Column(name = "identificacion", unique = true, nullable = false, length = 13)
 	private String identificacion;
 
-	@Column(name = "direcion", nullable = true, length = 256)
+	@Column(name = "direcion", nullable = false, length = 256)
 	private String direccion;
-	
-	@Column(name = "telefono", nullable = true,   length = 50)
+
+	@Column(name = "telefono", nullable = false, length = 50)
 	private String telefono;
-	
-	@Column(name = "fax",  nullable = true, length = 50)
+
+	@Column(name = "fax", nullable = true, length = 50)
 	private String fax;
-	
-	@Column(name = "email",  nullable = true, length = 256)
+
+	@Column(name = "email", nullable = true, length = 256)
 	private String email;
-	
-	@Column(name = "url",  nullable = true, length = 256)
+
+	@Column(name = "url", nullable = true, length = 256)
 	private String url;
-	
+
 	@Column(name = "foto", nullable = true, length = 16777215)
 	private byte[] foto;
-	
-	@Column(name = "ruta",  nullable = true, length = 512)
-	private String ruta;
-	
-	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
+
+	@Column(name = "rutaFotoProducto", nullable = true, length = 512)
+	private String rutaFotoProducto;
+
+	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private Ciudad ciudad;
 
 	public Integer getId() {
@@ -165,16 +165,17 @@ public class Empresa {
 		this.ciudad = ciudad;
 	}
 
-	public String getRuta() {
-		return ruta;
+	public String getRutaFotoProducto() {
+		return rutaFotoProducto;
 	}
 
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
+	public void setRutaFotoProducto(String rutaFotoProducto) {
+		this.rutaFotoProducto = rutaFotoProducto;
 	}
+
 	@Override
 	public String toString() {
-		return nombre ;
+		return nombre;
 	}
 
 }
