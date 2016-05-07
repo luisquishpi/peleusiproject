@@ -308,7 +308,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private void cargarCombosUnidaMedida() {
 		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
 		List<UnidadMedida> listaUnidadMedida;
-		listaUnidadMedida = unidadMedidaController.unidadMedidaList();
+		listaUnidadMedida = unidadMedidaController.UnidadMedidaList();
 		cmbUnidadMedidaCompra.setModel(new DefaultComboBoxModel(listaUnidadMedida.toArray()));
 		cmbUnidadMedidaVenta.setModel(new DefaultComboBoxModel(listaUnidadMedida.toArray()));
 		cmbUnidadMedidaPeso.setModel(new DefaultComboBoxModel<UnidadMedidaPesoEnum>(UnidadMedidaPesoEnum.values()));
@@ -682,9 +682,9 @@ public class ProductoCrudFrm extends JInternalFrame {
 		producto.setTarifaIva((TarifaIva) cmbIva.getSelectedItem());
 		producto.setTarifaIce((TarifaIce) cmbIce.getSelectedItem());
 		producto.setUnidadMedidaCompra((UnidadMedida) cmbUnidadMedidaCompra.getSelectedItem());
-		producto.setCantidadunidadmedidacompra(Double.parseDouble(txtCantidadCompra.getText()));
+		producto.setCantidadUnidadMedidaCompra(Double.parseDouble(txtCantidadCompra.getText()));
 		producto.setUnidadMedidaVenta((UnidadMedida) cmbUnidadMedidaVenta.getSelectedItem());
-		producto.setCantidadunidadmedidaventa(Double.parseDouble(txtCantidadVenta.getText()));
+		producto.setCantidadUnidadMedidaVenta(Double.parseDouble(txtCantidadVenta.getText()));
 	}
 
 	private void crearEventos() {
