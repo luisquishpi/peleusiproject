@@ -12,10 +12,17 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.UIManager;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+
+import com.sun.org.apache.xalan.internal.xsltc.ProcessorVersion;
 import com.toedter.calendar.JDateChooser;
 
+import ec.peleusi.controllers.DireccionPersonaController;
+import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.PersonaController;
+import ec.peleusi.controllers.ProveedorController;
+import ec.peleusi.models.entities.DireccionProveedor;
 import ec.peleusi.models.entities.Persona;
+import ec.peleusi.models.entities.Proveedor;
 import ec.peleusi.utils.Formatos;
 
 import javax.swing.ImageIcon;
@@ -84,8 +91,8 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JDateChooser dtcFechaEmision;
 	private JFormattedTextField txtDiasCredito;
 	private JButton btnBuscarPersona;
-	private PersonaListModalFrm personaListModalFrm = new PersonaListModalFrm();
-	private Persona persona;
+	private ProveedorListModalFrm proveedorListModalFrm = new ProveedorListModalFrm();
+	private Proveedor proveedor;
 
 	public CompraCrudFrm() {
 
@@ -297,48 +304,60 @@ public class CompraCrudFrm extends JInternalFrame {
 		cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(txtDiasCredito.getText()));
 		dtcFechaVencimiento.setDate(cal.getTime());
 	}
-	private void buscarPersonaidentificacion(String identificacion)
-	{
-		PersonaController personaController= new PersonaController();
-	
-		persona = new Persona();
-		persona= personaController.getPersonaIdentificacion(identificacion);
-		if (persona != null) {
-			System.out.println("Categoría seleccionado: " + persona);
-			txtRuc.setText(persona.getIdentificacion());
-			txtContribuyente.setText(persona.getRazonSocial());
-			txtDireccion.setText(persona.getDireccion());
-			txtTelefono.setText(persona.getTelefono());
-		}
-		else	
-		{
-			//txtRuc.setText("");
+
+	private void buscarPersonaidentificacion(String identificacion) {
+		ProveedorController proveedoersonaController = new ProveedorController();
+
+		proveedor = new Proveedor();
+		proveedor = proveedoersonaController.getProveedorIdentificacion(identificacion);
+		if (proveedor != null) {
+			System.out.println("Categoría seleccionado: " + proveedor);
+			txtRuc.setText(proveedor.getIdentificacion());
+			txtContribuyente.setText(proveedor.getRazonSocial());
+			cargarDireccionProveedorPorDefecto(proveedor);
+		} else {
+
 			txtContribuyente.setText("");
 			txtDireccion.setText("");
 			txtTelefono.setText("");
 			llamarVentanaPersona();
-			
-		}
-		
-	}
-	private void llamarVentanaPersona()
-	{
-		if (!personaListModalFrm.isVisible()) {
-			personaListModalFrm.setModal(true);
-			personaListModalFrm.setVisible(true);
+
 		}
 
-		persona = personaListModalFrm.getPersona();
-		if (persona != null) {
-			System.out.println("Categoría seleccionado: " + persona);
-
-			txtRuc.setText(persona.getIdentificacion());
-			txtContribuyente.setText(persona.getRazonSocial());
-			txtDireccion.setText(persona.getDireccion());
-			txtTelefono.setText(persona.getTelefono());
-		}
-		
 	}
+
+	private void cargarDireccionProveedorPorDefecto(Proveedor proveedor) {
+		DireccionProveedorController direccionProvedorController = new DireccionProveedorController();
+		DireccionProveedor direccionProveedor = new DireccionProveedor();
+		direccionProveedor = direccionProvedorController.getDireccionProveedorPorDefecto(proveedor);
+		if (direccionProveedor != null) {
+			txtDireccion.setText(direccionProveedor.getNombre());
+			txtTelefono.setText(direccionProveedor.getTelefono());
+		} else {
+			txtDireccion.setText("");
+			txtTelefono.setText("");
+		}
+	}
+
+	private void llamarVentanaPersona() {
+		if (!proveedorListModalFrm.isVisible()) {
+			proveedorListModalFrm.setModal(true);
+			proveedorListModalFrm.setVisible(true);
+		}
+
+		proveedor = proveedorListModalFrm.getProveedor();
+
+		if (proveedor != null) {
+			System.out.println("Categoría seleccionado: " + proveedor);
+
+			txtRuc.setText(proveedor.getIdentificacion());
+			txtContribuyente.setText(proveedor.getRazonSocial());
+			cargarDireccionProveedorPorDefecto(proveedor);
+
+		}
+
+	}
+
 	public void crearEventos() {
 		btnBuscarProducto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -380,16 +399,17 @@ public class CompraCrudFrm extends JInternalFrame {
 		btnBuscarPersona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				llamarVentanaPersona();
-				
+
 			}
 
 		});
-		personaListModalFrm.addConfirmListener(new ActionListener() {
+
+		proveedorListModalFrm.addConfirmListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				persona = new Persona();
-				persona = personaListModalFrm.getPersona();
+				proveedor = new Proveedor();
+				proveedor = proveedorListModalFrm.getProveedor();
 
 			}
 		});
@@ -444,26 +464,24 @@ public class CompraCrudFrm extends JInternalFrame {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				buscarPersonaidentificacion(txtRuc.getText());
-				
-				
+
 			}
 		});
-		txtRuc.addKeyListener(new KeyAdapter() {			
+		txtRuc.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				
-				char cTeclaPrecionada= e.getKeyChar();
-				if(cTeclaPrecionada== KeyEvent.VK_ENTER)
-				{					
+
+				char cTeclaPrecionada = e.getKeyChar();
+				if (cTeclaPrecionada == KeyEvent.VK_ENTER) {
 					buscarPersonaidentificacion(txtRuc.getText());
-				}				
+				}
 			}
 		});
 		txtRuc.setBounds(10, 33, 153, 20);
 		panel_2.add(txtRuc);
 		txtRuc.setColumns(10);
 
-		JLabel lblContribuyente = new JLabel("Contribuyente:");
+		JLabel lblContribuyente = new JLabel("Razón Social");
 		lblContribuyente.setBounds(199, 18, 94, 14);
 		panel_2.add(lblContribuyente);
 
@@ -472,11 +490,13 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel_2.add(lblNewLabel);
 
 		txtContribuyente = new JTextField();
+		txtContribuyente.setEditable(false);
 		txtContribuyente.setColumns(10);
 		txtContribuyente.setBounds(199, 33, 428, 20);
 		panel_2.add(txtContribuyente);
 
 		txtDireccion = new JTextField();
+		txtDireccion.setEditable(false);
 		txtDireccion.setColumns(10);
 		txtDireccion.setBounds(199, 70, 428, 20);
 		panel_2.add(txtDireccion);
@@ -486,6 +506,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel_2.add(lblTelfono);
 
 		txtTelefono = new JTextField();
+		txtTelefono.setEditable(false);
 		txtTelefono.setColumns(10);
 		txtTelefono.setBounds(10, 70, 153, 20);
 		panel_2.add(txtTelefono);

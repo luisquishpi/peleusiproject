@@ -37,5 +37,28 @@ public class DireccionProveedorDao extends GenericDao<DireccionProveedor, Intege
 		}
 		return lista;
 	}
+	
+	public DireccionProveedor getDireccionProveedorPorDefecto(Proveedor proveedor) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			session.beginTransaction();
+			Query query = session.createQuery("from DireccionProveedor T WHERE T.proveedor = :proveedor and porDefecto=1");
+			query.setParameter("proveedor", proveedor);
+			if (!query.list().isEmpty()) {
+				return (DireccionProveedor) query.list().get(0);
+			}
+			session.getTransaction().commit();
+
+		} catch (HibernateException e) {
+			if (session.getTransaction() != null)
+				e.printStackTrace();
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		return null;
+	}	
+	
 }
 

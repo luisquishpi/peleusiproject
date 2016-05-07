@@ -11,16 +11,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "detalleCompra")
+@Table(name = "compraDetalle")
 
-public class DetalleCompra {
+public class CompraDetalle {
 	
 	
-	public DetalleCompra() {
+	public CompraDetalle() {
 		super();
 	}
 
-	public DetalleCompra(Compra compra, Producto producto, String codigoProducto, String nombreProducto,
+	public CompraDetalle(Compra compra, Producto producto, String codigoProducto, String nombreProducto,
 			Double costoProducto, Double valorDescuentoProducto, Double porcentajeDescuentoProducto,
 			Double porcentajeIvaProducto, Double valorIvaProducto, Double stock, Double subtotal, Double porcentajeIceProducto, Double valorIceProducto) {
 		super();

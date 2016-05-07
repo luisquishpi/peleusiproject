@@ -198,7 +198,7 @@ public class ClienteListModal extends javax.swing.JDialog {
 		panel.add(btnBuscar);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 575, 269);
+		scrollPane.setBounds(10, 60, 575, 261);
 		panel.add(scrollPane);
 
 		tblCliente = new JTable();
@@ -210,7 +210,7 @@ public class ClienteListModal extends javax.swing.JDialog {
 		panel_1.setLayout(null);
 		panel_1.setPreferredSize(new Dimension(200, 70));
 		panel_1.setBackground(Color.LIGHT_GRAY);
-		panel_1.setBounds(0, 340, 595, 70);
+		panel_1.setBounds(0, 323, 595, 70);
 		panel.add(panel_1);
 
 		btnNuevo = new JButton("Nuevo");
