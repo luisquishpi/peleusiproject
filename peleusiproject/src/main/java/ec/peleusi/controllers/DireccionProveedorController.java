@@ -24,14 +24,18 @@ public class DireccionProveedorController {
 	
 	public List<DireccionProveedor> DireccionProveedorIdList(Proveedor proveedor) {
 		return direccionProveedorDao.DireccionProveedorList(proveedor);
-	}	
-		
+	}			
 	public DireccionProveedor getDireccionProveedor(int id) {
 		return DaoFactory.getFactory().getDireccionProveedorDao().read(id);
 	}	
 	
 	public boolean update(DireccionProveedor direccionProveedor) {
 		return direccionProveedorDao.update(direccionProveedor);
+	}
+	
+	public DireccionProveedor getDireccionProveedorPorDefecto(Proveedor proveedor)
+	{
+		return direccionProveedorDao.getDireccionProveedorPorDefecto(proveedor);
 	}
 	
 }

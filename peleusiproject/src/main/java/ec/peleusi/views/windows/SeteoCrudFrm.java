@@ -340,7 +340,7 @@ public class SeteoCrudFrm extends JInternalFrame {
 		panel_3.add(label_1);
 
 		txtRazonSocial = new JTextField();
-		txtRazonSocial.setEnabled(false);
+		txtRazonSocial.setEditable(false);
 		txtRazonSocial.setText("");
 		txtRazonSocial.setColumns(10);
 		txtRazonSocial.setBounds(199, 33, 343, 20);

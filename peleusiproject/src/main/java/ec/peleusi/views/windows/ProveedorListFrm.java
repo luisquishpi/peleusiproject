@@ -106,6 +106,13 @@ public class ProveedorListFrm extends JInternalFrame {
 		}
 
 	}
+	private void cargarDireccionProveedor(Proveedor proveedor)
+	{
+		
+		
+		
+		
+	}
 
 	private void capturaYAgregaProveedorATabla() {
 		Proveedor proveedor = new Proveedor();

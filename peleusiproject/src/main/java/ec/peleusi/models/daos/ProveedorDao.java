@@ -33,7 +33,6 @@ public class ProveedorDao extends GenericDao<Proveedor, Integer> {
 			}
 		}
 		return null;
-	}
-	
+	}	
 	
 }
