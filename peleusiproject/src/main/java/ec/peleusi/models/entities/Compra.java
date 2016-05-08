@@ -21,14 +21,14 @@ public class Compra {
 		super();
 	}
 
-	public Compra(Persona persona, Date fechaEmision, Date fechaRegistro, Date fechaAutorizacion,
+	public Compra(Proveedor proveedor, Date fechaEmision, Date fechaRegistro, Date fechaAutorizacion,
 			String establecimiento, String puntoEmision, String secuencial, String numeroAutorizacion,
 			Double baseImponibleIva0, Double baseImponibleIvaDiferente0, Double baseImponibleNoObjetoIva,
 			Double baseImponibleExentoIva, Double montoIva, Double montoIce, Date fechaVencimiento, Double diasCredito,
 			Double valorDescuento, Usuario usuario, Boolean estado, Sucursal sucursal) {
 		super();
 		this.id=null;
-		this.persona = persona;
+		this.proveedor = proveedor;
 		this.fechaEmision = fechaEmision;
 		this.fechaRegistro = fechaRegistro;
 		this.fechaAutorizacion = fechaAutorizacion;
@@ -56,7 +56,7 @@ public class Compra {
 	private Integer id;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH, optional=false)
-	private Persona persona;
+	private Proveedor proveedor;
 
 	@Column(name = "fechaEmision",  nullable = true)
 	private Date fechaEmision;
@@ -123,12 +123,12 @@ public class Compra {
 		this.id = id;
 	}
 
-	public Persona getPersona() {
-		return persona;
+	public Proveedor getPersona() {
+		return proveedor;
 	}
 
-	public void setPersona(Persona persona) {
-		this.persona = persona;
+	public void setPersona(Proveedor proveedor) {
+		this.proveedor = proveedor;
 	}
 
 	public Date getFechaEmision() {
