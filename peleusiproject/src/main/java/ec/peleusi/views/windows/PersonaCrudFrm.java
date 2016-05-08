@@ -314,7 +314,6 @@ public class PersonaCrudFrm extends JDialog {
 	private void crearControles() {
 
 		setBounds(100, 100, 611, 399);
-
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
 		panelCabecera.setBackground(Color.LIGHT_GRAY);
