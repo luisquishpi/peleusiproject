@@ -13,15 +13,13 @@ import javax.swing.UIManager;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
-import com.sun.org.apache.xalan.internal.xsltc.ProcessorVersion;
 import com.toedter.calendar.JDateChooser;
 
-import ec.peleusi.controllers.DireccionPersonaController;
 import ec.peleusi.controllers.DireccionProveedorController;
-import ec.peleusi.controllers.PersonaController;
+
 import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.models.entities.DireccionProveedor;
-import ec.peleusi.models.entities.Persona;
+
 import ec.peleusi.models.entities.Proveedor;
 import ec.peleusi.utils.Formatos;
 
@@ -34,13 +32,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextArea;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import java.util.Date;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
+
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JFormattedTextField;
@@ -305,7 +302,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		dtcFechaVencimiento.setDate(cal.getTime());
 	}
 
-	private void buscarPersonaidentificacion(String identificacion) {
+	private void buscarProveedoridentificacion(String identificacion) {
 		ProveedorController proveedoersonaController = new ProveedorController();
 
 		proveedor = new Proveedor();
@@ -320,7 +317,7 @@ public class CompraCrudFrm extends JInternalFrame {
 			txtContribuyente.setText("");
 			txtDireccion.setText("");
 			txtTelefono.setText("");
-			llamarVentanaPersona();
+			llamarVentanaProveedor();
 
 		}
 
@@ -339,7 +336,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		}
 	}
 
-	private void llamarVentanaPersona() {
+	private void llamarVentanaProveedor() {
 		if (!proveedorListModalFrm.isVisible()) {
 			proveedorListModalFrm.setModal(true);
 			proveedorListModalFrm.setVisible(true);
@@ -398,7 +395,7 @@ public class CompraCrudFrm extends JInternalFrame {
 
 		btnBuscarPersona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				llamarVentanaPersona();
+				llamarVentanaProveedor();
 
 			}
 
@@ -463,7 +460,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtRuc.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				buscarPersonaidentificacion(txtRuc.getText());
+				buscarProveedoridentificacion(txtRuc.getText());
 
 			}
 		});
@@ -473,7 +470,7 @@ public class CompraCrudFrm extends JInternalFrame {
 
 				char cTeclaPrecionada = e.getKeyChar();
 				if (cTeclaPrecionada == KeyEvent.VK_ENTER) {
-					buscarPersonaidentificacion(txtRuc.getText());
+					buscarProveedoridentificacion(txtRuc.getText());
 				}
 			}
 		});
