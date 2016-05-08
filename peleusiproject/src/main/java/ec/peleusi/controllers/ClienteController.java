@@ -8,9 +8,7 @@ import org.hibernate.Session;
 
 import ec.peleusi.models.daos.ClienteDao;
 import ec.peleusi.models.daos.DaoFactory;
-import ec.peleusi.models.daos.PersonaDao;
 import ec.peleusi.models.entities.Cliente;
-import ec.peleusi.models.entities.Persona;
 import ec.peleusi.utils.HibernateUtil;
 
 public class ClienteController {

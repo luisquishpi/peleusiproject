@@ -24,9 +24,9 @@ import ec.peleusi.models.entities.TipoRetencion;
 public class TipoRetencionListFrm extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 	private DefaultTableModel modelo;
-	private JTable tablaTipoRetencion;
+	private JTable tblTipoRetencion;
 	private Object[] filaDatos;
-	private JScrollPane ScrollPane;
+	private JScrollPane scrollPane;
 	private TipoRetencionCrudFrm tipoRetencionCrudFrm = new TipoRetencionCrudFrm();
 	private JButton btnEditar;
 	private JButton btnEliminar;
@@ -46,7 +46,7 @@ public class TipoRetencionListFrm extends JInternalFrame {
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "codigo", "descripcion", "porcentaje", "tipo" };
+		Object[] cabecera = { "Id", "Código", "Descripcion", "Porcentaje", "Tipo" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -59,18 +59,18 @@ public class TipoRetencionListFrm extends JInternalFrame {
 			}
 		};
 		filaDatos = new Object[cabecera.length];
-		tablaTipoRetencion = new JTable(modelo);
-		tablaTipoRetencion.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tablaTipoRetencion.setPreferredScrollableViewportSize(tablaTipoRetencion.getPreferredSize());
-		tablaTipoRetencion.getTableHeader().setReorderingAllowed(true);
-		tablaTipoRetencion.getColumnModel().getColumn(0).setMaxWidth(0);
-		tablaTipoRetencion.getColumnModel().getColumn(0).setMinWidth(0);
-		tablaTipoRetencion.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tablaTipoRetencion.getColumnModel().getColumn(1).setPreferredWidth(120);
-		tablaTipoRetencion.getColumnModel().getColumn(2).setPreferredWidth(350);
-		tablaTipoRetencion.getColumnModel().getColumn(3).setPreferredWidth(100);
-		tablaTipoRetencion.getColumnModel().getColumn(4).setPreferredWidth(100);
-		ScrollPane.setViewportView(tablaTipoRetencion);
+		tblTipoRetencion = new JTable(modelo);
+		tblTipoRetencion.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTipoRetencion.setPreferredScrollableViewportSize(tblTipoRetencion.getPreferredSize());
+		tblTipoRetencion.getTableHeader().setReorderingAllowed(true);
+		tblTipoRetencion.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblTipoRetencion.getColumnModel().getColumn(0).setMinWidth(0);
+		tblTipoRetencion.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tblTipoRetencion.getColumnModel().getColumn(1).setPreferredWidth(120);
+		tblTipoRetencion.getColumnModel().getColumn(2).setPreferredWidth(350);
+		tblTipoRetencion.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tblTipoRetencion.getColumnModel().getColumn(4).setPreferredWidth(100);
+		scrollPane.setViewportView(tblTipoRetencion);
 	}
 
 	private Object[] agregarDatosAFila(TipoRetencion tipoRetencion) {
@@ -102,22 +102,22 @@ public class TipoRetencionListFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(122, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
 		btnEditar.setBounds(262, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(406, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(546, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -131,13 +131,13 @@ public class TipoRetencionListFrm extends JInternalFrame {
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnBuscar.setBounds(597, 8, 119, 41);
 		panelCuerpo.add(btnBuscar);
 
-		ScrollPane = new JScrollPane();
-		ScrollPane.setBounds(10, 60, 706, 208);
-		panelCuerpo.add(ScrollPane);
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 60, 706, 208);
+		panelCuerpo.add(scrollPane);
 	}
 
 	private void capturaYAgregaTipoRetencionATabla() {
@@ -146,7 +146,7 @@ public class TipoRetencionListFrm extends JInternalFrame {
 		if (tipoRetencion != null && tipoRetencion.getId() != null) {
 			System.out.println("Captura TipoRetencion retornado: " + tipoRetencion);
 			modelo.addRow(agregarDatosAFila(tipoRetencion));
-			tablaTipoRetencion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			tblTipoRetencion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 
 	}

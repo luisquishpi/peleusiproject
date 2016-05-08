@@ -6,22 +6,22 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import ec.peleusi.views.windows.CiudadCrudFrm;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JDesktopPane;
+import java.awt.Color;
 
 public class PrincipalFrm extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private CiudadCrudFrm ciudaCrudFrm;
+	private CiudadListFrm ciudaListFrm;
 	private CategoriaProductoCrudFrm categoriaProductoCrudFrm;
 	private ProductoCrudFrm productoCrudFrm;
-	private UnidadMedidaCrudFrm unidadMedidaCrudFrm;
+	private UnidadMedidaListFrm unidadMedidaListFrm;
 	private EmpresaCrudFrm empresaCrudFrm;
 	private SucursalCrudFrm sucursalCrudFrm;
 	private TarifaIceCrudFrm tarifaIceCrudFrm;
@@ -29,7 +29,7 @@ public class PrincipalFrm extends JFrame {
 	private TipoCalificacionPersonaCrudFrm tipoCalificacionPersonaCrudFrm;
 	private TipoGastoDeducibleCrudFrm tipoGastoDeducibleCrudFrm;
 	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm;
-	private TipoPagoCrudFrm tipoPagoCrudFrm;
+	private TipoPagoListFrm tipoPagoListFrm;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm;
 	private TipoRetencionListFrm tipoRetencionListFrm;
 	private JDesktopPane dpContenedor;
@@ -46,10 +46,6 @@ public class PrincipalFrm extends JFrame {
 			}
 		});
 	}
-
-	/**
-	 * Create the frame.
-	 */
 	public PrincipalFrm() {
 		setTitle("Peleusí v.1.0.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,10 +60,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmPaiscrudfrm = new JMenuItem("Ciudad");
 		mntmPaiscrudfrm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (ciudaCrudFrm == null || ciudaCrudFrm.isClosed()) {
-					ciudaCrudFrm = new CiudadCrudFrm();
-					dpContenedor.add(ciudaCrudFrm);
-					ciudaCrudFrm.show();
+				if (ciudaListFrm == null || ciudaListFrm.isClosed()) {
+					ciudaListFrm = new CiudadListFrm();
+					dpContenedor.add(ciudaListFrm);
+					ciudaListFrm.show();
 				}
 			}
 		});
@@ -101,10 +97,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmUnidadDeMedida = new JMenuItem("Unidad de Medida");
 		mntmUnidadDeMedida.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (unidadMedidaCrudFrm == null || unidadMedidaCrudFrm.isClosed()) {
-					unidadMedidaCrudFrm = new UnidadMedidaCrudFrm();
-					dpContenedor.add(unidadMedidaCrudFrm);
-					unidadMedidaCrudFrm.show();
+				if (unidadMedidaListFrm == null || unidadMedidaListFrm.isClosed()) {
+					unidadMedidaListFrm = new UnidadMedidaListFrm();
+					dpContenedor.add(unidadMedidaListFrm);
+					unidadMedidaListFrm.show();
 				}
 			}
 		});
@@ -134,17 +130,7 @@ public class PrincipalFrm extends JFrame {
 		});
 		mnMaestros.add(mntmIce);
 
-		JMenuItem mntmEmpresa = new JMenuItem("Empresa");
-		mntmEmpresa.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (empresaCrudFrm == null || empresaCrudFrm.isClosed()) {
-					empresaCrudFrm = new EmpresaCrudFrm();
-					dpContenedor.add(empresaCrudFrm);
-					empresaCrudFrm.show();
-				}
-			}
-		});
-		mnMaestros.add(mntmEmpresa);
+		
 
 		JMenuItem mntmSocursal = new JMenuItem("Socursal");
 		mntmSocursal.addActionListener(new ActionListener() {
@@ -197,10 +183,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmTiposDePagos = new JMenuItem("Tipos de Pagos");
 		mntmTiposDePagos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoPagoCrudFrm == null || tipoPagoCrudFrm.isClosed()) {
-					tipoPagoCrudFrm = new TipoPagoCrudFrm();
-					dpContenedor.add(tipoPagoCrudFrm);
-					tipoPagoCrudFrm.show();
+				if (tipoPagoListFrm == null || tipoPagoListFrm.isClosed()) {
+					tipoPagoListFrm = new TipoPagoListFrm();
+					dpContenedor.add(tipoPagoListFrm);
+					tipoPagoListFrm.show();
 				}
 			}
 		});
@@ -229,12 +215,31 @@ public class PrincipalFrm extends JFrame {
 			}
 		});
 		mnMaestros.add(mntmTiposDeRetencin);
+		
+		JMenu mnConfiguraciones = new JMenu("Configuraciones");
+		menuBar.add(mnConfiguraciones);
+		
+		JMenu mnAdministracin = new JMenu("Administración");
+		menuBar.add(mnAdministracin);
+		
+		JMenuItem mntmEmpresa_1 = new JMenuItem("Empresa");
+		mntmEmpresa_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (empresaCrudFrm == null || empresaCrudFrm.isClosed()) {
+					empresaCrudFrm = new EmpresaCrudFrm();
+					dpContenedor.add(empresaCrudFrm);
+					empresaCrudFrm.show();
+				}
+			}
+		});
+		mnAdministracin.add(mntmEmpresa_1);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
 		dpContenedor = new JDesktopPane();
+		dpContenedor.setBackground(Color.WHITE);
 		contentPane.add(dpContenedor, BorderLayout.CENTER);
 	}
 }

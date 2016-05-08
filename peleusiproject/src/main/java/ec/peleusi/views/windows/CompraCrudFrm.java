@@ -87,7 +87,7 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JDateChooser dtcFechaRegistro;
 	private JDateChooser dtcFechaEmision;
 	private JFormattedTextField txtDiasCredito;
-	private JButton btnBuscarPersona;
+	private JButton btnBuscarProveedor;
 	private ProveedorListModalFrm proveedorListModalFrm = new ProveedorListModalFrm();
 	private Proveedor proveedor;
 
@@ -393,7 +393,7 @@ public class CompraCrudFrm extends JInternalFrame {
 			}
 		});
 
-		btnBuscarPersona.addActionListener(new ActionListener() {
+		btnBuscarProveedor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				llamarVentanaProveedor();
 
@@ -512,13 +512,13 @@ public class CompraCrudFrm extends JInternalFrame {
 		lblDireccin.setBounds(199, 55, 94, 14);
 		panel_2.add(lblDireccin);
 
-		btnBuscarPersona = new JButton("");
+		btnBuscarProveedor = new JButton("");
 
-		btnBuscarPersona.setVerticalAlignment(SwingConstants.TOP);
-		btnBuscarPersona
+		btnBuscarProveedor.setVerticalAlignment(SwingConstants.TOP);
+		btnBuscarProveedor
 				.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/folder_user.png")));
-		btnBuscarPersona.setBounds(165, 31, 24, 26);
-		panel_2.add(btnBuscarPersona);
+		btnBuscarProveedor.setBounds(165, 31, 24, 26);
+		panel_2.add(btnBuscarProveedor);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setLayout(null);
