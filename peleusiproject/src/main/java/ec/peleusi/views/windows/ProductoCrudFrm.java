@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
@@ -111,7 +110,6 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private TarifaIce tarifaIce = new TarifaIce();
 	private JComboBox<TarifaIce> cmbIce;
 	private JComboBox<TarifaIva> cmbIva;
-	private JLabel label;
 	private JLabel label_1;
 	private JLabel lblCostoLote;
 	private JFormattedTextField txtCostoLote;
@@ -120,6 +118,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private PrecioProducto precioProducto;
 	Producto producto;
 	String error;
+	private JCheckBox chkTieneIva;
 
 	public ProductoCrudFrm() {
 		setTitle("Productos");
@@ -299,6 +298,16 @@ public class ProductoCrudFrm extends JInternalFrame {
 		List<Seteo> listaSeteo;
 		listaSeteo = seteoController.seteoList();
 		tarifaIva = listaSeteo.get(0).getTarifaIva();
+		List<TarifaIva> listaTarifaIva = new ArrayList<TarifaIva>();
+		listaTarifaIva.add(tarifaIva);
+		cmbIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void cargarComboTarifaIvaCero() {
+		tarifaIva = new TarifaIva();
+		tarifaIva.setNombre("IVA 0%");
+		tarifaIva.setPorcentaje(0.0);
 		List<TarifaIva> listaTarifaIva = new ArrayList<TarifaIva>();
 		listaTarifaIva.add(tarifaIva);
 		cmbIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
@@ -589,30 +598,47 @@ public class ProductoCrudFrm extends JInternalFrame {
 		lblCostoLote.setBounds(10, 154, 92, 14);
 		pnlConfigPrecios.add(lblCostoLote);
 
-		label = new JLabel("IVA*");
-		label.setBounds(10, 11, 46, 14);
-		pnlConfigPrecios.add(label);
-		label.setHorizontalAlignment(SwingConstants.LEFT);
-
 		cmbIva = new JComboBox<TarifaIva>();
+		cmbIva.setVisible(false);
 		cmbIva.setToolTipText("");
 		cmbIva.setEnabled(false);
-		cmbIva.setBounds(46, 11, 131, 20);
+		cmbIva.setBounds(432, 39, 131, 20);
 		pnlConfigPrecios.add(cmbIva);
 
 		cmbIce = new JComboBox<TarifaIce>();
-		cmbIce.setBounds(230, 11, 131, 20);
+		cmbIce.setBounds(102, 11, 131, 20);
 		pnlConfigPrecios.add(cmbIce);
 
 		label_1 = new JLabel("ICE*");
-		label_1.setBounds(199, 14, 46, 14);
+		label_1.setBounds(10, 14, 46, 14);
 		pnlConfigPrecios.add(label_1);
 
 		txtCostoLote = new JFormattedTextField();
 		txtCostoLote.setEditable(false);
 		txtCostoLote.setText("0");
-		txtCostoLote.setBounds(102, 154, 86, 20);
+		txtCostoLote.setBounds(102, 151, 86, 20);
 		pnlConfigPrecios.add(txtCostoLote);
+
+		chkTieneIva = new JCheckBox("Tiene IVA");
+		chkTieneIva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chkTieneIva.isSelected()) {
+					cargarComboTarifaIva();
+					actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
+							Double.parseDouble(txtCostoUnitario.getText()), -1);
+					actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
+							-1);
+				} else {
+					cargarComboTarifaIvaCero();
+					actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
+							Double.parseDouble(txtCostoUnitario.getText()), -1);
+					actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
+							-1);
+				}
+			}
+		});
+		chkTieneIva.setBounds(432, 10, 97, 23);
+		pnlConfigPrecios.add(chkTieneIva);
 		cmbIce.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
@@ -823,6 +849,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		txtCostoUnitario.setText("0");
 		txtCostoLote.setText("0");
 		txtCostoCompra.setText("0");
+		chkTieneIva.setSelected(true);
 		txtCodigo.requestFocus();
 	}
 
