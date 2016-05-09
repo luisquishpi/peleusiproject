@@ -9,10 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import ec.peleusi.controllers.PrecioProductoController;
+import ec.peleusi.controllers.ProductoPrecioController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.TipoPrecioController;
-import ec.peleusi.models.entities.PrecioProducto;
+import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.TipoPrecio;
 
@@ -92,7 +92,7 @@ public class ProductoListModalFrm extends JDialog {
 		scrollPane.setViewportView(tblProductos);
 	}
 
-	private Object[] agregarDatosAFila(Producto producto, List<PrecioProducto> listaPrecioProducto) {
+	private Object[] agregarDatosAFila(Producto producto, List<ProductoPrecio> listaPrecioProducto) {
 		filaDatos[0] = producto.getId();
 		filaDatos[1] = producto.getCodigo();
 		filaDatos[2] = producto.getNombre();
@@ -107,8 +107,8 @@ public class ProductoListModalFrm extends JDialog {
 		ProductoController productoController = new ProductoController();
 		List<Producto> listaProducto = productoController.productoList();
 		for (Producto producto : listaProducto) {
-			PrecioProductoController precioProductoController = new PrecioProductoController();
-			List<PrecioProducto> listaPrecioProducto = precioProductoController.precioProductoList(producto);
+			ProductoPrecioController precioProductoController = new ProductoPrecioController();
+			List<ProductoPrecio> listaPrecioProducto = precioProductoController.productoPrecioList(producto);
 			modelo.addRow(agregarDatosAFila(producto, listaPrecioProducto));
 		}
 	}

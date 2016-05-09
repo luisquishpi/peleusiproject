@@ -34,7 +34,7 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ec.peleusi.controllers.PrecioProductoController;
+import ec.peleusi.controllers.ProductoPrecioController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIceController;
@@ -42,7 +42,7 @@ import ec.peleusi.controllers.TipoGastoDeducibleController;
 import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.controllers.UnidadMedidaController;
 import ec.peleusi.models.entities.CategoriaProducto;
-import ec.peleusi.models.entities.PrecioProducto;
+import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.TarifaIce;
@@ -115,7 +115,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private JFormattedTextField txtCostoLote;
 	private JLabel lblPrecioDeCompra;
 	private JFormattedTextField txtCostoCompra;
-	private PrecioProducto precioProducto;
+	private ProductoPrecio productoPrecio;
 	Producto producto;
 	String error;
 	private JCheckBox chkTieneIva;
@@ -624,16 +624,10 @@ public class ProductoCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (chkTieneIva.isSelected()) {
 					cargarComboTarifaIva();
-					actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-							Double.parseDouble(txtCostoUnitario.getText()), -1);
-					actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
-							-1);
+					actualizaConValoresTodasLasTablas();
 				} else {
 					cargarComboTarifaIvaCero();
-					actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-							Double.parseDouble(txtCostoUnitario.getText()), -1);
-					actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
-							-1);
+					actualizaConValoresTodasLasTablas();
 				}
 			}
 		});
@@ -641,10 +635,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		pnlConfigPrecios.add(chkTieneIva);
 		cmbIce.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-						Double.parseDouble(txtCostoUnitario.getText()), -1);
-				actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
-						-1);
+				actualizaConValoresTodasLasTablas();
 			}
 		});
 
@@ -705,12 +696,12 @@ public class ProductoCrudFrm extends JInternalFrame {
 		producto.setStockMinimo(Double.parseDouble(txtStockMinimo.getText()));
 		producto.setFechaActualizacion(new Date());
 		producto.setCategoriaProducto(categoriaProducto);
-		producto.setTarifaIva((TarifaIva) cmbIva.getSelectedItem());
 		producto.setTarifaIce((TarifaIce) cmbIce.getSelectedItem());
 		producto.setUnidadMedidaCompra((UnidadMedida) cmbUnidadMedidaCompra.getSelectedItem());
 		producto.setCantidadUnidadMedidaCompra(Double.parseDouble(txtCantidadCompra.getText()));
 		producto.setUnidadMedidaVenta((UnidadMedida) cmbUnidadMedidaVenta.getSelectedItem());
 		producto.setCantidadUnidadMedidaVenta(Double.parseDouble(txtCantidadVenta.getText()));
+		producto.setTieneIva(chkTieneIva.isSelected());
 	}
 
 	private void crearEventos() {
@@ -736,25 +727,25 @@ public class ProductoCrudFrm extends JInternalFrame {
 					listaTipoPrecio = tipoPrecioController.tipoPrecioList();
 					int i = 0;
 					for (TipoPrecio tipoPrecio : listaTipoPrecio) {
-						precioProducto = new PrecioProducto();
+						productoPrecio = new ProductoPrecio();
 
-						precioProducto.setProducto(producto);
-						precioProducto.setTipoPrecio(tipoPrecio);
-						precioProducto.setPorcentajeUtilidadUnitario(
+						productoPrecio.setProducto(producto);
+						productoPrecio.setTipoPrecio(tipoPrecio);
+						productoPrecio.setPorcentajeUtilidadUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 1).toString()));
-						precioProducto.setPorcentajeUtilidadLote(
+						productoPrecio.setPorcentajeUtilidadLote(
 								Double.parseDouble(modeloPreciosLote.getValueAt(i, 1).toString()));
-						precioProducto.setPrecioBrutoUnitario(
+						productoPrecio.setPrecioBrutoUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 2).toString()));
-						precioProducto
+						productoPrecio
 								.setPrecioBrutoLote(Double.parseDouble(modeloPreciosLote.getValueAt(i, 2).toString()));
-						precioProducto.setUtilidadUnitario(
+						productoPrecio.setUtilidadUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 6).toString()));
-						precioProducto
+						productoPrecio
 								.setUtilidadLote(Double.parseDouble(modeloPreciosLote.getValueAt(i, 6).toString()));
 
-						PrecioProductoController precioProductoController = new PrecioProductoController();
-						error = precioProductoController.createPrecioProducto(precioProducto);
+						ProductoPrecioController productoPrecioController = new ProductoPrecioController();
+						error = productoPrecioController.createProductoPrecio(productoPrecio);
 						if (error == null) {
 							numeroVecesGuardadoCorrectamente++;
 						}
@@ -851,6 +842,14 @@ public class ProductoCrudFrm extends JInternalFrame {
 		txtCostoCompra.setText("0");
 		chkTieneIva.setSelected(true);
 		txtCodigo.requestFocus();
+		chkTieneIva.setSelected(true);
+		actualizaConValoresTodasLasTablas();
+	}
+
+	private void actualizaConValoresTodasLasTablas() {
+		actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
+				Double.parseDouble(txtCostoUnitario.getText()), -1);
+		actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()), -1);
 	}
 
 	private boolean isCamposLlenos() {
@@ -873,9 +872,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		Double costoUnitario = (Double.parseDouble(txtCostoCompra.getText())
 				* Double.parseDouble(txtCantidadVenta.getText())) / Double.parseDouble(txtCantidadCompra.getText());
 		txtCostoUnitario.setText(costoUnitario.toString());
-		actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-				Double.parseDouble(txtCostoUnitario.getText()), -1);
-		actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()), -1);
+		actualizaConValoresTodasLasTablas();
 	}
 
 	private class CustomCellRenderer extends DefaultTableCellRenderer {

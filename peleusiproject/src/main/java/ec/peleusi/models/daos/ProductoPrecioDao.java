@@ -6,22 +6,22 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import ec.peleusi.models.entities.PrecioProducto;
+import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.utils.HibernateUtil;
 
-public class PrecioProductoDao extends GenericDao<PrecioProducto, Integer> {
+public class ProductoPrecioDao extends GenericDao<ProductoPrecio, Integer> {
 
-	public PrecioProductoDao() {
-		super(PrecioProducto.class);
+	public ProductoPrecioDao() {
+		super(ProductoPrecio.class);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<PrecioProducto> precioProductoList(Producto producto) {
+	public List<ProductoPrecio> productoPrecioList(Producto producto) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			session.beginTransaction();
-			Query query = session.createQuery("from PrecioProducto T WHERE T.producto = :producto");
+			Query query = session.createQuery("from ProductoPrecio T WHERE T.producto = :producto");
 			query.setParameter("producto", producto);
 			if (!query.list().isEmpty()) {
 				return query.list();

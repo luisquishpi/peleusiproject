@@ -70,9 +70,6 @@ public class Producto {
 	private CategoriaProducto categoriaProducto;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private TarifaIva tarifaIva;
-
-	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private TarifaIce tarifaIce;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
@@ -208,14 +205,6 @@ public class Producto {
 
 	public void setCategoriaProducto(CategoriaProducto categoriaProducto) {
 		this.categoriaProducto = categoriaProducto;
-	}
-
-	public TarifaIva getTarifaIva() {
-		return tarifaIva;
-	}
-
-	public void setTarifaIva(TarifaIva tarifaIva) {
-		this.tarifaIva = tarifaIva;
 	}
 
 	public TarifaIce getTarifaIce() {
