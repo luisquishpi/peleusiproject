@@ -125,7 +125,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 			public void mouseMoved(MouseEvent arg0) {
 			}
 		});
-		btnNuevo.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
@@ -135,7 +135,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 			public void mouseMoved(MouseEvent arg0) {
 			}
 		});
-		btnEditar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
 		btnEditar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
@@ -145,7 +145,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 			public void mouseMoved(MouseEvent arg0) {
 			}
 		});
-		btnEliminar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
@@ -155,7 +155,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 			public void mouseMoved(MouseEvent arg0) {
 			}
 		});
-		btnCancelar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(432, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -169,7 +169,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(PersonaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnBuscar.setBounds(466, 8, 119, 41);
 		panelCuerpo.add(btnBuscar);
 
