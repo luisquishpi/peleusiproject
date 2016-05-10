@@ -32,6 +32,8 @@ public class PrincipalFrm extends JFrame {
 	private TipoPagoListFrm tipoPagoListFrm;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm;
 	private TipoRetencionListFrm tipoRetencionListFrm;
+	private ClienteListFrm clienteListFrm;
+	private SeteoCrudFrm seteoCrudFrm;
 	private JDesktopPane dpContenedor;
 
 	public static void main(String[] args) {
@@ -215,6 +217,30 @@ public class PrincipalFrm extends JFrame {
 			}
 		});
 		mnMaestros.add(mntmTiposDeRetencin);
+		
+		JMenuItem mntmSeteos = new JMenuItem("Seteos");
+		mntmSeteos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (seteoCrudFrm == null || seteoCrudFrm.isClosed()) {
+					seteoCrudFrm = new SeteoCrudFrm();
+					dpContenedor.add(seteoCrudFrm);
+					seteoCrudFrm.show();
+				}
+			}
+		});
+		mnMaestros.add(mntmSeteos);
+		
+		JMenuItem mntmListaDeClientes = new JMenuItem("Lista de Clientes");
+		mntmListaDeClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (clienteListFrm == null || clienteListFrm.isClosed()) {
+					clienteListFrm = new ClienteListFrm();
+					dpContenedor.add(clienteListFrm);
+					clienteListFrm.show();
+				}
+			}
+		});
+		mnMaestros.add(mntmListaDeClientes);
 		
 		JMenu mnConfiguraciones = new JMenu("Configuraciones");
 		menuBar.add(mnConfiguraciones);

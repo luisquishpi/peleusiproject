@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
@@ -35,7 +34,7 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ec.peleusi.controllers.PrecioProductoController;
+import ec.peleusi.controllers.ProductoPrecioController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIceController;
@@ -43,7 +42,7 @@ import ec.peleusi.controllers.TipoGastoDeducibleController;
 import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.controllers.UnidadMedidaController;
 import ec.peleusi.models.entities.CategoriaProducto;
-import ec.peleusi.models.entities.PrecioProducto;
+import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.TarifaIce;
@@ -111,15 +110,15 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private TarifaIce tarifaIce = new TarifaIce();
 	private JComboBox<TarifaIce> cmbIce;
 	private JComboBox<TarifaIva> cmbIva;
-	private JLabel label;
 	private JLabel label_1;
 	private JLabel lblCostoLote;
 	private JFormattedTextField txtCostoLote;
 	private JLabel lblPrecioDeCompra;
 	private JFormattedTextField txtCostoCompra;
-	private PrecioProducto precioProducto;
+	private ProductoPrecio productoPrecio;
 	Producto producto;
 	String error;
+	private JCheckBox chkTieneIva;
 
 	public ProductoCrudFrm() {
 		setTitle("Productos");
@@ -299,6 +298,16 @@ public class ProductoCrudFrm extends JInternalFrame {
 		List<Seteo> listaSeteo;
 		listaSeteo = seteoController.seteoList();
 		tarifaIva = listaSeteo.get(0).getTarifaIva();
+		List<TarifaIva> listaTarifaIva = new ArrayList<TarifaIva>();
+		listaTarifaIva.add(tarifaIva);
+		cmbIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void cargarComboTarifaIvaCero() {
+		tarifaIva = new TarifaIva();
+		tarifaIva.setNombre("IVA 0%");
+		tarifaIva.setPorcentaje(0.0);
 		List<TarifaIva> listaTarifaIva = new ArrayList<TarifaIva>();
 		listaTarifaIva.add(tarifaIva);
 		cmbIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
@@ -589,36 +598,44 @@ public class ProductoCrudFrm extends JInternalFrame {
 		lblCostoLote.setBounds(10, 154, 92, 14);
 		pnlConfigPrecios.add(lblCostoLote);
 
-		label = new JLabel("IVA*");
-		label.setBounds(10, 11, 46, 14);
-		pnlConfigPrecios.add(label);
-		label.setHorizontalAlignment(SwingConstants.LEFT);
-
 		cmbIva = new JComboBox<TarifaIva>();
+		cmbIva.setVisible(false);
 		cmbIva.setToolTipText("");
 		cmbIva.setEnabled(false);
-		cmbIva.setBounds(46, 11, 131, 20);
+		cmbIva.setBounds(432, 39, 131, 20);
 		pnlConfigPrecios.add(cmbIva);
 
 		cmbIce = new JComboBox<TarifaIce>();
-		cmbIce.setBounds(230, 11, 131, 20);
+		cmbIce.setBounds(102, 11, 131, 20);
 		pnlConfigPrecios.add(cmbIce);
 
 		label_1 = new JLabel("ICE*");
-		label_1.setBounds(199, 14, 46, 14);
+		label_1.setBounds(10, 14, 46, 14);
 		pnlConfigPrecios.add(label_1);
 
 		txtCostoLote = new JFormattedTextField();
 		txtCostoLote.setEditable(false);
 		txtCostoLote.setText("0");
-		txtCostoLote.setBounds(102, 154, 86, 20);
+		txtCostoLote.setBounds(102, 151, 86, 20);
 		pnlConfigPrecios.add(txtCostoLote);
+
+		chkTieneIva = new JCheckBox("Tiene IVA");
+		chkTieneIva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chkTieneIva.isSelected()) {
+					cargarComboTarifaIva();
+					actualizaConValoresTodasLasTablas();
+				} else {
+					cargarComboTarifaIvaCero();
+					actualizaConValoresTodasLasTablas();
+				}
+			}
+		});
+		chkTieneIva.setBounds(432, 10, 97, 23);
+		pnlConfigPrecios.add(chkTieneIva);
 		cmbIce.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-						Double.parseDouble(txtCostoUnitario.getText()), -1);
-				actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
-						-1);
+				actualizaConValoresTodasLasTablas();
 			}
 		});
 
@@ -679,12 +696,12 @@ public class ProductoCrudFrm extends JInternalFrame {
 		producto.setStockMinimo(Double.parseDouble(txtStockMinimo.getText()));
 		producto.setFechaActualizacion(new Date());
 		producto.setCategoriaProducto(categoriaProducto);
-		producto.setTarifaIva((TarifaIva) cmbIva.getSelectedItem());
 		producto.setTarifaIce((TarifaIce) cmbIce.getSelectedItem());
 		producto.setUnidadMedidaCompra((UnidadMedida) cmbUnidadMedidaCompra.getSelectedItem());
 		producto.setCantidadUnidadMedidaCompra(Double.parseDouble(txtCantidadCompra.getText()));
 		producto.setUnidadMedidaVenta((UnidadMedida) cmbUnidadMedidaVenta.getSelectedItem());
 		producto.setCantidadUnidadMedidaVenta(Double.parseDouble(txtCantidadVenta.getText()));
+		producto.setTieneIva(chkTieneIva.isSelected());
 	}
 
 	private void crearEventos() {
@@ -710,25 +727,25 @@ public class ProductoCrudFrm extends JInternalFrame {
 					listaTipoPrecio = tipoPrecioController.tipoPrecioList();
 					int i = 0;
 					for (TipoPrecio tipoPrecio : listaTipoPrecio) {
-						precioProducto = new PrecioProducto();
+						productoPrecio = new ProductoPrecio();
 
-						precioProducto.setProducto(producto);
-						precioProducto.setTipoPrecio(tipoPrecio);
-						precioProducto.setPorcentajeUtilidadUnitario(
+						productoPrecio.setProducto(producto);
+						productoPrecio.setTipoPrecio(tipoPrecio);
+						productoPrecio.setPorcentajeUtilidadUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 1).toString()));
-						precioProducto.setPorcentajeUtilidadLote(
+						productoPrecio.setPorcentajeUtilidadLote(
 								Double.parseDouble(modeloPreciosLote.getValueAt(i, 1).toString()));
-						precioProducto.setPrecioBrutoUnitario(
+						productoPrecio.setPrecioBrutoUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 2).toString()));
-						precioProducto
+						productoPrecio
 								.setPrecioBrutoLote(Double.parseDouble(modeloPreciosLote.getValueAt(i, 2).toString()));
-						precioProducto.setUtilidadUnitario(
+						productoPrecio.setUtilidadUnitario(
 								Double.parseDouble(modeloPreciosUnitario.getValueAt(i, 6).toString()));
-						precioProducto
+						productoPrecio
 								.setUtilidadLote(Double.parseDouble(modeloPreciosLote.getValueAt(i, 6).toString()));
 
-						PrecioProductoController precioProductoController = new PrecioProductoController();
-						error = precioProductoController.createPrecioProducto(precioProducto);
+						ProductoPrecioController productoPrecioController = new ProductoPrecioController();
+						error = productoPrecioController.createProductoPrecio(productoPrecio);
 						if (error == null) {
 							numeroVecesGuardadoCorrectamente++;
 						}
@@ -823,7 +840,16 @@ public class ProductoCrudFrm extends JInternalFrame {
 		txtCostoUnitario.setText("0");
 		txtCostoLote.setText("0");
 		txtCostoCompra.setText("0");
+		chkTieneIva.setSelected(true);
 		txtCodigo.requestFocus();
+		chkTieneIva.setSelected(true);
+		actualizaConValoresTodasLasTablas();
+	}
+
+	private void actualizaConValoresTodasLasTablas() {
+		actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
+				Double.parseDouble(txtCostoUnitario.getText()), -1);
+		actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()), -1);
 	}
 
 	private boolean isCamposLlenos() {
@@ -846,9 +872,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		Double costoUnitario = (Double.parseDouble(txtCostoCompra.getText())
 				* Double.parseDouble(txtCantidadVenta.getText())) / Double.parseDouble(txtCantidadCompra.getText());
 		txtCostoUnitario.setText(costoUnitario.toString());
-		actualizarValoresEnTabla(modeloPreciosUnitario, tblPreciosUnitario,
-				Double.parseDouble(txtCostoUnitario.getText()), -1);
-		actualizarValoresEnTabla(modeloPreciosLote, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()), -1);
+		actualizaConValoresTodasLasTablas();
 	}
 
 	private class CustomCellRenderer extends DefaultTableCellRenderer {
