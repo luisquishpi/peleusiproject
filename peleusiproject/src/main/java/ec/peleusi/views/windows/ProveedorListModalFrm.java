@@ -19,10 +19,7 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import ec.peleusi.controllers.ClienteController;
 import ec.peleusi.controllers.ProveedorController;
-import ec.peleusi.models.entities.Cliente;
 import ec.peleusi.models.entities.Proveedor;
 
 public class ProveedorListModalFrm extends javax.swing.JDialog  {
@@ -174,7 +171,7 @@ public class ProveedorListModalFrm extends javax.swing.JDialog  {
 			public void actionPerformed(ActionEvent e) {
 				
 				ProveedorController proveedorController = new ProveedorController();
-				List<Proveedor> listaProveedor = proveedorController.ProveedorList(txtBuscar.getText());
+				List<Proveedor> listaProveedor = proveedorController.getProveedorList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (Proveedor proveedor : listaProveedor) {

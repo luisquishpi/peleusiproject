@@ -106,6 +106,7 @@ public class ProveedorListFrm extends JInternalFrame {
 		}
 
 	}
+	@SuppressWarnings("unused")
 	private void cargarDireccionProveedor(Proveedor proveedor)
 	{
 		
@@ -160,7 +161,7 @@ public class ProveedorListFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ProveedorController proveedorController = new ProveedorController();
-				List<Proveedor> listaProveedor = proveedorController.ProveedorList(txtBuscar.getText());
+				List<Proveedor> listaProveedor = proveedorController.getProveedorList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (Proveedor proveedor : listaProveedor) {

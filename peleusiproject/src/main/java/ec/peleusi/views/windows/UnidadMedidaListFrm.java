@@ -113,9 +113,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		}
 	}
 
-		
 	private void crearEventos() {
-
 		unidadMedidaCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -150,7 +148,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-				List<UnidadMedida> listaUnidadMedida = unidadMedidaController.UnidadMedidaList(txtBuscar.getText());
+				List<UnidadMedida> listaUnidadMedida = unidadMedidaController.getUnidadMedidaList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (UnidadMedida unidadMedida : listaUnidadMedida) {
@@ -159,7 +157,6 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 			}
 		});
 	}
-	
 
 	private void crearControles() {
 		setIconifiable(true);
