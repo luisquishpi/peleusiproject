@@ -151,7 +151,7 @@ public class CiudadListModalFrm extends JDialog {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CiudadController ciudadController = new CiudadController();
-				List<Ciudad> listaCiudad = ciudadController.CiudadList(txtBuscar.getText());
+				List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (Ciudad ciudad : listaCiudad) {
