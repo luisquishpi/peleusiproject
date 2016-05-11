@@ -23,16 +23,19 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
+	private TipoPago tipoPagoReturn;
+	final int limitecaja = 15;
+	public TipoPago geTipoPago;
 
 	public TipoPagoCrudFrm() {
 		setTitle("Tipo Pago");
 		crearControles();
 		crearEventos();
-	}
+		limpiarCampos();
+		}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
+		
 		setBounds(100, 100, 611, 225);
 
 		JPanel panelCabecera = new JPanel();
@@ -73,47 +76,49 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 		txtNombre.setColumns(10);
 		txtNombre.setBounds(106, 39, 210, 20);
 		panelCuerpo.add(txtNombre);
-	}
-
-	private void setClosable(boolean b) {
-		// TODO Auto-generated method stub
+	
 		
-	}
-
-	private void setIconifiable(boolean b) {
-		// TODO Auto-generated method stub
+			
+				
 		
+		}
+	
+	private void guardarNuevoTipoPago(){
+		
+		TipoPago tipoPago = new TipoPago(txtNombre.getText());
+		TipoPagoController tipoPagoController =new TipoPagoController();
+		String error = tipoPagoController.createTipoPago(tipoPago);
+		if(error==null){
+			JOptionPane.showMessageDialog(null, "Guardado correctamete", "Exito", JOptionPane.PLAIN_MESSAGE);
+			 
+			tipoPagoReturn = tipoPago;
+			limpiarCampos();
+			
+			dispose();
+		} else{
+			JOptionPane.showMessageDialog(null, error, "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
+	
 	private void crearEventos() {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				limpiarCampos();
 			}
 		});
+		
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atención",
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-
-				TipoPago tipoPago = new TipoPago(txtNombre.getText());
-				TipoPagoController tipoPagoController = new TipoPagoController();
-				String error = tipoPagoController.createTipoPago(tipoPago);
-
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado Correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-
-					limpiarCampos();
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-					limpiarCampos();
-				}
+				guardarNuevoTipoPago();
 			}
-
 		});
+		
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -136,4 +141,12 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 		return llenos;
 	}
 
+	public TipoPago getTipoPagoReturn() {
+		return tipoPagoReturn;
+	}
 }
+	
+	
+	
+		
+	
