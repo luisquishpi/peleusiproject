@@ -2,9 +2,9 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -14,13 +14,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.models.entities.TarifaIce;
 import ec.peleusi.utils.Formatos;
 import javax.swing.JFormattedTextField;
 
-public class TarifaIceCrudFrm extends JInternalFrame {
+public class TarifaIceCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -31,6 +30,7 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
 	private JFormattedTextField txtPorcentaje;
+	private TarifaIce tarifaIceRetorno;
 	int limitecaja = 15;
 
 	public TarifaIceCrudFrm() {
@@ -41,8 +41,6 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 	}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
 		setBounds(100, 100, 611, 262);
 
 		JPanel panelCabecera = new JPanel();
@@ -131,7 +129,8 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				TarifaIce tarifaIce = new TarifaIce(txtCodigo.getText(), txtNombre.getText(),
@@ -139,8 +138,9 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 				TarifaIceController tarifaIceController = new TarifaIceController();
 				String error = tarifaIceController.createTarifaIce(tarifaIce);
 				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+					tarifaIceRetorno = tarifaIce;
+					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -158,6 +158,10 @@ public class TarifaIceCrudFrm extends JInternalFrame {
 				dispose();
 			}
 		});
+	}
+
+	public TarifaIce getTarifaIce() {
+		return tarifaIceRetorno;
 	}
 
 	private void limpiarCampos() {

@@ -85,7 +85,7 @@ public class CiudadListFrm extends JInternalFrame {
 		tblCiudad.getColumnModel().getColumn(0).setMaxWidth(0);
 		tblCiudad.getColumnModel().getColumn(0).setMinWidth(0);
 		tblCiudad.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(240);
+		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(443);
 		scrollPane.setViewportView(tblCiudad);
 
 	}
@@ -150,7 +150,7 @@ public class CiudadListFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CiudadController ciudadController = new CiudadController();
-				List<Ciudad> listaCiudad = ciudadController.CiudadList(txtBuscar.getText());
+				List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (Ciudad ciudad : listaCiudad) {

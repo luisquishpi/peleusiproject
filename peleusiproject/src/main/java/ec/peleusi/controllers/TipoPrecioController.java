@@ -21,5 +21,10 @@ public class TipoPrecioController {
 	public List<TipoPrecio> tipoPrecioList() {
 		return tipoPrecioDao.findAll();
 	}
+	
+	public List<TipoPrecio> getTipoPrecioList(String parametro) {
+		return tipoPrecioDao.TipoPrecioList(parametro);
+	}
+
 
 }

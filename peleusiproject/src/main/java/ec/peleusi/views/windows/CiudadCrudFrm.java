@@ -95,6 +95,7 @@ public class CiudadCrudFrm extends JDialog {
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					ciudadRetorno = ciudad;
+					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);

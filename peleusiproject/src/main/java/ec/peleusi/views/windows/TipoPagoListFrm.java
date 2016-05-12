@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 //import com.sun.glass.events.WindowEvent;
 
@@ -20,8 +24,6 @@ import javax.swing.table.DefaultTableModel;
 
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseEvent;
 
 
 public class TipoPagoListFrm extends JInternalFrame{
@@ -37,6 +39,7 @@ public class TipoPagoListFrm extends JInternalFrame{
 	private JButton btnCancelar;
 	private JButton btnBuscar;
 	private JTextField txtBuscar;
+	private TipoPago tipoPago;
 	
 	public TipoPagoListFrm(){
 		setTitle("Listado Tipo de Pago");
@@ -54,14 +57,14 @@ public class TipoPagoListFrm extends JInternalFrame{
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex){
 				if(columnIndex==0){
-				//if(columnIndex==0 || columnIndex==1 ) {
+				
 					return false;
 				}
 				return true;
 			}
 		};
 		filaDatos = new Object[cabecera.length];
-		//cargarTabla();
+		cargarTabla();
 		
 		    tablaTipoPago = new JTable(modelo){
 			private static final long serialVersionUID = 1L;
@@ -70,8 +73,6 @@ public class TipoPagoListFrm extends JInternalFrame{
 				switch(column){
 				case 0:
 					return String.class;
-				//case 1:
-					//return String.class;
 				default:
 					return String.class;
 				}
@@ -91,7 +92,6 @@ public class TipoPagoListFrm extends JInternalFrame{
 		
 		
 	private Object[] agregarDatosAFila(TipoPago tipoPago){
-		//filaDatos[0] = tipoPago.getId();
 		filaDatos[1] = tipoPago.getNombre();
 		return filaDatos;
 			
@@ -178,8 +178,34 @@ public class TipoPagoListFrm extends JInternalFrame{
 		panelCuerpo.add(ScrollPane);
 	}
 	
+	private void capturaYAgregaTipoPagoATabla() {
+		tipoPago = new TipoPago();
+		tipoPago = tipoPagoCrudFrm.getTipoPagoReturn();
+		if (tipoPago != null && tipoPago.getId() != null){
+			System.out.println("Captura TipoPago retornado: " + tipoPago);
+			modelo.addRow(agregarDatosAFila(tipoPago));
+			tablaTipoPago.setRowSelectionInterval(modelo.getRowCount() -1 , modelo.getRowCount() -1);
+		}
+		
+	}
+	/*private void capturaYAgregaTipoRetencionATabla() {
+		tipoRetencion = new TipoRetencion();
+		tipoRetencion = tipoRetencionCrudFrm.getTipoRetencion();
+		if (tipoRetencion != null && tipoRetencion.getId() != null) {
+			System.out.println("Captura TipoRetencion retornado: " + tipoRetencion);
+			modelo.addRow(agregarDatosAFila(tipoRetencion));
+			tblTipoRetencion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		}
+
+	}*/
 		
 	private void crearEventos() {
+		tipoPagoCrudFrm.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				capturaYAgregaTipoPagoATabla();
+			}
+		});
 								
 		btnNuevo.addActionListener(new ActionListener() {
 			

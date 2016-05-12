@@ -16,12 +16,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import ec.peleusi.controllers.UnidadMedidaController;
-import ec.peleusi.models.entities.UnidadMedida;
+import ec.peleusi.controllers.TipoPrecioController;
+import ec.peleusi.models.entities.TipoPrecio;
 
 import java.awt.Font;
 
-public class UnidadMedidaListFrm extends JInternalFrame {
+public class TipoPrecioListFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -33,18 +33,18 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
-	private JTable tblUnidadMedida;
-	private UnidadMedidaCrudFrm unidadMedidaCrudFrm = new UnidadMedidaCrudFrm();
+	private JTable tblTipoPrecio;
+	private TipoPrecioCrudFrm tipoPrecioCrudFrm = new TipoPrecioCrudFrm();
 
-	public UnidadMedidaListFrm() {
-		setTitle("Listado de Unidad de Medida");
+	public TipoPrecioListFrm() {
+		setTitle("Lista de Tipo Precio");
 		crearControles();
 		crearEventos();
 		crearTabla();
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre", "Abreviatura" };
+		Object[] cabecera = { "Id", "Nombre", "Porcentaje" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -58,7 +58,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		};
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
-		tblUnidadMedida = new JTable(modelo) {
+		tblTipoPrecio = new JTable(modelo) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -76,56 +76,55 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 				}
 			}
 		};
-		tblUnidadMedida.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblUnidadMedida.setPreferredScrollableViewportSize(tblUnidadMedida.getPreferredSize());
-		tblUnidadMedida.getTableHeader().setReorderingAllowed(true);
-		tblUnidadMedida.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(0).setMinWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(1).setPreferredWidth(240);
-		tblUnidadMedida.getColumnModel().getColumn(2).setPreferredWidth(187);
-		scrollPane.setViewportView(tblUnidadMedida);
+		tblTipoPrecio.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTipoPrecio.setPreferredScrollableViewportSize(tblTipoPrecio.getPreferredSize());
+		tblTipoPrecio.getTableHeader().setReorderingAllowed(true);
+		tblTipoPrecio.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblTipoPrecio.getColumnModel().getColumn(0).setMinWidth(0);
+		tblTipoPrecio.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tblTipoPrecio.getColumnModel().getColumn(1).setPreferredWidth(250);
+		tblTipoPrecio.getColumnModel().getColumn(2).setPreferredWidth(193);
+		scrollPane.setViewportView(tblTipoPrecio);
 
 	}
 
-	private Object[] agregarDatosAFila(UnidadMedida unidadMedida) {
-		filaDatos[0] = unidadMedida.getId();
-		filaDatos[1] = unidadMedida.getNombre();
-		filaDatos[2] = unidadMedida.getAbreviatura();
+	private Object[] agregarDatosAFila(TipoPrecio tipoPrecio) {
+		filaDatos[0] = tipoPrecio.getId();
+		filaDatos[1] = tipoPrecio.getNombre();
+		filaDatos[2] = tipoPrecio.getPorcentaje();
 		return filaDatos;
 	}
 
 	private void cargarTabla() {
-		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-		List<UnidadMedida> listaUnidadMedida = unidadMedidaController.UnidadMedidaList();
-		for (UnidadMedida unidadMedida : listaUnidadMedida) {
-			modelo.addRow(agregarDatosAFila(unidadMedida));
+		TipoPrecioController tipoPrecioController = new TipoPrecioController();
+		List<TipoPrecio> listaTipoPrecio = tipoPrecioController.tipoPrecioList();
+		for (TipoPrecio tipoPrecio : listaTipoPrecio) {
+			modelo.addRow(agregarDatosAFila(tipoPrecio));
 		}
 	}
 
-	private void capturaYAgregaUnidadMedidaATabla() {
-		UnidadMedida unidadMedida = new UnidadMedida();
-		unidadMedida = unidadMedidaCrudFrm.getUnidadMedida();
-		System.out.println("Captura UnidadMedida retornado: " + unidadMedida);
-		if (unidadMedida != null && unidadMedida.getId() != null) {
-			modelo.addRow(agregarDatosAFila(unidadMedida));
-			tblUnidadMedida.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+	private void capturaYAgregaTipoPrecioATabla() {
+		TipoPrecio tipoPrecio = new TipoPrecio();
+		tipoPrecio = tipoPrecioCrudFrm.getTipoPrecio();
+		if (tipoPrecio != null && tipoPrecio.getId() != null) {
+			modelo.addRow(agregarDatosAFila(tipoPrecio));
+			tblTipoPrecio.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 	}
 
 	private void crearEventos() {
-		unidadMedidaCrudFrm.addWindowListener(new WindowAdapter() {
+		tipoPrecioCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaUnidadMedidaATabla();
+				capturaYAgregaTipoPrecioATabla();
 			}
 		});
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!unidadMedidaCrudFrm.isVisible()) {
-					unidadMedidaCrudFrm.setModal(true);
-					unidadMedidaCrudFrm.setVisible(true);
+				if (!tipoPrecioCrudFrm.isVisible()) {
+					tipoPrecioCrudFrm.setModal(true);
+					tipoPrecioCrudFrm.setVisible(true);
 				}
 			}
 		});
@@ -147,12 +146,12 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-				List<UnidadMedida> listaUnidadMedida = unidadMedidaController.getUnidadMedidaList(txtBuscar.getText());
+				TipoPrecioController tipoPrecioController = new TipoPrecioController();
+				List<TipoPrecio> listaTipoPrecio = tipoPrecioController.getTipoPrecioList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
-				for (UnidadMedida unidadMedida : listaUnidadMedida) {
-					modelo.addRow(agregarDatosAFila(unidadMedida));
+				for (TipoPrecio tipoPrecio : listaTipoPrecio) {
+					modelo.addRow(agregarDatosAFila(tipoPrecio));
 				}
 			}
 		});
@@ -170,24 +169,22 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
 		btnEditar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar
-				.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar
-				.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -202,7 +199,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnBuscar.setBounds(466, 8, 119, 41);
 		panelCuerpo.add(btnBuscar);
 

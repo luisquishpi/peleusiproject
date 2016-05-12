@@ -2,9 +2,9 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -12,13 +12,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.utils.Formatos;
 import javax.swing.JFormattedTextField;
 
-public class TipoPrecioCrudFrm extends JInternalFrame {
+public class TipoPrecioCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -28,6 +27,7 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JFormattedTextField txtPorcentaje;
+	private TipoPrecio tipoPrecioRetorno;
 	
 	
 	public TipoPrecioCrudFrm() {
@@ -38,8 +38,6 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 	}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
 		setBounds(100, 100, 611, 224);
 
 		JPanel panelCabecera = new JPanel();
@@ -114,6 +112,8 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
 							JOptionPane.PLAIN_MESSAGE);
+					tipoPrecioRetorno = tipoPrecio;
+					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -132,6 +132,10 @@ public class TipoPrecioCrudFrm extends JInternalFrame {
 				dispose();
 			}
 		});
+	}
+	
+	public TipoPrecio getTipoPrecio() {
+		return tipoPrecioRetorno;
 	}
 
 	private void limpiarCampos() {

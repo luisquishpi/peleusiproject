@@ -16,12 +16,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import ec.peleusi.controllers.UnidadMedidaController;
-import ec.peleusi.models.entities.UnidadMedida;
+import ec.peleusi.controllers.TarifaIvaController;
+import ec.peleusi.models.entities.TarifaIva;
 
 import java.awt.Font;
 
-public class UnidadMedidaListFrm extends JInternalFrame {
+public class TarifaIvaListFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -33,24 +33,24 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
-	private JTable tblUnidadMedida;
-	private UnidadMedidaCrudFrm unidadMedidaCrudFrm = new UnidadMedidaCrudFrm();
+	private JTable tblTarifaIva;
+	private TarifaIvaCrudFrm tarifaIvaCrudFrm = new TarifaIvaCrudFrm();
 
-	public UnidadMedidaListFrm() {
-		setTitle("Listado de Unidad de Medida");
+	public TarifaIvaListFrm() {
+		setTitle("Lista de las Tarifas IVA");
 		crearControles();
 		crearEventos();
 		crearTabla();
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre", "Abreviatura" };
+		Object[] cabecera = { "Id", "Còdigo", "Nombre", "Porcentaje" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2) {
+				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
 					return false;
 				}
 				return true;
@@ -58,7 +58,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		};
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
-		tblUnidadMedida = new JTable(modelo) {
+		tblTarifaIva = new JTable(modelo) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -71,61 +71,64 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 					return String.class;
 				case 2:
 					return String.class;
+				case 3:
+					return String.class;
 				default:
 					return String.class;
 				}
 			}
 		};
-		tblUnidadMedida.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblUnidadMedida.setPreferredScrollableViewportSize(tblUnidadMedida.getPreferredSize());
-		tblUnidadMedida.getTableHeader().setReorderingAllowed(true);
-		tblUnidadMedida.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(0).setMinWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(1).setPreferredWidth(240);
-		tblUnidadMedida.getColumnModel().getColumn(2).setPreferredWidth(187);
-		scrollPane.setViewportView(tblUnidadMedida);
+		tblTarifaIva.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTarifaIva.setPreferredScrollableViewportSize(tblTarifaIva.getPreferredSize());
+		tblTarifaIva.getTableHeader().setReorderingAllowed(true);
+		tblTarifaIva.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblTarifaIva.getColumnModel().getColumn(0).setMinWidth(0);
+		tblTarifaIva.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tblTarifaIva.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tblTarifaIva.getColumnModel().getColumn(2).setPreferredWidth(200);
+		tblTarifaIva.getColumnModel().getColumn(3).setPreferredWidth(143);
+		scrollPane.setViewportView(tblTarifaIva);
 
 	}
 
-	private Object[] agregarDatosAFila(UnidadMedida unidadMedida) {
-		filaDatos[0] = unidadMedida.getId();
-		filaDatos[1] = unidadMedida.getNombre();
-		filaDatos[2] = unidadMedida.getAbreviatura();
+	private Object[] agregarDatosAFila(TarifaIva tarifaIva) {
+		filaDatos[0] = tarifaIva.getId();
+		filaDatos[1] = tarifaIva.getCodigo();
+		filaDatos[2] = tarifaIva.getNombre();
+		filaDatos[3] = tarifaIva.getPorcentaje();
 		return filaDatos;
 	}
 
 	private void cargarTabla() {
-		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-		List<UnidadMedida> listaUnidadMedida = unidadMedidaController.UnidadMedidaList();
-		for (UnidadMedida unidadMedida : listaUnidadMedida) {
-			modelo.addRow(agregarDatosAFila(unidadMedida));
+		TarifaIvaController tarifaIvaController = new TarifaIvaController();
+		List<TarifaIva> listaTarifaIva = tarifaIvaController.TarifaIvaList();
+		for (TarifaIva tarifaIva : listaTarifaIva) {
+			modelo.addRow(agregarDatosAFila(tarifaIva));
 		}
 	}
 
-	private void capturaYAgregaUnidadMedidaATabla() {
-		UnidadMedida unidadMedida = new UnidadMedida();
-		unidadMedida = unidadMedidaCrudFrm.getUnidadMedida();
-		System.out.println("Captura UnidadMedida retornado: " + unidadMedida);
-		if (unidadMedida != null && unidadMedida.getId() != null) {
-			modelo.addRow(agregarDatosAFila(unidadMedida));
-			tblUnidadMedida.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+	private void capturaYAgregaTarifaIvaATabla() {
+		TarifaIva tarifaIva = new TarifaIva();
+		tarifaIva = tarifaIvaCrudFrm.getTarifaIva();
+		if (tarifaIva != null && tarifaIva.getId() != null) {
+			modelo.addRow(agregarDatosAFila(tarifaIva));
+			tblTarifaIva.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 	}
 
 	private void crearEventos() {
-		unidadMedidaCrudFrm.addWindowListener(new WindowAdapter() {
+		tarifaIvaCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaUnidadMedidaATabla();
+				capturaYAgregaTarifaIvaATabla();
 			}
 		});
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!unidadMedidaCrudFrm.isVisible()) {
-					unidadMedidaCrudFrm.setModal(true);
-					unidadMedidaCrudFrm.setVisible(true);
+				if (!tarifaIvaCrudFrm.isVisible()) {
+					tarifaIvaCrudFrm.setModal(true);
+					tarifaIvaCrudFrm.setVisible(true);
 				}
 			}
 		});
@@ -147,12 +150,12 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-				List<UnidadMedida> listaUnidadMedida = unidadMedidaController.getUnidadMedidaList(txtBuscar.getText());
+				TarifaIvaController tarifaIvaController = new TarifaIvaController();
+				List<TarifaIva> listaTarifaIva = tarifaIvaController.getTarifaIvaList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
-				for (UnidadMedida unidadMedida : listaUnidadMedida) {
-					modelo.addRow(agregarDatosAFila(unidadMedida));
+				for (TarifaIva tarifaIva : listaTarifaIva) {
+					modelo.addRow(agregarDatosAFila(tarifaIva));
 				}
 			}
 		});
@@ -170,24 +173,22 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
 		btnEditar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar
-				.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar
-				.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -202,7 +203,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(UnidadMedidaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 		btnBuscar.setBounds(466, 8, 119, 41);
 		panelCuerpo.add(btnBuscar);
 

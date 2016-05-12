@@ -31,6 +31,7 @@ public class UnidadMedidaCrudFrm extends JDialog {
 		setTitle("Unidad de Medida");
 		crearControles();
 		crearEventos();
+		limpiarCampos();
 	}
 
 	private void limpiarCampos() {
@@ -70,6 +71,7 @@ public class UnidadMedidaCrudFrm extends JDialog {
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					unidadMedidaRetorno = unidadMedida;
+					dispose();	
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);

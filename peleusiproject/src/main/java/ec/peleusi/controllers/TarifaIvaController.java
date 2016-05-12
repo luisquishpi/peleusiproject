@@ -18,8 +18,12 @@ public class TarifaIvaController {
 		return tarifaIvaDao.create(tarifaIva);
 	}
 
-	public List<TarifaIva> tarifaIvaList() {
-		return tarifaIvaDao.findAll();
+	public List<TarifaIva> TarifaIvaList() {
+		return tarifaIvaDao.findAll();		
+	}
+	
+	public List<TarifaIva> getTarifaIvaList(String parametro) {
+		return tarifaIvaDao.TarifaIvaList(parametro);
 	}
 
 }
