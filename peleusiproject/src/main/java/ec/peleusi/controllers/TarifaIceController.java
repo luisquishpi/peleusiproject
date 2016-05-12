@@ -20,4 +20,10 @@ public class TarifaIceController {
 	public List<TarifaIce> tarifaIceList() {
 		return tarifaIceDao.findAll();
 	}
+	
+	public List<TarifaIce> getTarifaIceList(String parametro) {
+		return tarifaIceDao.TarifaIceList(parametro);
+	}
+	
+	
 }
