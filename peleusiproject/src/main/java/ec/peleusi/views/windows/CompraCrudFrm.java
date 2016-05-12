@@ -15,14 +15,19 @@ import javax.swing.JLabel;
 
 import com.toedter.calendar.JDateChooser;
 
+import ec.peleusi.controllers.CompraController;
+import ec.peleusi.controllers.CompraDetalleController;
 import ec.peleusi.controllers.DireccionProveedorController;
-
+import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.ProveedorController;
+import ec.peleusi.controllers.SeteoController;
+import ec.peleusi.models.entities.Compra;
 import ec.peleusi.models.entities.DireccionProveedor;
-
+import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Proveedor;
+import ec.peleusi.models.entities.Seteo;
+import ec.peleusi.models.entities.Sucursal;
 import ec.peleusi.utils.Formatos;
-
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -35,12 +40,15 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import java.util.Calendar;
 import java.util.Date;
-
+import java.util.List;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JFormattedTextField;
+
+import ec.peleusi.models.entities.Usuario;
 
 public class CompraCrudFrm extends JInternalFrame {
 
@@ -89,7 +97,11 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JFormattedTextField txtDiasCredito;
 	private JButton btnBuscarProveedor;
 	private ProveedorListModalFrm proveedorListModalFrm = new ProveedorListModalFrm();
+	private ProductoListModalFrm productoListModalFrm = new ProductoListModalFrm();
 	private Proveedor proveedor;
+	private JDateChooser dtcFechaAutorizacion;
+	private Sucursal sucursal;
+	private Usuario usuario;
 
 	public CompraCrudFrm() {
 
@@ -109,6 +121,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		dtcFechaEmision.setDate(new Date());
 		dtcFechaRegistro.setDate(new Date());
 		dtcFechaVencimiento.setDate(new Date());
+		dtcFechaAutorizacion.setDate(new Date());
 		txtRuc.setText("");
 		txtContribuyente.setText("");
 		txtDireccion.setText("");
@@ -175,6 +188,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		scrollPane.setViewportView(tblProductos);
 		filaDatos = new Object[cabecera.length];
 	}
+	
 
 	public void modificarCantidad() {
 		try {
@@ -233,11 +247,16 @@ public class CompraCrudFrm extends JInternalFrame {
 
 	private void agregarProductosAFila() {
 		try {
+
+			Producto producto = new Producto();
+			ProductoController productoController = new ProductoController();
+			producto = productoController.getProductoCodigo(txtCodigoProducto.getText());
+
 			filaDatos[0] = "1";
-			filaDatos[1] = "codigo";
-			filaDatos[2] = "Nombre";
+			filaDatos[1] = producto.getCodigo();
+			filaDatos[2] = producto.getNombre();
 			filaDatos[3] = 1;
-			filaDatos[4] = 5;
+			filaDatos[4] = producto.getCosto();
 			precioBrutoFila = Double.parseDouble(filaDatos[4].toString());
 			filaDatos[5] = "0";
 			filaDatos[6] = precioBrutoFila * (Double.parseDouble(filaDatos[5].toString()) / 100);
@@ -246,12 +265,11 @@ public class CompraCrudFrm extends JInternalFrame {
 			subtotalFila = precioNetoFila * Double.parseDouble(filaDatos[3].toString());
 			filaDatos[7] = precioNetoFila;
 			filaDatos[8] = subtotalFila;
-			filaDatos[9] = 12;
+			filaDatos[9] = cargarPorcentajeIvaProducto(producto.getTieneIva());
 			valorIvaFila = subtotalFila * (Double.parseDouble(filaDatos[9].toString()) / 100);
 			filaDatos[10] = valorIvaFila;
 			filaDatos[11] = 0;
 			filaDatos[12] = 0;
-
 			valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
 			filaDatos[13] = valorIceFila;
 			filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
@@ -262,6 +280,20 @@ public class CompraCrudFrm extends JInternalFrame {
 
 		} catch (Exception e) {
 		}
+
+	}
+
+	private Double cargarPorcentajeIvaProducto(Boolean productoConIva) {
+
+		double tarifaIva = 0;
+		SeteoController seteoController = new SeteoController();
+		List<Seteo> listaSeteo;
+		listaSeteo = seteoController.seteoList();
+		if (productoConIva == true)
+			tarifaIva = listaSeteo.get(0).getTarifaIva().getPorcentaje();
+		else
+			tarifaIva = 0;
+		return tarifaIva;
 
 	}
 
@@ -336,6 +368,15 @@ public class CompraCrudFrm extends JInternalFrame {
 		}
 	}
 
+	private void llamarVentaProductos() {
+
+		if (!productoListModalFrm.isVisible()) {
+			productoListModalFrm.setModal(true);
+			productoListModalFrm.setVisible(true);
+		}
+
+	}
+
 	private void llamarVentanaProveedor() {
 		if (!proveedorListModalFrm.isVisible()) {
 			proveedorListModalFrm.setModal(true);
@@ -359,7 +400,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		btnBuscarProducto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				agregarProductosAFila();
+				llamarVentaProductos();
 			}
 		});
 
@@ -410,6 +451,48 @@ public class CompraCrudFrm extends JInternalFrame {
 
 			}
 		});
+		txtCodigoProducto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				char cTeclaPrecionada = arg0.getKeyChar();
+				if (cTeclaPrecionada == KeyEvent.VK_ENTER) {
+					agregarProductosAFila();
+				}
+			}
+		});
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				double baseImponibleExentoIva = 0.0;
+				double baseImponibleNoObjetoIva = 0.0;
+				Boolean estado = false;
+				Compra compra = new Compra();
+				CompraController compraController = new CompraController();
+
+				compra.setBaseImponibleExentoIva(baseImponibleExentoIva);
+				compra.setBaseImponibleIva0(Double.parseDouble(txtBaseImponibleIva0.getText()));
+				compra.setBaseImponibleIvaDiferente0(Double.parseDouble(txtBaseImponibleIvaDiferente0.getText()));
+				compra.setBaseImponibleNoObjetoIva(baseImponibleNoObjetoIva);
+				compra.setDiasCredito(Double.parseDouble(txtDiasCredito.getText()));
+				compra.setEstablecimiento(txtEstablecimiento.getText());
+				compra.setEstado(estado);
+				compra.setFechaAutorizacion(dtcFechaAutorizacion.getDate());
+				compra.setFechaEmision(dtcFechaEmision.getDate());
+				compra.setFechaRegistro(dtcFechaRegistro.getDate());
+				compra.setFechaVencimiento(dtcFechaVencimiento.getDate());
+				compra.setMontoIce(Double.parseDouble(txtMontoIce.getText()));
+				compra.setMontoIva(Double.parseDouble(txtMontoIva.getText()));
+				compra.setNumeroAutorizacion(txtAutorizacion.getText());
+				compra.setPuntoEmision(txtPuntoEmision.getText());
+				compra.setSecuencial(txtSecuencial.getText());
+				compra.setValorDescuento(Double.parseDouble(txtDescuento.getText()));
+				compra.setProveedor(proveedor);
+				compra.setSucursal(sucursal);
+				compra.setUsuario(usuario);
+				compraController.createCompra(compra);
+
+			}
+		});
 	}
 
 	public void crearControles() {
@@ -430,6 +513,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
+
 		btnGuardar.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panel.add(btnGuardar);
@@ -580,9 +664,9 @@ public class CompraCrudFrm extends JInternalFrame {
 		dtcFechaEmision.setBounds(117, 70, 97, 20);
 		panel_3.add(dtcFechaEmision);
 
-		JLabel label = new JLabel("Fecha Registro");
-		label.setBounds(124, 92, 97, 14);
-		panel_3.add(label);
+		JLabel lblFechaVencimiento = new JLabel("Fecha Vencimiento");
+		lblFechaVencimiento.setBounds(124, 92, 97, 14);
+		panel_3.add(lblFechaVencimiento);
 
 		dtcFechaVencimiento = new JDateChooser();
 		dtcFechaVencimiento.setBounds(117, 107, 97, 20);
@@ -598,11 +682,20 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtDiasCredito.setFormatterFactory(new Formatos().getIntegerFormat());
 		panel_3.add(txtDiasCredito);
 
+		JLabel label = new JLabel("Fecha Registro");
+		label.setBounds(237, 92, 97, 14);
+		panel_3.add(label);
+
+		dtcFechaAutorizacion = new JDateChooser();
+		dtcFechaAutorizacion.setBounds(230, 107, 97, 20);
+		panel_3.add(dtcFechaAutorizacion);
+
 		JLabel lblProducto = new JLabel("Producto:");
 		lblProducto.setBounds(20, 126, 70, 14);
 		panel_1.add(lblProducto);
 
 		txtCodigoProducto = new JTextField();
+
 		txtCodigoProducto.setPreferredSize(new Dimension(420, 38));
 		txtCodigoProducto.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtCodigoProducto.setBounds(90, 117, 515, 29);

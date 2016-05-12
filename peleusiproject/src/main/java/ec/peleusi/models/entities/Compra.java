@@ -123,11 +123,11 @@ public class Compra {
 		this.id = id;
 	}
 
-	public Proveedor getPersona() {
+	public Proveedor getProveedor() {
 		return proveedor;
 	}
 
-	public void setPersona(Proveedor proveedor) {
+	public void setProveedor(Proveedor proveedor) {
 		this.proveedor = proveedor;
 	}
 

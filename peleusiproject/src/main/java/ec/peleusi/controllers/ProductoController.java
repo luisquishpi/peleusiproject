@@ -21,4 +21,7 @@ public class ProductoController {
 	public List<Producto> productoList() {
 		return productoDao.findAll();
 	}
+	public Producto getProductoCodigo(String codigo) {
+		return productoDao.getProductoCodigo(codigo);
+	}
 }
