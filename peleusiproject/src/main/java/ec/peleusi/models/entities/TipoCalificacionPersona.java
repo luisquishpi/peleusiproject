@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tipocalificacionpersona")
 public class TipoCalificacionPersona {
-	TipoCalificacionPersona(){
+	public TipoCalificacionPersona(){
 	}
 
 	public TipoCalificacionPersona( String nombre){

@@ -2,9 +2,9 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -12,12 +12,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.TipoCalificacionPersonaController;
-//import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.TipoCalificacionPersona;
 
-public class TipoCalificacionPersonaCrudFrm extends JInternalFrame {
+public class TipoCalificacionPersonaCrudFrm extends JDialog{
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -25,6 +23,7 @@ public class TipoCalificacionPersonaCrudFrm extends JInternalFrame {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
+	private TipoCalificacionPersona tipoCalificacionPersonaRetorno;
 
 	public TipoCalificacionPersonaCrudFrm() {
 		setTitle("Tipo Calificación Persona");
@@ -32,9 +31,7 @@ public class TipoCalificacionPersonaCrudFrm extends JInternalFrame {
 		crearEventos();
 	}
 
-	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
+	private void crearControles() {		
 		setBounds(100, 100, 611, 225);
 
 		JPanel panelCabecera = new JPanel();
@@ -100,6 +97,8 @@ public class TipoCalificacionPersonaCrudFrm extends JInternalFrame {
 				String error = tipoCalificacionPersonaController.createTipoCalificacionPersona(tipoCalificacionPersona);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado Correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+					tipoCalificacionPersonaRetorno = tipoCalificacionPersona;
+					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -118,6 +117,11 @@ public class TipoCalificacionPersonaCrudFrm extends JInternalFrame {
 		});
 	}
 
+	public TipoCalificacionPersona getTipoCalificacionPersona() {
+		return tipoCalificacionPersonaRetorno;
+	}
+	
+	
 	private void limpiarCampos() {
 		txtNombre.setText(" ");
 		txtNombre.requestFocus();

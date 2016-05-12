@@ -11,47 +11,46 @@ import javax.persistence.Table;
 
 import ec.peleusi.utils.TipoUsuarioEnum;
 
-
 @Entity
 @Table(name = "usuario")
 
 public class Usuario {
-	public Usuario(){
-		
+
+	public Usuario() {
+
 	}
-	
-	public Usuario(String nombres, String apellidos, String usuario, String contrasenia, TipoUsuarioEnum tipoUsuario ){
+
+	public Usuario(String nombres, String apellidos, String usuario, String contrasenia, TipoUsuarioEnum tipoUsuario) {
 		super();
-		this.id=null;
+		this.id = null;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
 		this.usuario = usuario;
 		this.contrasenia = contrasenia;
-		this.tipousuario = tipoUsuario;
-		
+		this.tipoUsuario = tipoUsuario;
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
-	
-	@Column (name = "nombres", nullable = false)
+
+	@Column(name = "nombres", nullable = false)
 	private String nombres;
-	
-	@Column (name = "apellidos", nullable = false)
+
+	@Column(name = "apellidos", nullable = false)
 	private String apellidos;
-	
-	@Column (name = "usuario", unique = true, nullable = false)
-	//@Column(name = "nombre", unique = true, nullable = false, length = 50)
-	//private String nombre;
+
+	@Column(name = "usuario", unique = true, nullable = false)
+	// @Column(name = "nombre", unique = true, nullable = false, length = 50)
+	// private String nombre;
 	private String usuario;
-	
-	@Column (name = "contrasenia", nullable = false)
+
+	@Column(name = "contrasenia", nullable = false)
 	private String contrasenia;
-	
-	@Column (name = "tipousuario", nullable = false)
-	private TipoUsuarioEnum tipousuario;
+
+	@Column(name = "tipoUsuario", nullable = false)
+	private TipoUsuarioEnum tipoUsuario;
 
 	public Integer getId() {
 		return id;
@@ -93,20 +92,17 @@ public class Usuario {
 		this.contrasenia = contrasenia;
 	}
 
-	public TipoUsuarioEnum geTipoUsuario(){
-		return tipousuario;
+	public TipoUsuarioEnum getTipoUsuario() {
+		return tipoUsuario;
 	}
-	
-	public void  settipousuario(TipoUsuarioEnum tipousuario){
-		this.tipousuario = tipousuario;
+
+	public void setTipoUsuario(TipoUsuarioEnum tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
 	}
-	
-	
+
 	@Override
-	public String toString(){
-		return "[id= " + id + ", nombres " +nombres+ "]";
+	public String toString() {
+		return "[id= " + id + ", nombres= " + nombres + "]";
 	}
-	
 
 }
-
