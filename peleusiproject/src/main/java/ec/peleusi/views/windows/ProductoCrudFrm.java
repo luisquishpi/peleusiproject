@@ -677,7 +677,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 		producto.setNombre(txtNombre.getText());
 		producto.setPeso(Double.parseDouble(txtPeso.getText()));
 		producto.setUnidadMedidaPeso((UnidadMedidaPesoEnum) cmbUnidadMedidaPeso.getSelectedItem());
-		producto.setCosto(0.0);
+		producto.setCosto(Double.parseDouble(txtCostoCompra.getText()));
 
 		byte[] photoBytes = null;
 		if (!txtImagen.getText().isEmpty()) {
