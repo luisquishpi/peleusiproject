@@ -100,7 +100,7 @@ public class ProveedorListFrm extends JInternalFrame {
 
 	private void cargarTabla() {
 		ProveedorController proveedorController = new ProveedorController();
-		List<Proveedor> listaProveedor = proveedorController.ProveedorList();
+		List<Proveedor> listaProveedor = proveedorController.proveedorList();
 		for (Proveedor proveedor : listaProveedor) {
 			modelo.addRow(agregarDatosAFila(proveedor));
 		}

@@ -18,7 +18,7 @@ public class UnidadMedidaController {
 		return unidadMedidaDao.create(unidadMedida);
 	}
 
-	public List<UnidadMedida> UnidadMedidaList() {
+	public List<UnidadMedida> unidadMedidaList() {
 		return unidadMedidaDao.findAll();
 	}
 

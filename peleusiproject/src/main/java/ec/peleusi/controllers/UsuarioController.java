@@ -17,7 +17,7 @@ public class UsuarioController {
 		return usuarioDao.create(usuario);
 	}
 
-	public List<Usuario> UsuarioList() {
+	public List<Usuario> usuarioList() {
 		return usuarioDao.findAll();
 	}
 

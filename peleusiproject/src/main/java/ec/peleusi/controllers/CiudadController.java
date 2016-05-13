@@ -16,7 +16,7 @@ public class CiudadController {
 		return ciudadDao.create(ciudad);
 	}
 	
-	public List<Ciudad> CiudadList() {
+	public List<Ciudad> ciudadList() {
 		return ciudadDao.findAll();
 	}
 	

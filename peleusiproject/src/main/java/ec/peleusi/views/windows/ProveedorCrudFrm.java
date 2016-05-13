@@ -203,19 +203,19 @@ public class ProveedorCrudFrm extends JDialog {
 		DefaultTableModel modelo = (DefaultTableModel) tblDireccionProveedor.getModel();
 		DireccionProveedorController direccionProveedorController = new DireccionProveedorController();
 		List<DireccionProveedor> listaDireccionProveedor = direccionProveedorController
-				.DireccionProveedorIdList(proveedor);
+				.direccionProveedorIdList(proveedor);
 		for (DireccionProveedor direccionProveedor : listaDireccionProveedor) {
 			modelo.addRow(agregarDatosAFila(direccionProveedor));
 		}
 	}
 
 	private void cargarCombos() {
-		ListaCiudad();
-		CargarListaTipoIdentificacion();
+		cargarListaCiudad();
+		cargarListaTipoIdentificacion();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void CargarListaTipoIdentificacion() {
+	private void cargarListaTipoIdentificacion() {
 		TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
 		List<TipoIdentificacion> listaTipoIdentificacion;
 		listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
@@ -223,10 +223,10 @@ public class ProveedorCrudFrm extends JDialog {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void ListaCiudad() {
+	private void cargarListaCiudad() {
 		CiudadController ciudadController = new CiudadController();
 		List<Ciudad> listaCiudad;
-		listaCiudad = ciudadController.CiudadList();
+		listaCiudad = ciudadController.ciudadList();
 		cmbCiudad.setModel(new DefaultComboBoxModel(listaCiudad.toArray()));
 	}
 
@@ -242,7 +242,7 @@ public class ProveedorCrudFrm extends JDialog {
 		txtDescripcion.setText("");
 	}
 
-	private boolean CamposLlenosDatos() {
+	private boolean camposLlenosDatos() {
 		boolean llenos = true;
 		if (txtIdentificacion.getText().isEmpty() || txtRazonSocial.getText().isEmpty()
 				|| txtDiasCredito.getText().isEmpty() || txtPorcentajeDescuento.getText().isEmpty())
@@ -260,7 +260,7 @@ public class ProveedorCrudFrm extends JDialog {
 		chkPorDefecto.setSelected(false);
 	}
 
-	private boolean CamposLlenosDireccion() {
+	private boolean camposLlenosDireccion() {
 		boolean llenosDireccion = true;
 		if (txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty())
 			llenosDireccion = false;
@@ -280,7 +280,7 @@ public class ProveedorCrudFrm extends JDialog {
 		});
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!CamposLlenosDatos()) {
+				if (!camposLlenosDatos()) {
 					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -318,7 +318,7 @@ public class ProveedorCrudFrm extends JDialog {
 
 		bntAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!CamposLlenosDireccion()) {
+				if (!camposLlenosDireccion()) {
 					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -326,13 +326,10 @@ public class ProveedorCrudFrm extends JDialog {
 				ProveedorController proveedorController = new ProveedorController();
 				proveedor = new Proveedor();
 				proveedor = proveedorController.getProveedor(Integer.parseInt(txtIdProveedor.getText()));
-				// System.out.println("---> " + proveedor);
 				Ciudad ciudad = (Ciudad) cmbCiudad.getSelectedItem();
 				DireccionProveedor direccionProveedor = new DireccionProveedor();
 				direccionProveedor.setProveedor(proveedor);
-				// System.out.println(proveedor);
 				direccionProveedor.setNombre(txtNombre.getText());
-				// System.out.println(txtNombre.getText());
 				direccionProveedor.setDireccion(txtDireccion.getText());
 				direccionProveedor.setTelefono(txtTelefono.getText());
 				direccionProveedor.setCelular(txtCelular.getText());
@@ -354,8 +351,6 @@ public class ProveedorCrudFrm extends JDialog {
 	}
 
 	private void crearControles() {
-		// setIconifiable(true);
-		// setClosable(true);
 		setBounds(100, 100, 611, 398);
 
 		JPanel panelCabecera = new JPanel();

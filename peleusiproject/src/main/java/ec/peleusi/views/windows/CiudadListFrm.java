@@ -98,7 +98,7 @@ public class CiudadListFrm extends JInternalFrame {
 
 	private void cargarTabla() {
 		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad = ciudadController.CiudadList();
+		List<Ciudad> listaCiudad = ciudadController.ciudadList();
 		for (Ciudad ciudad : listaCiudad) {
 			modelo.addRow(agregarDatosAFila(ciudad));
 		}
