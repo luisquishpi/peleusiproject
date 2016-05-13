@@ -24,13 +24,13 @@ public class PrincipalFrm extends JFrame {
 	private UnidadMedidaListFrm unidadMedidaListFrm;
 	private EmpresaCrudFrm empresaCrudFrm;
 	private SucursalCrudFrm sucursalCrudFrm;
-	private TarifaIceCrudFrm tarifaIceCrudFrm;
-	private TarifaIvaCrudFrm tarifaIvaCrudFrm;
-	private TipoCalificacionPersonaCrudFrm tipoCalificacionPersonaCrudFrm;
+	private TarifaIceListFrm tarifaIceListFrm;
+	private TarifaIvaListFrm tarifaIvaListFrm;
+	private TipoCalificacionPersonaListFrm tipoCalificacionPersonaListFrm;
 	private TipoGastoDeducibleCrudFrm tipoGastoDeducibleCrudFrm;
 	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm;
 	private TipoPagoListFrm tipoPagoListFrm;
-	private TipoPrecioCrudFrm tipoPrecioCrudFrm;
+	private TipoPrecioListFrm tipoPrecioListFrm;
 	private TipoRetencionListFrm tipoRetencionListFrm;
 	private ClienteListFrm clienteListFrm;
 	private SeteoCrudFrm seteoCrudFrm;
@@ -111,10 +111,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmIva = new JMenuItem("IVA");
 		mntmIva.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tarifaIvaCrudFrm == null || tarifaIvaCrudFrm.isClosed()) {
-					tarifaIvaCrudFrm = new TarifaIvaCrudFrm();
-					dpContenedor.add(tarifaIvaCrudFrm);
-					tarifaIvaCrudFrm.show();
+				if (tarifaIvaListFrm == null || tarifaIvaListFrm.isClosed()) {
+					tarifaIvaListFrm = new TarifaIvaListFrm();
+					dpContenedor.add(tarifaIvaListFrm);
+					tarifaIvaListFrm.show();
 				}
 			}
 		});
@@ -123,10 +123,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmIce = new JMenuItem("ICE");
 		mntmIce.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tarifaIceCrudFrm == null || tarifaIceCrudFrm.isClosed()) {
-					tarifaIceCrudFrm = new TarifaIceCrudFrm();
-					dpContenedor.add(tarifaIceCrudFrm);
-					tarifaIceCrudFrm.show();
+				if (tarifaIceListFrm == null || tarifaIceListFrm.isClosed()) {
+					tarifaIceListFrm = new TarifaIceListFrm();
+					dpContenedor.add(tarifaIceListFrm);
+					tarifaIceListFrm.show();
 				}
 			}
 		});
@@ -149,10 +149,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmCalificacinPersona = new JMenuItem("Calificación Persona");
 		mntmCalificacinPersona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoCalificacionPersonaCrudFrm == null || tipoCalificacionPersonaCrudFrm.isClosed()) {
-					tipoCalificacionPersonaCrudFrm = new TipoCalificacionPersonaCrudFrm();
-					dpContenedor.add(tipoCalificacionPersonaCrudFrm);
-					tipoCalificacionPersonaCrudFrm.show();
+				if (tipoCalificacionPersonaListFrm == null || tipoCalificacionPersonaListFrm.isClosed()) {
+					tipoCalificacionPersonaListFrm = new TipoCalificacionPersonaListFrm();
+					dpContenedor.add(tipoCalificacionPersonaListFrm);
+					tipoCalificacionPersonaListFrm.show();
 				}
 			}
 		});
@@ -197,10 +197,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmTiposDePrecios = new JMenuItem("Tipos de Precios");
 		mntmTiposDePrecios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoPrecioCrudFrm == null || tipoPrecioCrudFrm.isClosed()) {
-					tipoPrecioCrudFrm = new TipoPrecioCrudFrm();
-					dpContenedor.add(tipoPrecioCrudFrm);
-					tipoPrecioCrudFrm.show();
+				if (tipoPrecioListFrm == null || tipoPrecioListFrm.isClosed()) {
+					tipoPrecioListFrm = new TipoPrecioListFrm();
+					dpContenedor.add(tipoPrecioListFrm);
+					tipoPrecioListFrm.show();
 				}
 			}
 		});
