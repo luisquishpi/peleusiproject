@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
@@ -13,15 +12,15 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Usuario;
 import ec.peleusi.utils.TipoUsuarioEnum;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 
 
-public class UsuarioCrudFrm extends JInternalFrame {
+public class UsuarioCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -37,6 +36,7 @@ public class UsuarioCrudFrm extends JInternalFrame {
 	private JTextField txtContrasenia;
 	private JLabel lblTipoUsuario;
 	private JComboBox <TipoUsuarioEnum> cmbTipoUsuario;
+	private Usuario usuarioRetorno;
 
 	public UsuarioCrudFrm() {
 		setTitle("Usuario");
@@ -48,9 +48,7 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		cmbTipoUsuario.setModel(new DefaultComboBoxModel<TipoUsuarioEnum>(TipoUsuarioEnum.values()));
 	}
 
-	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
+	private void crearControles() {		
 		setBounds(100, 100, 666, 340);
 
 		JPanel panelCabecera = new JPanel();
@@ -110,8 +108,8 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		txtUsuario.setBounds(106, 92, 210, 20);
 		panelCuerpo.add(txtUsuario);
 		
-		lblContrasenia = new JLabel("Contrasenia");
-		lblContrasenia.setBounds(10, 139, 65, 14);
+		lblContrasenia = new JLabel("Contraseña");
+		lblContrasenia.setBounds(10, 139, 86, 14);
 		panelCuerpo.add(lblContrasenia);
 		
 		txtContrasenia = new JTextField();
@@ -137,7 +135,8 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			    if (!isCamposLlenos()){
-			    	JOptionPane.showMessageDialog(null, "No hay datos para grabar");
+			    	JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
 			    	return;
 			    }
 			   
@@ -147,11 +146,13 @@ public class UsuarioCrudFrm extends JInternalFrame {
 			  String error = usuarioController.createUsuario(usuario);
 			  
 			  if(error == null){
-				  JOptionPane.showMessageDialog(null, "Guardado Bien","Exito", JOptionPane.PLAIN_MESSAGE);
+				  JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+					usuarioRetorno = usuario;
+					dispose();	
 				  limpiarCampos();
 			  }
 			  else{
-				  JOptionPane.showMessageDialog(null, error, "ERROR", JOptionPane.ERROR_MESSAGE);
+				  JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				  limpiarCampos();
 			  }  
 			}
@@ -167,6 +168,10 @@ public class UsuarioCrudFrm extends JInternalFrame {
 		});
 	}
 
+	public Usuario getUsuario() {
+		return usuarioRetorno;
+	}
+	
 	private void limpiarCampos() {
 		txtNombre.setText(" ");
 		txtApellido.setText("");
