@@ -15,12 +15,15 @@ import javax.swing.JLabel;
 
 import com.toedter.calendar.JDateChooser;
 
+import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.CompraController;
 import ec.peleusi.controllers.CompraDetalleController;
 import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.controllers.SeteoController;
+import ec.peleusi.controllers.UsuarioController;
+import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Compra;
 import ec.peleusi.models.entities.DireccionProveedor;
 import ec.peleusi.models.entities.Producto;
@@ -28,6 +31,8 @@ import ec.peleusi.models.entities.Proveedor;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.Sucursal;
 import ec.peleusi.utils.Formatos;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -189,6 +194,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		filaDatos = new Object[cabecera.length];
 	}
 	
+	
 
 	public void modificarCantidad() {
 		try {
@@ -282,6 +288,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		}
 
 	}
+	
 
 	private Double cargarPorcentajeIvaProducto(Boolean productoConIva) {
 
