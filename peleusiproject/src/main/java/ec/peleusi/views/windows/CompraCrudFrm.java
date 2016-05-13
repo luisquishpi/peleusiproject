@@ -54,6 +54,7 @@ import java.awt.event.FocusEvent;
 import javax.swing.JFormattedTextField;
 
 import ec.peleusi.models.entities.Usuario;
+import javax.swing.JComboBox;
 
 public class CompraCrudFrm extends JInternalFrame {
 
@@ -107,6 +108,10 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JDateChooser dtcFechaAutorizacion;
 	private Sucursal sucursal;
 	private Usuario usuario;
+	@SuppressWarnings("rawtypes")
+	private JComboBox cmbUsuario;
+	@SuppressWarnings("rawtypes")
+	private JComboBox cmbSucursal;
 
 	public CompraCrudFrm() {
 
@@ -717,7 +722,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 154, 926, 308);
+		scrollPane.setBounds(10, 154, 926, 253);
 		panel_1.add(scrollPane);
 
 		tblProductos = new JTable();
@@ -818,6 +823,14 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel_4.add(txtTotal);
 		txtTotal.setColumns(10);
 		txtTotal.setFormatterFactory(new Formatos().getDecimalFormat());
+		
+		cmbUsuario = new JComboBox<Usuario>();
+		cmbUsuario.setBounds(63, 429, 137, 20);
+		panel_1.add(cmbUsuario);
+		
+		cmbSucursal = new JComboBox<Sucursal>();
+		cmbSucursal.setBounds(238, 429, 137, 20);
+		panel_1.add(cmbSucursal);
 
 		CellEditorListener changeNotification = new CellEditorListener() {
 			public void editingStopped(ChangeEvent e) {
