@@ -119,4 +119,8 @@ public class Sucursal {
 		this.empresa = empresa;
 	}		
 
+	@Override
+	public String toString() {
+		return nombre ;
+	}	
 }

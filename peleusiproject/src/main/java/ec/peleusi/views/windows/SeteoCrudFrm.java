@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 
-import ec.peleusi.controllers.ClienteController;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.models.entities.Cliente;
@@ -35,12 +34,6 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableModel;
-
-import com.sun.xml.internal.ws.encoding.policy.SelectOptimalEncodingFeatureConfigurator;
-
-import javax.swing.event.ChangeEvent;
 
 public class SeteoCrudFrm extends JInternalFrame {
 
@@ -61,7 +54,7 @@ public class SeteoCrudFrm extends JInternalFrame {
 	private JButton btnGuardar;
 	private JCheckBox chkConServicioAdicional;
 	private JPanel pnlServicioAdicional;
-	
+
 	private JTextField txtNombreCampoServicioAdicional;
 	Seteo seteo = new Seteo();
 	SeteoController seteoController = new SeteoController();
@@ -91,40 +84,38 @@ public class SeteoCrudFrm extends JInternalFrame {
 	private void cargarComboTarifaIva() {
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
 		List<TarifaIva> listaTarifaIva;
-		listaTarifaIva = tarifaIvaController.tarifaIvaList();
+		listaTarifaIva = tarifaIvaController.TarifaIvaList();
 		cmdIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
 	}
 
 	private void cargarDatosSeteos() {
-		seteo = new Seteo();		
+		seteo = new Seteo();
 		List<Seteo> listaSeteo;
-		listaSeteo=seteoController.seteoList();
-		
-		if (listaSeteo.size()!=0) {
-			seteo=listaSeteo.get(0);
+		listaSeteo = seteoController.seteoList();
 
-			txtIdentificacion.setText( seteo.getCliente().getIdentificacion());
-			txtRazonSocial.setText(seteo.getCliente().getRazonSocial());				
+		if (listaSeteo.size() != 0) {
+			seteo = listaSeteo.get(0);
+
+			txtIdentificacion.setText(seteo.getCliente().getIdentificacion());
+			txtRazonSocial.setText(seteo.getCliente().getRazonSocial());
 			cmdIva.getModel().setSelectedItem(seteo.getTarifaIva());
 			txtNumeroDecimales.setText(seteo.getNumeroDecimales().toString());
 			cmbIdentifiacionDecimal.setSelectedItem(seteo.getIdentificacionDecimal());
 			cmbSignoMoneda.setSelectedItem(seteo.getSignoMoneda());
 			cliente = seteo.getCliente();
 			if (seteo.getConServicioAdicional() == true) {
-				pnlServicioAdicional.setVisible(true);	
-				chkConServicioAdicional.setSelected(true);				
-				txtNombreCampoServicioAdicional.setText(seteo.getNombrePercentajeServicioAdicional());				
+				pnlServicioAdicional.setVisible(true);
+				chkConServicioAdicional.setSelected(true);
+				txtNombreCampoServicioAdicional.setText(seteo.getNombrePercentajeServicioAdicional());
 				txtPorcentajeServicioAdicional.setText(seteo.getPorcentajeServicioAdicional().toString());
+			} else {
+				chkConServicioAdicional.setSelected(false);
+				pnlServicioAdicional.setVisible(false);
+
 			}
-			else
-			{
-				chkConServicioAdicional.setSelected(false);	
-				pnlServicioAdicional.setVisible(false);				
-				
-			}
-			cmbTipoInventario.setSelectedItem(seteo.getTipoInventario());			
-		}
-		else seteo=null;
+			cmbTipoInventario.setSelectedItem(seteo.getTipoInventario());
+		} else
+			seteo = null;
 
 	}
 
@@ -160,7 +151,6 @@ public class SeteoCrudFrm extends JInternalFrame {
 
 				try {
 
-					 
 					TarifaIva tarifaIva = (TarifaIva) cmdIva.getSelectedItem();
 					IdentificacionDecimalEnum identificacionDecimal = (IdentificacionDecimalEnum) cmbIdentifiacionDecimal
 							.getSelectedItem();

@@ -102,7 +102,7 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "[id= " + id + ", nombres= " + nombres + "]";
-	}
+		return nombres ;
+	}	
 
 }

@@ -15,15 +15,13 @@ import javax.swing.JLabel;
 
 import com.toedter.calendar.JDateChooser;
 
-import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.CompraController;
-import ec.peleusi.controllers.CompraDetalleController;
 import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.controllers.SeteoController;
+import ec.peleusi.controllers.SucursalController;
 import ec.peleusi.controllers.UsuarioController;
-import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Compra;
 import ec.peleusi.models.entities.DireccionProveedor;
 import ec.peleusi.models.entities.Producto;
@@ -119,6 +117,8 @@ public class CompraCrudFrm extends JInternalFrame {
 		crearEventos();
 		crearTabla();
 		limpiarCampos();
+		cargarUsuario();
+		cargarSucursal();
 
 	}
 
@@ -198,8 +198,6 @@ public class CompraCrudFrm extends JInternalFrame {
 		scrollPane.setViewportView(tblProductos);
 		filaDatos = new Object[cabecera.length];
 	}
-	
-	
 
 	public void modificarCantidad() {
 		try {
@@ -293,7 +291,6 @@ public class CompraCrudFrm extends JInternalFrame {
 		}
 
 	}
-	
 
 	private Double cargarPorcentajeIvaProducto(Boolean productoConIva) {
 
@@ -336,6 +333,24 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtMontoIva.setText(totalIva.toString());
 		txtTotal.setText(total.toString());
 
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void cargarUsuario() {
+		usuario = new Usuario();
+		UsuarioController usuarioController = new UsuarioController();
+		List<Usuario> listaUsuario;
+		listaUsuario = usuarioController.UsuarioList();
+		cmbUsuario.setModel(new DefaultComboBoxModel(listaUsuario.toArray()));
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void cargarSucursal() {
+		sucursal = new Sucursal();
+		SucursalController sucursalController = new SucursalController();
+		List<Sucursal> listaSucursal;
+		listaSucursal = sucursalController.SucursalList();
+		cmbSucursal.setModel(new DefaultComboBoxModel(listaSucursal.toArray()));
 	}
 
 	public void calcularFechaVencimiento() {
@@ -823,11 +838,11 @@ public class CompraCrudFrm extends JInternalFrame {
 		panel_4.add(txtTotal);
 		txtTotal.setColumns(10);
 		txtTotal.setFormatterFactory(new Formatos().getDecimalFormat());
-		
+
 		cmbUsuario = new JComboBox<Usuario>();
 		cmbUsuario.setBounds(63, 429, 137, 20);
 		panel_1.add(cmbUsuario);
-		
+
 		cmbSucursal = new JComboBox<Sucursal>();
 		cmbSucursal.setBounds(238, 429, 137, 20);
 		panel_1.add(cmbSucursal);
