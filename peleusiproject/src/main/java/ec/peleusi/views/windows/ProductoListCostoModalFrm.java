@@ -8,11 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import ec.peleusi.controllers.ProductoPrecioController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.TipoPrecioController;
-import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.TipoPrecio;
 
@@ -27,7 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 
-public class ProductoListModalFrm extends JDialog {
+public class ProductoListCostoModalFrm extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
@@ -39,7 +36,7 @@ public class ProductoListModalFrm extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			ProductoListModalFrm dialog = new ProductoListModalFrm();
+			ProductoListCostoModalFrm dialog = new ProductoListCostoModalFrm();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -47,7 +44,7 @@ public class ProductoListModalFrm extends JDialog {
 		}
 	}
 
-	public ProductoListModalFrm() {
+	public ProductoListCostoModalFrm() {
 		crearControles();
 		cargarCompoTipoPrecio();
 		crearTabla();
@@ -63,7 +60,7 @@ public class ProductoListModalFrm extends JDialog {
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Código", "Nombre", "Stock", "Precio Unidad", "Precio Lote", "IVA" };
+		Object[] cabecera = { "Id", "Código", "Nombre", "Stock", "Costo", "Unidad", "IVA" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -77,7 +74,7 @@ public class ProductoListModalFrm extends JDialog {
 			}
 		};
 		filaDatos = new Object[cabecera.length];
-		tblProductos = new JTable(modelo) {
+		tblProductos = new JTable(modelo){
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -104,13 +101,13 @@ public class ProductoListModalFrm extends JDialog {
 		scrollPane.setViewportView(tblProductos);
 	}
 
-	private Object[] agregarDatosAFila(Producto producto, List<ProductoPrecio> listaPrecioProducto) {
+	private Object[] agregarDatosAFila(Producto producto) {
 		filaDatos[0] = producto.getId();
 		filaDatos[1] = producto.getCodigo();
 		filaDatos[2] = producto.getNombre();
 		filaDatos[3] = producto.getStock();
-		filaDatos[4] = listaPrecioProducto.get(0).getPrecioBrutoUnitario();
-		filaDatos[5] = listaPrecioProducto.get(0).getPrecioBrutoLote();
+		filaDatos[4] = producto.getCosto();
+		filaDatos[5] = producto.getUnidadMedidaCompra();
 		filaDatos[6] = producto.getTieneIva();
 		return filaDatos;
 	}
@@ -119,9 +116,7 @@ public class ProductoListModalFrm extends JDialog {
 		ProductoController productoController = new ProductoController();
 		List<Producto> listaProducto = productoController.productoList();
 		for (Producto producto : listaProducto) {
-			ProductoPrecioController precioProductoController = new ProductoPrecioController();
-			List<ProductoPrecio> listaPrecioProducto = precioProductoController.productoPrecioList(producto);
-			modelo.addRow(agregarDatosAFila(producto, listaPrecioProducto));
+			modelo.addRow(agregarDatosAFila(producto));
 		}
 	}
 
@@ -152,8 +147,8 @@ public class ProductoListModalFrm extends JDialog {
 			{
 				JButton btnBuscar = new JButton("Buscar");
 				btnBuscar.setBounds(364, 26, 101, 41);
-				btnBuscar.setIcon(
-						new ImageIcon(ProductoListModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+				btnBuscar.setIcon(new ImageIcon(
+						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 				panel.add(btnBuscar);
 			}
 		}
@@ -176,8 +171,8 @@ public class ProductoListModalFrm extends JDialog {
 
 					}
 				});
-				btnAceptar.setIcon(
-						new ImageIcon(ProductoListModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
+				btnAceptar.setIcon(new ImageIcon(
+						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
 				buttonPane.add(btnAceptar);
 				getRootPane().setDefaultButton(btnAceptar);
 			}
@@ -188,8 +183,8 @@ public class ProductoListModalFrm extends JDialog {
 						dispose();
 					}
 				});
-				btnCancelar.setIcon(
-						new ImageIcon(ProductoListModalFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+				btnCancelar.setIcon(new ImageIcon(
+						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 				buttonPane.add(btnCancelar);
 			}
 		}

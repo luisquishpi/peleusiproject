@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +14,6 @@ import ec.peleusi.models.entities.TipoIdentificacion;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.ClienteController;
