@@ -83,7 +83,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	private void llenarCiudad() {
 		CiudadController ciudadController = new CiudadController();
 		List<Ciudad> lista;
-		lista = ciudadController.CiudadList();
+		lista = ciudadController.ciudadList();
 		cmbCiudad.setModel(new DefaultComboBoxModel(lista.toArray()));
 	}
 
