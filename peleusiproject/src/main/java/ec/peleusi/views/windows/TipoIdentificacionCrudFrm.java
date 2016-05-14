@@ -2,7 +2,6 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -14,12 +13,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.models.entities.TipoIdentificacion;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 
-public class TipoIdentificacionCrudFrm extends JInternalFrame {
+public class TipoIdentificacionCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -30,6 +29,7 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
 	private JCheckBox chkValida;
+	private TipoIdentificacion tipoIdentificacionRetorno;
 
 	int limitecaja = 15;
 
@@ -40,8 +40,6 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 	}
 
 	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
 		setBounds(100, 100, 611, 223);
 
 		JPanel panelCabecera = new JPanel();
@@ -138,6 +136,8 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 				String error = tipoIdentificacionController.createTipoIdentificacion(tipoIdentificacion);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE );
+					tipoIdentificacionRetorno = tipoIdentificacion;
+					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
@@ -168,5 +168,9 @@ public class TipoIdentificacionCrudFrm extends JInternalFrame {
 		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty())
 			llenos = false;
 		return llenos;
+	}
+	
+	public TipoIdentificacion getTipoIdentificacion() {
+		return tipoIdentificacionRetorno;
 	}
 }
