@@ -87,20 +87,19 @@ public class CiudadCrudFrm extends JDialog {
 					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
 							JOptionPane.WARNING_MESSAGE);
 					return;
-				}
-				
+				}				
 				Ciudad ciudad = new Ciudad(txtNombre.getText());
 				CiudadController paisController = new CiudadController();
 				String error = paisController.createCiudad(ciudad);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					ciudadRetorno = ciudad;
+					System.out.println("-----"+ ciudad);
 					dispose();
 					limpiarCampos();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
@@ -109,7 +108,9 @@ public class CiudadCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ciudadRetorno = null;			
 				dispose();
+				
 			}
 		});
 	}

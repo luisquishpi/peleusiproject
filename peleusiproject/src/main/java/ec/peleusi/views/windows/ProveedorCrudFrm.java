@@ -21,7 +21,6 @@ import ec.peleusi.utils.Formatos;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.controllers.TipoIdentificacionController;
@@ -54,9 +53,9 @@ public class ProveedorCrudFrm extends JDialog {
 	private JTextField txtEmail;
 	private JTextField txtCodigoPostal;
 	private JTextField txtNombre;
-	private JButton bntAgregar;
+	private JButton btnAgregar;
 	private JCheckBox chkPorDefecto;
-	private JComboBox<Ciudad> cmbCiudad;
+	private JButton btnBuscarCiudad;
 	public DireccionProveedor direccionProveedor;
 	private DefaultTableModel modelo;
 	private Object[] filaDatosDireccionProveedor;
@@ -65,7 +64,10 @@ public class ProveedorCrudFrm extends JDialog {
 	private Proveedor proveedor;
 	private JTextField txtIdProveedor;
 	private JScrollPane scrollPane;
-
+	private JTextField txtCiudad;	
+	private CiudadListModalFrm ciudadListModalFrm = new CiudadListModalFrm();
+	private Ciudad ciudad;
+	
 	public ProveedorCrudFrm() {
 		setTitle("Creando Proveedor");
 		crearControles();
@@ -163,7 +165,7 @@ public class ProveedorCrudFrm extends JDialog {
 		tblDireccionProveedor.getColumnModel().getColumn(0).setPreferredWidth(0);
 		tblDireccionProveedor.getColumnModel().getColumn(1).setPreferredWidth(195);
 		tblDireccionProveedor.getColumnModel().getColumn(2).setPreferredWidth(220);
-		tblDireccionProveedor.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tblDireccionProveedor.getColumnModel().getColumn(3).setPreferredWidth(112);
 		tblDireccionProveedor.getColumnModel().getColumn(4).setMaxWidth(0);
 		tblDireccionProveedor.getColumnModel().getColumn(4).setMinWidth(0);
 		tblDireccionProveedor.getColumnModel().getColumn(4).setPreferredWidth(0);
@@ -210,8 +212,7 @@ public class ProveedorCrudFrm extends JDialog {
 	}
 
 	private void cargarCombos() {
-		cargarListaCiudad();
-		cargarListaTipoIdentificacion();
+			cargarListaTipoIdentificacion();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -220,14 +221,6 @@ public class ProveedorCrudFrm extends JDialog {
 		List<TipoIdentificacion> listaTipoIdentificacion;
 		listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
 		cmbTipoIdentificacion.setModel(new DefaultComboBoxModel(listaTipoIdentificacion.toArray()));
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void cargarListaCiudad() {
-		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad;
-		listaCiudad = ciudadController.ciudadList();
-		cmbCiudad.setModel(new DefaultComboBoxModel(listaCiudad.toArray()));
 	}
 
 	public Proveedor getProveedor() {
@@ -251,6 +244,7 @@ public class ProveedorCrudFrm extends JDialog {
 	}
 
 	private void limpiarCamposDireccion() {
+		txtCiudad.setText("");
 		txtNombre.setText("");
 		txtDireccion.setText("");
 		txtTelefono.setText("");
@@ -262,7 +256,7 @@ public class ProveedorCrudFrm extends JDialog {
 
 	private boolean camposLlenosDireccion() {
 		boolean llenosDireccion = true;
-		if (txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty())
+		if (txtCiudad.getText().isEmpty() || txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty())
 			llenosDireccion = false;
 		return llenosDireccion;
 	}
@@ -276,6 +270,22 @@ public class ProveedorCrudFrm extends JDialog {
 				tblDireccionProveedor.setModel(new DefaultTableModel());
 				crearTablaDireccionProveedor();
 				tpnlProveedor.setSelectedIndex(0);
+			}
+		});		
+		
+		btnBuscarCiudad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!ciudadListModalFrm.isVisible()) {
+				ciudadListModalFrm.setModal(true);
+				ciudadListModalFrm.setVisible(true);
+				}	
+				ciudad = ciudadListModalFrm.getCiudad();
+
+				if (ciudad != null) {
+					System.out.println("Categoría seleccionado: " + ciudad);
+					txtCiudad.setText(ciudad.getNombre());
+				}
+				
 			}
 		});
 		btnGuardar.addActionListener(new ActionListener() {
@@ -316,7 +326,7 @@ public class ProveedorCrudFrm extends JDialog {
 			}
 		});
 
-		bntAgregar.addActionListener(new ActionListener() {
+		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (!camposLlenosDireccion()) {
 					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
@@ -326,7 +336,6 @@ public class ProveedorCrudFrm extends JDialog {
 				ProveedorController proveedorController = new ProveedorController();
 				proveedor = new Proveedor();
 				proveedor = proveedorController.getProveedor(Integer.parseInt(txtIdProveedor.getText()));
-				Ciudad ciudad = (Ciudad) cmbCiudad.getSelectedItem();
 				DireccionProveedor direccionProveedor = new DireccionProveedor();
 				direccionProveedor.setProveedor(proveedor);
 				direccionProveedor.setNombre(txtNombre.getText());
@@ -516,6 +525,7 @@ public class ProveedorCrudFrm extends JDialog {
 		pnlDireccion.add(lblNombre);
 
 		txtNombre = new JTextField();
+		txtNombre.setToolTipText("Ingresar Princincipal, matriz o sucursal");
 		txtNombre.setColumns(10);
 		txtNombre.setBounds(65, 40, 243, 20);
 		pnlDireccion.add(txtNombre);
@@ -524,16 +534,23 @@ public class ProveedorCrudFrm extends JDialog {
 		scroollPane.setBounds(10, 136, 550, 114);
 		pnlDireccion.add(scroollPane);
 
-		bntAgregar = new JButton("Agregar");
-		bntAgregar.setBounds(460, 100, 80, 22);
-		pnlDireccion.add(bntAgregar);
+		btnAgregar = new JButton("Agregar");
+		btnAgregar.setBounds(460, 100, 80, 22);
+		pnlDireccion.add(btnAgregar);
 
 		chkPorDefecto = new JCheckBox("Por Defecto");
 		chkPorDefecto.setBounds(350, 100, 97, 23);
 		pnlDireccion.add(chkPorDefecto);
-
-		cmbCiudad = new JComboBox<Ciudad>();
-		cmbCiudad.setBounds(65, 10, 165, 20);
-		pnlDireccion.add(cmbCiudad);
+		
+		txtCiudad = new JTextField();
+		txtCiudad.setEditable(false);
+		txtCiudad.setBounds(65, 7, 208, 20);
+		pnlDireccion.add(txtCiudad);
+		txtCiudad.setColumns(10);
+		
+		btnBuscarCiudad = new JButton("");		
+		btnBuscarCiudad.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/search_16.png")));
+		btnBuscarCiudad.setBounds(280, 6, 43, 26);
+		pnlDireccion.add(btnBuscarCiudad);
 	}
 }

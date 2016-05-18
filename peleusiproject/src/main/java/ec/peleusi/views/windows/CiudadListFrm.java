@@ -37,7 +37,7 @@ public class CiudadListFrm extends JInternalFrame {
 	private JTable tblCiudad;
 	private CiudadCrudFrm ciudadCrudFrm = new CiudadCrudFrm();
 	@SuppressWarnings("unused")
-	private Ciudad ciudad;
+	private Ciudad ciudad;	
 
 	public CiudadListFrm() {
 		setTitle("Listado de Ciudad");
@@ -87,7 +87,6 @@ public class CiudadListFrm extends JInternalFrame {
 		tblCiudad.getColumnModel().getColumn(0).setPreferredWidth(0);
 		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(443);
 		scrollPane.setViewportView(tblCiudad);
-
 	}
 
 	private Object[] agregarDatosAFila(Ciudad ciudad) {
@@ -103,24 +102,25 @@ public class CiudadListFrm extends JInternalFrame {
 			modelo.addRow(agregarDatosAFila(ciudad));
 		}
 	}
-
 	private void capturaYAgregaCiudadATabla() {
 		Ciudad ciudad = new Ciudad();
-		ciudad = ciudadCrudFrm.getCiudad();
-		System.out.println("Captura UnidadMedida retornado: " + ciudad);
-		if (ciudad != null && ciudad.getId() != null) {
+		ciudad = ciudadCrudFrm.getCiudad();		
+		System.out.println("Captura Ciudad retornado: " + ciudad);		
+		if (ciudad != null && ciudad.getId() != null) {						
 			modelo.addRow(agregarDatosAFila(ciudad));
-			tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);			
 		}
 	}
+	
+
 
 	private void crearEventos() {
 
 		ciudadCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaCiudadATabla();
-			}
+				capturaYAgregaCiudadATabla();		
+			}			
 		});
 
 		btnNuevo.addActionListener(new ActionListener() {
@@ -143,7 +143,7 @@ public class CiudadListFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				dispose();				
 			}
 		});
 

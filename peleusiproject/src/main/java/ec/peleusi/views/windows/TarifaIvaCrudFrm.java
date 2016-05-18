@@ -156,6 +156,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tarifaIvaRetorno = null;
 				dispose();
 			}
 		});

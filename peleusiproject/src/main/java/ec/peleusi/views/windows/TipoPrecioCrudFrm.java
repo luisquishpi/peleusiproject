@@ -129,6 +129,7 @@ public class TipoPrecioCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tipoPrecioRetorno = null;
 				dispose();
 			}
 		});

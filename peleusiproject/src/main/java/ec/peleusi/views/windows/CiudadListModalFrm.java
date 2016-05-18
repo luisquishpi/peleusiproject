@@ -89,7 +89,7 @@ public class CiudadListModalFrm extends JDialog {
 		tblCiudad.getColumnModel().getColumn(0).setMaxWidth(0);
 		tblCiudad.getColumnModel().getColumn(0).setMinWidth(0);
 		tblCiudad.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(443);
+		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(292);
 		scrollPane.setViewportView(tblCiudad);
 	}
 
@@ -163,7 +163,6 @@ public class CiudadListModalFrm extends JDialog {
 
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				int filaseleccionada = tblCiudad.getSelectedRow();				
 				try { 
 					filaseleccionada = tblCiudad.getSelectedRow();
@@ -193,7 +192,6 @@ public class CiudadListModalFrm extends JDialog {
 				dispose();
 			}
 		});
-
 	}
 
 	public void crearControles() {
@@ -205,7 +203,7 @@ public class CiudadListModalFrm extends JDialog {
 		contentPanel.setLayout(null);
 		{
 			txtBuscar = new JTextField();
-			txtBuscar.setBounds(10, 17, 302, 32);
+			txtBuscar.setBounds(10, 17, 295, 32);
 			txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 			txtBuscar.setColumns(10);
 			contentPanel.add(txtBuscar);
@@ -214,16 +212,15 @@ public class CiudadListModalFrm extends JDialog {
 			btnBuscar = new JButton("Buscar");
 			btnBuscar.setIcon(
 					new ImageIcon(CiudadListModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-			btnBuscar.setBounds(323, 11, 101, 47);
+			btnBuscar.setBounds(311, 11, 115, 47);
 			contentPanel.add(btnBuscar);
 		}
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 56, 302, 145);
+		scrollPane.setBounds(10, 56, 295, 145);
 		contentPanel.add(scrollPane);
 		{
-			tblCiudad = new JTable();
-			scrollPane.setViewportView(tblCiudad);
+			tblCiudad = new JTable();			
 		}
 		{
 			JPanel buttonPane = new JPanel();

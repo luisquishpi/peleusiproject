@@ -152,6 +152,7 @@ public class TipoIdentificacionCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tipoIdentificacionRetorno = null;
 				dispose();
 			}
 		});

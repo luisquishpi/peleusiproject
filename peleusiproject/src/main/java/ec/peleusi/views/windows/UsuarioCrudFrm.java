@@ -164,6 +164,8 @@ public class UsuarioCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				usuarioRetorno = null;
+				dispose();
 			}
 		});
 	}

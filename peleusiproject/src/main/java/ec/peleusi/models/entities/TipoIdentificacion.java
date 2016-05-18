@@ -72,6 +72,6 @@ public class TipoIdentificacion {
 
 	@Override
 	public String toString() {
-		return "TipoIdentificacion [id=" + id + ",nombre=" + nombre + "]";
+		return nombre;
 	}
 }

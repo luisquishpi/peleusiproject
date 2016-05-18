@@ -86,6 +86,7 @@ public class UnidadMedidaCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				unidadMedidaRetorno = null;
 				dispose();
 			}
 		});
