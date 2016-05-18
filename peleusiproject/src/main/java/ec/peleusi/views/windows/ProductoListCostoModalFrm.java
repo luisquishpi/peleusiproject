@@ -157,7 +157,6 @@ public class ProductoListCostoModalFrm extends JDialog {
 			contentPanel.add(scrollPane, BorderLayout.CENTER);
 			{
 				tblProductos = new JTable();
-				scrollPane.setViewportView(tblProductos);
 			}
 		}
 		{
