@@ -14,7 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.models.entities.Ciudad;
-
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class CiudadCrudFrm extends JDialog {
 
@@ -24,12 +25,84 @@ public class CiudadCrudFrm extends JDialog {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
-	private Ciudad ciudadRetorno;
+	private Ciudad ciudad;
 
 	public CiudadCrudFrm() {
-		setTitle("Ciudad");
 		crearControles();
 		crearEventos();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				llenarCamposConEntidad();
+				txtNombre.requestFocus();
+			}
+		});
+	}
+
+	private void llenarCamposConEntidad() {
+		if (ciudad != null && ciudad.getId() != null) {
+			this.setTitle("Actualizando Ciudad");
+			btnGuardar.setText("Actualizar");
+			limpiarCampos();
+			txtNombre.setText(ciudad.getNombre());
+
+		} else {
+			this.setTitle("Creando Ciudad");
+			btnGuardar.setText("Guardar");
+			limpiarCampos();
+		}
+	}
+
+	private void llenarEntidadAntesDeGuardar() {
+		ciudad.setNombre(txtNombre.getText());
+	}
+
+	private void guardarNuevoCiudad() {
+		ciudad = new Ciudad();
+		llenarEntidadAntesDeGuardar();
+		CiudadController ciudadController = new CiudadController();
+		String error = ciudadController.createCiudad(ciudad);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+
+	private void actualizarCiudad() {
+		llenarEntidadAntesDeGuardar();
+		CiudadController ciudadController = new CiudadController();
+		String error = ciudadController.updateCiudad(ciudad);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+
+	public Ciudad getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(Ciudad ciudad) {
+		this.ciudad = new Ciudad();
+		this.ciudad = ciudad;
+	}
+
+	private void limpiarCampos() {
+		txtNombre.setText("");
+		txtNombre.requestFocus();
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtNombre.getText().isEmpty())
+			llenos = false;
+		return llenos;
 	}
 
 	private void crearControles() {
@@ -78,7 +151,8 @@ public class CiudadCrudFrm extends JDialog {
 	private void crearEventos() {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				limpiarCampos();
+				ciudad = new Ciudad();
+				llenarCamposConEntidad();
 			}
 		});
 		btnGuardar.addActionListener(new ActionListener() {
@@ -87,20 +161,15 @@ public class CiudadCrudFrm extends JDialog {
 					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
 							JOptionPane.WARNING_MESSAGE);
 					return;
-				}				
-				Ciudad ciudad = new Ciudad(txtNombre.getText());
-				CiudadController paisController = new CiudadController();
-				String error = paisController.createCiudad(ciudad);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-					ciudadRetorno = ciudad;
-					System.out.println("-----"+ ciudad);
-					dispose();
-					limpiarCampos();
+				}
+				if (ciudad != null && ciudad.getId() != null) {
+					actualizarCiudad();
 				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+					guardarNuevoCiudad();
+
 				}
 			}
+
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -108,26 +177,10 @@ public class CiudadCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ciudadRetorno = null;			
+				ciudad = new Ciudad();
 				dispose();
-				
 			}
 		});
 	}
-	public Ciudad getCiudad() {
-		return ciudadRetorno;
-	}
-	
-	private void limpiarCampos() {
-		txtNombre.setText("");
-		// txtNombre.grabFocus();
-		txtNombre.requestFocus();
-	}
 
-	private boolean isCamposLlenos() {
-		boolean llenos = true;
-		if (txtNombre.getText().isEmpty())
-			llenos = false;
-		return llenos;
-	}
 }

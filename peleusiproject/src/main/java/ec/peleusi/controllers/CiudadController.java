@@ -15,11 +15,15 @@ public class CiudadController {
 	public String createCiudad(Ciudad ciudad) {
 		return ciudadDao.create(ciudad);
 	}
-	
+
+	public String updateCiudad(Ciudad ciudad) {
+		return ciudadDao.update(ciudad);
+	}
+
 	public List<Ciudad> ciudadList() {
 		return ciudadDao.findAll();
 	}
-	
+
 	public List<Ciudad> getCiudadList(String parametro) {
 		return ciudadDao.CiudadList(parametro);
 	}

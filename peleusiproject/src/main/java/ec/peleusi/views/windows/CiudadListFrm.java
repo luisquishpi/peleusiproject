@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.models.entities.Ciudad;
 
-
 import java.awt.Font;
 
 public class CiudadListFrm extends JInternalFrame {
@@ -36,11 +35,10 @@ public class CiudadListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblCiudad;
 	private CiudadCrudFrm ciudadCrudFrm = new CiudadCrudFrm();
-	@SuppressWarnings("unused")
-	private Ciudad ciudad;	
+	private Ciudad ciudad;
 
 	public CiudadListFrm() {
-		setTitle("Listado de Ciudad");
+		setTitle("Listado de Ciudades");
 		crearControles();
 		crearEventos();
 		crearTabla();
@@ -62,7 +60,6 @@ public class CiudadListFrm extends JInternalFrame {
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
 		tblCiudad = new JTable(modelo) {
-
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -71,8 +68,6 @@ public class CiudadListFrm extends JInternalFrame {
 				case 0:
 					return String.class;
 				case 1:
-					return String.class;
-				case 2:
 					return String.class;
 				default:
 					return String.class;
@@ -102,29 +97,43 @@ public class CiudadListFrm extends JInternalFrame {
 			modelo.addRow(agregarDatosAFila(ciudad));
 		}
 	}
+
 	private void capturaYAgregaCiudadATabla() {
-		Ciudad ciudad = new Ciudad();
-		ciudad = ciudadCrudFrm.getCiudad();		
-		System.out.println("Captura Ciudad retornado: " + ciudad);		
-		if (ciudad != null && ciudad.getId() != null) {						
-			modelo.addRow(agregarDatosAFila(ciudad));
-			tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);			
+		System.out.println("Enviado. " + ciudad);
+		System.out.println("Recibido. " + ciudadCrudFrm.getCiudad());
+		if (ciudad == ciudadCrudFrm.getCiudad() && ciudad.getId() != null) {
+			modelo.setValueAt(ciudad.getNombre(), tblCiudad.getSelectedRow(), 1);
+		} else {
+			if (ciudadCrudFrm.getCiudad() != null && ciudadCrudFrm.getCiudad().getId() != null) {
+				modelo.addRow(agregarDatosAFila(ciudadCrudFrm.getCiudad()));
+				tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
 	}
-	
 
+	private boolean llenarEntidadParaEnviarACiudadCrudFrm() {
+		ciudad = new Ciudad();
+		if (tblCiudad.getSelectedRow() != -1) {
+			ciudad.setId(Integer.parseInt(modelo.getValueAt(tblCiudad.getSelectedRow(), 0).toString()));
+			ciudad.setNombre(modelo.getValueAt(tblCiudad.getSelectedRow(), 1).toString());
+			ciudadCrudFrm.setCiudad(ciudad);
+			return true;
+		}
+		return false;
+	}
 
 	private void crearEventos() {
-
 		ciudadCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaCiudadATabla();		
-			}			
+				capturaYAgregaCiudadATabla();
+			}
 		});
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ciudad = new Ciudad();
+				ciudadCrudFrm.setCiudad(ciudad);
 				if (!ciudadCrudFrm.isVisible()) {
 					ciudadCrudFrm.setModal(true);
 					ciudadCrudFrm.setVisible(true);
@@ -133,7 +142,12 @@ public class CiudadListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarACiudadCrudFrm()) {
+					if (!ciudadCrudFrm.isVisible()) {
+						ciudadCrudFrm.setModal(true);
+						ciudadCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
@@ -143,7 +157,7 @@ public class CiudadListFrm extends JInternalFrame {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();				
+				dispose();
 			}
 		});
 
@@ -207,7 +221,7 @@ public class CiudadListFrm extends JInternalFrame {
 		panelCuerpo.add(btnBuscar);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
+		scrollPane.setBounds(10, 60, 575, 208);
 		panelCuerpo.add(scrollPane);
 	}
 

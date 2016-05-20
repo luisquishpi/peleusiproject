@@ -22,29 +22,28 @@ public abstract class GenericDao<T, ID extends Serializable> {
 	}
 
 	public String create(T entity) {
-		String error=null;
+		String error = null;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
 			session.save(entity);
 			session.getTransaction().commit();
-			error=null;
-		} catch (ConstraintViolationException  err) {
+			error = null;
+		} catch (ConstraintViolationException err) {
 			if (session.getTransaction() != null)
 				session.getTransaction().rollback();
 			err.printStackTrace();
-			error="Datos duplicados, ya existen en la base de datos";
-		}
-		catch (DataException  err) {
+			error = "Datos duplicados, ya existen en la base de datos";
+		} catch (DataException err) {
 			if (session.getTransaction() != null)
 				session.getTransaction().rollback();
 			err.printStackTrace();
-			error="Campos incorrectos, posible causa: sobrepasa número de carateres permitidos";
-		}catch (HibernateException e) {
+			error = "Campos incorrectos, posible causa: sobrepasa número de carateres permitidos";
+		} catch (HibernateException e) {
 			if (session.getTransaction() != null)
 				session.getTransaction().rollback();
 			e.printStackTrace();
-			error="No se pudo guardar, consulte su administrador. Clave:"+e.getCause();
+			error = "No se pudo guardar, consulte su administrador. Clave:" + e.getCause();
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -70,27 +69,41 @@ public abstract class GenericDao<T, ID extends Serializable> {
 		return entity;
 	}
 
-	@SuppressWarnings("finally")
-	public boolean update(T entity) {
-		boolean exito = true;
+	public String update(T entity) {
+		String error = null;
 		Session session = null;
 		try {
 			session = HibernateUtil.getSessionFactory().getCurrentSession();
 			session.beginTransaction();
 			session.update(entity);
 			session.getTransaction().commit();
-			exito = true;
+		} catch (ConstraintViolationException err) {
+			if (session.isOpen()) {
+				if (session.getTransaction() != null)
+					session.getTransaction().rollback();
+			}
+			err.printStackTrace();
+			error = "Datos duplicados, ya existen en la base de datos";
+		} catch (DataException err) {
+			if (session.isOpen()) {
+				if (session.getTransaction() != null)
+					session.getTransaction().rollback();
+			}
+			err.printStackTrace();
+			error = "Campos incorrectos, posible causa: sobrepasa número de carateres permitidos";
 		} catch (HibernateException e) {
-			exito = false;
-			if (session.getTransaction() != null)
-				session.getTransaction().rollback();
+			if (session.isOpen()) {
+				if (session.getTransaction() != null)
+					session.getTransaction().rollback();
+			}
 			e.printStackTrace();
+			error = "No se pudo actualizar, consulte su administrador. Clave:" + e.getCause();
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
 			}
-			return exito;
 		}
+		return error;
 	}
 
 	public boolean deleteById(ID id) {
