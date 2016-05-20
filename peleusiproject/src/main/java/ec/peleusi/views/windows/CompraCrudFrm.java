@@ -12,10 +12,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.UIManager;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-
 import com.toedter.calendar.JDateChooser;
-
 import ec.peleusi.controllers.CompraController;
+import ec.peleusi.controllers.CompraDetalleController;
 import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.ProveedorController;
@@ -23,6 +22,7 @@ import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.SucursalController;
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Compra;
+import ec.peleusi.models.entities.CompraDetalle;
 import ec.peleusi.models.entities.DireccionProveedor;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Proveedor;
@@ -149,7 +149,7 @@ public class CompraCrudFrm extends JInternalFrame {
 
 	private void crearTabla() {
 		Object[] cabecera = { "Id", "Código", "Nombre", "Cantidad", "Precio Bruto", "% Desc.", "Descuento",
-				"Precio Neto", "Subtotal", "% Iva", "Valor Iva", "Stock", "% Ice", "Valor Ice", "Total" };
+				"Precio Neto", "Subtotal", "% Iva", "Valor Iva", "Stock", "% Ice", "Valor Ice", "Total" , "IdProducto"};
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -195,6 +195,9 @@ public class CompraCrudFrm extends JInternalFrame {
 		tblProductos.getColumnModel().getColumn(12).setPreferredWidth(80);
 		tblProductos.getColumnModel().getColumn(13).setPreferredWidth(80);
 		tblProductos.getColumnModel().getColumn(14).setPreferredWidth(80);
+		tblProductos.getColumnModel().getColumn(15).setMaxWidth(0);
+		tblProductos.getColumnModel().getColumn(15).setMinWidth(0);
+		tblProductos.getColumnModel().getColumn(15).setPreferredWidth(0);
 		scrollPane.setViewportView(tblProductos);
 		filaDatos = new Object[cabecera.length];
 	}
@@ -282,6 +285,7 @@ public class CompraCrudFrm extends JInternalFrame {
 			valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
 			filaDatos[13] = valorIceFila;
 			filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
+			filaDatos[15]=producto;
 			modelo.addRow(filaDatos);
 			System.out.println(modelo);
 			tblProductos.setModel(modelo);
@@ -343,7 +347,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		listaUsuario = usuarioController.UsuarioList();
 		cmbUsuario.setModel(new DefaultComboBoxModel(listaUsuario.toArray()));
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void cargarSucursal() {
 		sucursal = new Sucursal();
@@ -495,6 +499,8 @@ public class CompraCrudFrm extends JInternalFrame {
 				Boolean estado = false;
 				Compra compra = new Compra();
 				CompraController compraController = new CompraController();
+				Usuario usuario = (Usuario) cmbUsuario.getSelectedItem();
+				Sucursal sucursal = (Sucursal) cmbSucursal.getSelectedItem();
 
 				compra.setBaseImponibleExentoIva(baseImponibleExentoIva);
 				compra.setBaseImponibleIva0(Double.parseDouble(txtBaseImponibleIva0.getText()));
@@ -517,6 +523,28 @@ public class CompraCrudFrm extends JInternalFrame {
 				compra.setSucursal(sucursal);
 				compra.setUsuario(usuario);
 				compraController.createCompra(compra);
+
+				for (int filaDetalle = 0; filaDetalle < tblProductos.getRowCount(); filaDetalle++) {
+					
+					CompraDetalle compraDetalle= new CompraDetalle();
+					CompraDetalleController compraDetalleController= new CompraDetalleController();
+					compraDetalle.setStock(Double.parseDouble(modelo.getValueAt(filaDetalle, 11).toString()));
+					compraDetalle.setCodigoProducto(modelo.getValueAt(filaDetalle, 1).toString());					
+					compraDetalle.setCostoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 4).toString()));
+					compraDetalle.setNombreProducto(modelo.getValueAt(filaDetalle, 2).toString());
+					compraDetalle.setPorcentajeDescuentoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
+					compraDetalle.setPorcentajeIceProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 12).toString()));
+					compraDetalle.setPorcentajeIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 9).toString()));
+					compraDetalle.setSubtotal(Double.parseDouble(modelo.getValueAt(filaDetalle, 8).toString()));
+					compraDetalle.setValorDescuentoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
+					compraDetalle.setValorIceProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 13).toString()));
+					compraDetalle.setValorIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 10).toString()));
+					compraDetalle.setCompra(compra);
+					Producto producto= (Producto) modelo.getValueAt(filaDetalle, 15);
+					compraDetalle.setProducto(producto);					
+					compraDetalleController.createCompra(compraDetalle);					
+
+				}
 
 			}
 		});
