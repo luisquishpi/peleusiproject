@@ -96,7 +96,7 @@ public class ClienteCrudFrm extends JDialog {
 	private void CargarListaCiudad() {
 		CiudadController ciudadController = new CiudadController();
 		List<Ciudad> listaCiudad;
-		listaCiudad = ciudadController.CiudadList();
+		listaCiudad = ciudadController.ciudadList();
 		cmbCiudad.setModel(new DefaultComboBoxModel(listaCiudad.toArray()));
 	}
 

@@ -60,7 +60,7 @@ public class SucursalCrudFrm extends JInternalFrame {
 	{		
 		CiudadController ciudadController= new CiudadController();
 		List<Ciudad> lista;
-		lista=ciudadController.CiudadList();
+		lista=ciudadController.ciudadList();
 		cmbCiudad.setModel(new DefaultComboBoxModel(lista.toArray()));	
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })

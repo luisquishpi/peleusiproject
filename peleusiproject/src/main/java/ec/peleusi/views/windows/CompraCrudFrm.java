@@ -344,7 +344,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		usuario = new Usuario();
 		UsuarioController usuarioController = new UsuarioController();
 		List<Usuario> listaUsuario;
-		listaUsuario = usuarioController.UsuarioList();
+		listaUsuario = usuarioController.usuarioList();
 		cmbUsuario.setModel(new DefaultComboBoxModel(listaUsuario.toArray()));
 	}
 
