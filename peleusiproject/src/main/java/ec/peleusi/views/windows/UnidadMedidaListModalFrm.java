@@ -8,12 +8,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import ec.peleusi.controllers.CiudadController;
-import ec.peleusi.models.entities.Ciudad;
+import ec.peleusi.controllers.UnidadMedidaController;
+import ec.peleusi.models.entities.UnidadMedida;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.HeadlessException;
-
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
@@ -22,42 +21,40 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-
 @SuppressWarnings("serial")
-public class CiudadListModalFrm extends JDialog {
+public class UnidadMedidaListModalFrm extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtBuscar;
-	private JTable tblCiudad;
+	private JTable tblUnidadMedida;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
 	private JButton btnBuscar;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
-	private CiudadCrudFrm ciudadCrudFrm = new CiudadCrudFrm();
-	private Ciudad ciudad;
+	private UnidadMedidaCrudFrm unidadMedidaCrudFrm = new UnidadMedidaCrudFrm();
+	private UnidadMedida unidadMedida;
 	private JScrollPane scrollPane;
 	@SuppressWarnings("unused")
-	private CiudadListModalFrm ciudadListModalFrm;
+	private UnidadMedidaListModalFrm unidadMedidaListModalFrm;
 	
 
-	public CiudadListModalFrm() {
-		setTitle("Listado de Ciudades");
+	public UnidadMedidaListModalFrm() {
+		setType(Type.UTILITY);
+		//setTitle("Lista de Unidad de Medida");
 		crearControles();
 		crearEventos();
 		crearTabla();
-	}
-
-	
+	}	
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Ciudad" };
+		Object[] cabecera = { "Id", "UnidadMedida", "Abreviatura" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1) {
+				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2) {
 					return false;
 				}
 				return true;
@@ -65,7 +62,7 @@ public class CiudadListModalFrm extends JDialog {
 		};
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
-		tblCiudad = new JTable(modelo) {
+		tblUnidadMedida = new JTable(modelo) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -78,47 +75,51 @@ public class CiudadListModalFrm extends JDialog {
 					return String.class;
 				case 2:
 					return String.class;
+				case 3:
+					return String.class;	
 				default:
 					return String.class;
 				}
 			}
 		};
-		tblCiudad.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblCiudad.setPreferredScrollableViewportSize(tblCiudad.getPreferredSize());
-		tblCiudad.getTableHeader().setReorderingAllowed(true);
-		tblCiudad.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblCiudad.getColumnModel().getColumn(0).setMinWidth(0);
-		tblCiudad.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(292);
-		scrollPane.setViewportView(tblCiudad);
+		tblUnidadMedida.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblUnidadMedida.setPreferredScrollableViewportSize(tblUnidadMedida.getPreferredSize());
+		tblUnidadMedida.getTableHeader().setReorderingAllowed(true);
+		tblUnidadMedida.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblUnidadMedida.getColumnModel().getColumn(0).setMinWidth(0);
+		tblUnidadMedida.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tblUnidadMedida.getColumnModel().getColumn(1).setPreferredWidth(170);
+		tblUnidadMedida.getColumnModel().getColumn(2).setPreferredWidth(122);
+		scrollPane.setViewportView(tblUnidadMedida);
 	}
 
-	private Object[] agregarDatosAFila(Ciudad ciudad) {
-		filaDatos[0] = ciudad.getId();
-		filaDatos[1] = ciudad.getNombre();
+	private Object[] agregarDatosAFila(UnidadMedida unidadMedida) {
+		filaDatos[0] = unidadMedida.getId();
+		filaDatos[1] = unidadMedida.getNombre();
+		filaDatos[2] = unidadMedida.getAbreviatura();
 		return filaDatos;
 	}
 
 	private void cargarTabla() {
-		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad = ciudadController.ciudadList();
-		for (Ciudad ciudad : listaCiudad) {
-			modelo.addRow(agregarDatosAFila(ciudad));
+		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
+		List<UnidadMedida> listaUnidadMedida = unidadMedidaController.unidadMedidaList();
+		for (UnidadMedida unidadMedida : listaUnidadMedida) {
+			modelo.addRow(agregarDatosAFila(unidadMedida));
 		}
 	}
 
-	private void capturaYAgregaCiudadATabla() {
-		Ciudad ciudad = new Ciudad();
-		ciudad = ciudadCrudFrm.getCiudad();
-		System.out.println("Captura UnidadMedida retornado: " + ciudad);
-		if (ciudad != null && ciudad.getId() != null) {
-			modelo.addRow(agregarDatosAFila(ciudad));
-			tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+	private void capturaYAgregaUnidadMedidaATabla() {
+		UnidadMedida unidadMedida = new UnidadMedida();
+		unidadMedida = unidadMedidaCrudFrm.getUnidadMedida();
+		System.out.println("Captura UnidadMedida retornado: " + unidadMedida);
+		if (unidadMedida != null && unidadMedida.getId() != null) {
+			modelo.addRow(agregarDatosAFila(unidadMedida));
+			tblUnidadMedida.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 	}
 
-	public Ciudad getCiudad() {
-		return ciudad;
+	public UnidadMedida getUnidadMedida() {
+		return unidadMedida;
 	}
 
 	/**
@@ -140,22 +141,22 @@ public class CiudadListModalFrm extends JDialog {
 	 */
 
 	private void crearEventos() {
-		ciudadCrudFrm.addWindowListener(new WindowAdapter() {
+		unidadMedidaCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaCiudadATabla();
+				capturaYAgregaUnidadMedidaATabla();
 			}
 
 		});
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CiudadController ciudadController = new CiudadController();
-				List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
+				UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
+				List<UnidadMedida> listaUnidadMedida = unidadMedidaController.getUnidadMedidaList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
-				for (Ciudad ciudad : listaCiudad) {
-					modelo.addRow(agregarDatosAFila(ciudad));
+				for (UnidadMedida unidadMedida : listaUnidadMedida) {
+					modelo.addRow(agregarDatosAFila(unidadMedida));
 				}
 
 			}
@@ -163,9 +164,9 @@ public class CiudadListModalFrm extends JDialog {
 
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int filaseleccionada = tblCiudad.getSelectedRow();				
+				int filaseleccionada = tblUnidadMedida.getSelectedRow();				
 				try { 
-					filaseleccionada = tblCiudad.getSelectedRow();
+					filaseleccionada = tblUnidadMedida.getSelectedRow();
 				  
 				  if (filaseleccionada == -1)
 				  { 
@@ -173,9 +174,11 @@ public class CiudadListModalFrm extends JDialog {
 					  JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila"); 
 				  }	
 				  else { 
-					  	ciudad = new Ciudad();
-						ciudad.setId(Integer.parseInt(modelo.getValueAt(tblCiudad.getSelectedRow(), 0).toString()));
-						ciudad.setNombre(modelo.getValueAt(tblCiudad.getSelectedRow(), 1).toString());
+					  	unidadMedida = new UnidadMedida();
+						unidadMedida.setId(Integer.parseInt(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 0).toString()));
+						unidadMedida.setNombre(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 1).toString());
+						unidadMedida.setAbreviatura(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 2).toString());
+						
 				  		}
 				  dispose();
 				}
@@ -184,7 +187,6 @@ public class CiudadListModalFrm extends JDialog {
 				  } 
 				} 
 			});
-								
 		
 
 		btnCancelar.addActionListener(new ActionListener() {
@@ -192,10 +194,11 @@ public class CiudadListModalFrm extends JDialog {
 				dispose();
 			}
 		});
+
 	}
 
 	public void crearControles() {
-		setTitle("Lista de Ciudades");
+		setTitle("Lista de Unidades de Medida");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -211,7 +214,7 @@ public class CiudadListModalFrm extends JDialog {
 		{
 			btnBuscar = new JButton("Buscar");
 			btnBuscar.setIcon(
-					new ImageIcon(CiudadListModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+					new ImageIcon(UnidadMedidaListModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
 			btnBuscar.setBounds(311, 11, 115, 47);
 			contentPanel.add(btnBuscar);
 		}
@@ -220,7 +223,7 @@ public class CiudadListModalFrm extends JDialog {
 		scrollPane.setBounds(10, 56, 295, 145);
 		contentPanel.add(scrollPane);
 		{
-			tblCiudad = new JTable();			
+			tblUnidadMedida = new JTable();
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -229,7 +232,7 @@ public class CiudadListModalFrm extends JDialog {
 			{
 				btnAceptar = new JButton("Aceptar");
 				btnAceptar.setIcon(
-						new ImageIcon(CiudadListModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
+						new ImageIcon(UnidadMedidaListModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
 				btnAceptar.setActionCommand("OK");
 				buttonPane.add(btnAceptar);
 				getRootPane().setDefaultButton(btnAceptar);
@@ -237,7 +240,7 @@ public class CiudadListModalFrm extends JDialog {
 			{
 				btnCancelar = new JButton("Cancelar");
 				btnCancelar.setIcon(
-						new ImageIcon(CiudadListModalFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+						new ImageIcon(UnidadMedidaListModalFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 				btnCancelar.setActionCommand("Cancel");
 				buttonPane.add(btnCancelar);
 			}

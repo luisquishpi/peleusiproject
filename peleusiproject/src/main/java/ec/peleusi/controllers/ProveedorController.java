@@ -19,7 +19,7 @@ public class ProveedorController {
 
 	}
 
-	public List<Proveedor> ProveedorList() {
+	public List<Proveedor> proveedorList() {
 		return proveedorDao.findAll();
 	}
 

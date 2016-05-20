@@ -317,7 +317,7 @@ public class ProductoCrudFrm extends JInternalFrame {
 	private void cargarCombosUnidaMedida() {
 		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
 		List<UnidadMedida> listaUnidadMedida;
-		listaUnidadMedida = unidadMedidaController.UnidadMedidaList();
+		listaUnidadMedida = unidadMedidaController.unidadMedidaList();
 		cmbUnidadMedidaCompra.setModel(new DefaultComboBoxModel(listaUnidadMedida.toArray()));
 		cmbUnidadMedidaVenta.setModel(new DefaultComboBoxModel(listaUnidadMedida.toArray()));
 		cmbUnidadMedidaPeso.setModel(new DefaultComboBoxModel<UnidadMedidaPesoEnum>(UnidadMedidaPesoEnum.values()));

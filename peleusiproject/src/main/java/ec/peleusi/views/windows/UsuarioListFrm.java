@@ -111,7 +111,7 @@ public class UsuarioListFrm extends JInternalFrame {
 
 	private void cargarTabla() {
 		UsuarioController usuarioController = new UsuarioController();
-		List<Usuario> listaUsuario = usuarioController.UsuarioList();
+		List<Usuario> listaUsuario = usuarioController.usuarioList();
 		for (Usuario usuario : listaUsuario) {
 			modelo.addRow(agregarDatosAFila(usuario));
 		}

@@ -28,7 +28,7 @@ public class PrincipalFrm extends JFrame {
 	private TarifaIvaListFrm tarifaIvaListFrm;
 	private TipoCalificacionPersonaListFrm tipoCalificacionPersonaListFrm;
 	private TipoGastoDeducibleCrudFrm tipoGastoDeducibleCrudFrm;
-	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm;
+	private TipoIdentificacionListFrm tipoIdentificacionListFrm;
 	private TipoPagoListFrm tipoPagoListFrm;
 	private TipoPrecioListFrm tipoPrecioListFrm;
 	private TipoRetencionListFrm tipoRetencionListFrm;
@@ -173,10 +173,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmTipoDeIdentificacin = new JMenuItem("Tipo de Identificación");
 		mntmTipoDeIdentificacin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoIdentificacionCrudFrm == null || tipoIdentificacionCrudFrm.isClosed()) {
-					tipoIdentificacionCrudFrm = new TipoIdentificacionCrudFrm();
-					dpContenedor.add(tipoIdentificacionCrudFrm);
-					tipoIdentificacionCrudFrm.show();
+				if (tipoIdentificacionListFrm == null || tipoIdentificacionListFrm.isClosed()) {
+					tipoIdentificacionListFrm = new TipoIdentificacionListFrm();
+					dpContenedor.add(tipoIdentificacionListFrm);
+					tipoIdentificacionListFrm.show();
 				}
 			}
 		});

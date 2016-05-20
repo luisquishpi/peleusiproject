@@ -97,7 +97,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 
 	private void cargarTabla() {
 		UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
-		List<UnidadMedida> listaUnidadMedida = unidadMedidaController.UnidadMedidaList();
+		List<UnidadMedida> listaUnidadMedida = unidadMedidaController.unidadMedidaList();
 		for (UnidadMedida unidadMedida : listaUnidadMedida) {
 			modelo.addRow(agregarDatosAFila(unidadMedida));
 		}

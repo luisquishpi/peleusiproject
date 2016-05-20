@@ -112,6 +112,7 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tipoCalificacionPersonaRetorno = null;
 				dispose();
 			}
 		});

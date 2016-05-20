@@ -155,6 +155,7 @@ public class TarifaIceCrudFrm extends JDialog {
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tarifaIceRetorno = null;
 				dispose();
 			}
 		});

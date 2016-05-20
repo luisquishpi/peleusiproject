@@ -18,11 +18,11 @@ public class DireccionProveedorController {
 		return direccionProveedorDao.create(direccionProveedor);
 	}
 	
-	public List<DireccionProveedor> DireccionProveedorList() {
+	public List<DireccionProveedor> direccionProveedorList() {
 		return direccionProveedorDao.findAll();
 	}
 	
-	public List<DireccionProveedor> DireccionProveedorIdList(Proveedor proveedor) {
+	public List<DireccionProveedor> direccionProveedorIdList(Proveedor proveedor) {
 		return direccionProveedorDao.DireccionProveedorList(proveedor);
 	}			
 	public DireccionProveedor getDireccionProveedor(int id) {

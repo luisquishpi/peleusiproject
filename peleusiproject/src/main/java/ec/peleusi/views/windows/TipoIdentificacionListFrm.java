@@ -16,11 +16,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import ec.peleusi.controllers.ProveedorController;
-import ec.peleusi.models.entities.Proveedor;
+import ec.peleusi.controllers.TipoIdentificacionController;
+import ec.peleusi.models.entities.TipoIdentificacion;
+
 import java.awt.Font;
 
-public class ProveedorListFrm extends JInternalFrame {
+public class TipoIdentificacionListFrm extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -28,22 +29,22 @@ public class ProveedorListFrm extends JInternalFrame {
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtBuscar;
-	private JButton btnBuscar;
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
-	private JTable tblProveedor;
-	private ProveedorCrudFrm proveedorCrudFrm = new ProveedorCrudFrm();
+	private JTable tblTipoIdentificacion;
+	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm = new TipoIdentificacionCrudFrm();
+	private JButton btnBuscar;
 
-	public ProveedorListFrm() {
-		setTitle("Listado Proveedor");
+	public TipoIdentificacionListFrm() {
+		setTitle("Lista del Tipo de Identificaciòn");
 		crearControles();
 		crearEventos();
 		crearTabla();
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Identificaciòn", "Razòn Social", "Tipo Identificaciòn" };
+		Object[] cabecera = { "Id", "Còdigo", "Nombre", "Valida" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -57,7 +58,7 @@ public class ProveedorListFrm extends JInternalFrame {
 		};
 		filaDatos = new Object[cabecera.length];
 		cargarTabla();
-		tblProveedor = new JTable(modelo) {
+		tblTipoIdentificacion = new JTable(modelo) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -71,74 +72,63 @@ public class ProveedorListFrm extends JInternalFrame {
 				case 2:
 					return String.class;
 				case 3:
-					return String.class;
+					return Boolean.class;
 				default:
 					return String.class;
 				}
 			}
 		};
-		tblProveedor.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblProveedor.setPreferredScrollableViewportSize(tblProveedor.getPreferredSize());
-		tblProveedor.getTableHeader().setReorderingAllowed(true);
-		tblProveedor.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblProveedor.getColumnModel().getColumn(0).setMinWidth(0);
-		tblProveedor.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblProveedor.getColumnModel().getColumn(1).setPreferredWidth(125);
-		tblProveedor.getColumnModel().getColumn(2).setPreferredWidth(210);
-		tblProveedor.getColumnModel().getColumn(3).setPreferredWidth(108);
-		scrollPane.setViewportView(tblProveedor);
+		tblTipoIdentificacion.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTipoIdentificacion.setPreferredScrollableViewportSize(tblTipoIdentificacion.getPreferredSize());
+		tblTipoIdentificacion.getTableHeader().setReorderingAllowed(true);
+		tblTipoIdentificacion.getColumnModel().getColumn(0).setMaxWidth(0);
+		tblTipoIdentificacion.getColumnModel().getColumn(0).setMinWidth(0);
+		tblTipoIdentificacion.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tblTipoIdentificacion.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tblTipoIdentificacion.getColumnModel().getColumn(2).setPreferredWidth(200);
+		tblTipoIdentificacion.getColumnModel().getColumn(3).setPreferredWidth(143);
+		scrollPane.setViewportView(tblTipoIdentificacion);
 
 	}
 
-	private Object[] agregarDatosAFila(Proveedor proveedor) {
-		filaDatos[0] = proveedor.getId();
-		filaDatos[1] = proveedor.getIdentificacion();
-		filaDatos[2] = proveedor.getRazonSocial();
-		filaDatos[3] = proveedor.getTipoIdentificacion().getNombre();
+	private Object[] agregarDatosAFila(TipoIdentificacion tipoIdentificacion) {
+		filaDatos[0] = tipoIdentificacion.getId();
+		filaDatos[1] = tipoIdentificacion.getCodigo();
+		filaDatos[2] = tipoIdentificacion.getNombre();
+		filaDatos[3] = tipoIdentificacion.getValida();
 		return filaDatos;
 	}
 
 	private void cargarTabla() {
-		ProveedorController proveedorController = new ProveedorController();
-		List<Proveedor> listaProveedor = proveedorController.proveedorList();
-		for (Proveedor proveedor : listaProveedor) {
-			modelo.addRow(agregarDatosAFila(proveedor));
+		TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
+		List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
+		for (TipoIdentificacion tipoIdentificacion : listaTipoIdentificacion) {
+			modelo.addRow(agregarDatosAFila(tipoIdentificacion));
 		}
-
-	}
-	@SuppressWarnings("unused")
-	private void cargarDireccionProveedor(Proveedor proveedor)
-	{
-		
-		
-		
-		
 	}
 
-	private void capturaYAgregaProveedorATabla() {
-		Proveedor proveedor = new Proveedor();
-		proveedor = proveedorCrudFrm.getProveedor();
-		if (proveedor != null && proveedor.getId() != null) {
-			System.out.println("Captura Proveedor retornado: " + proveedor);
-			modelo.addRow(agregarDatosAFila(proveedor));
-			tblProveedor.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+	private void capturaYAgregaTipoIdentificacionATabla() {
+		TipoIdentificacion tipoIdentificacion = new TipoIdentificacion();
+		tipoIdentificacion = tipoIdentificacionCrudFrm.getTipoIdentificacion();
+		if (tipoIdentificacion != null && tipoIdentificacion.getId() != null) {
+			modelo.addRow(agregarDatosAFila(tipoIdentificacion));
+			tblTipoIdentificacion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
 		}
 	}
 
 	private void crearEventos() {
-
-		proveedorCrudFrm.addWindowListener(new WindowAdapter() {
+		tipoIdentificacionCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaProveedorATabla();
+				capturaYAgregaTipoIdentificacionATabla();
 			}
 		});
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!proveedorCrudFrm.isVisible()) {
-					proveedorCrudFrm.setModal(true);
-					proveedorCrudFrm.setVisible(true);
+				if (!tipoIdentificacionCrudFrm.isVisible()) {
+					tipoIdentificacionCrudFrm.setModal(true);
+					tipoIdentificacionCrudFrm.setVisible(true);
 				}
 			}
 		});
@@ -160,12 +150,13 @@ public class ProveedorListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ProveedorController proveedorController = new ProveedorController();
-				List<Proveedor> listaProveedor = proveedorController.getProveedorList(txtBuscar.getText());
+				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
+				List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController
+						.getTipoIdentificacionList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
-				for (Proveedor proveedor : listaProveedor) {
-					modelo.addRow(agregarDatosAFila(proveedor));
+				for (TipoIdentificacion tipoIdentificacion : listaTipoIdentificacion) {
+					modelo.addRow(agregarDatosAFila(tipoIdentificacion));					
 				}
 			}
 		});
@@ -183,22 +174,26 @@ public class ProveedorListFrm extends JInternalFrame {
 		panelCabecera.setLayout(null);
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setIcon(
+				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
 		btnNuevo.setBounds(10, 11, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setIcon(
+				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
 		btnEditar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setIcon(
+				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setIcon(
+				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
@@ -212,14 +207,14 @@ public class ProveedorListFrm extends JInternalFrame {
 		panelCuerpo.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
-
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 60, 446, 208);
 		panelCuerpo.add(scrollPane);
-	}
 
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setIcon(
+				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnBuscar.setBounds(466, 9, 119, 41);
+		panelCuerpo.add(btnBuscar);
+	}
 }
