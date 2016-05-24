@@ -15,7 +15,15 @@ public class TipoCalificacionPersonaController {
 	public String createTipoCalificacionPersona(TipoCalificacionPersona tipoCalificacionPersona) {
 		return tipoCalificacionPersonaDao.create(tipoCalificacionPersona);
 	}
-
+	
+	public String updateTipoCalificacionPersona(TipoCalificacionPersona tipoCalificacionPersona) {
+		return tipoCalificacionPersonaDao.update(tipoCalificacionPersona);
+	}
+	
+	public String deleteTipoCalificacionPersona(TipoCalificacionPersona tipoCalificacionPersona) {
+		return tipoCalificacionPersonaDao.deleteById(tipoCalificacionPersona.getId());
+	}
+	
 	public List<TipoCalificacionPersona> tipoCalificacionPersonaList() {
 		return tipoCalificacionPersonaDao.findAll();
 	}

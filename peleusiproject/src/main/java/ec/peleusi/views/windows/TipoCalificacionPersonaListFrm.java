@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -34,6 +35,7 @@ public class TipoCalificacionPersonaListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblTipoCalificacionPersona;
 	private TipoCalificacionPersonaCrudFrm tipoCalificacionPersonaCrudFrm = new TipoCalificacionPersonaCrudFrm();
+	private TipoCalificacionPersona tipoCalificacionPersona;
 
 	public TipoCalificacionPersonaListFrm() {
 		setTitle("Listado de Tipo Calificacion Persona");
@@ -99,11 +101,42 @@ public class TipoCalificacionPersonaListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaTipoCalificacionPersonaATabla() {
-		TipoCalificacionPersona tipoCalificacionPersona = new  TipoCalificacionPersona();
-		tipoCalificacionPersona = tipoCalificacionPersonaCrudFrm.getTipoCalificacionPersona();
-		if (tipoCalificacionPersona != null && tipoCalificacionPersona.getId() != null) {
-			modelo.addRow(agregarDatosAFila(tipoCalificacionPersona));
-			tblTipoCalificacionPersona.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tipoCalificacionPersona == tipoCalificacionPersonaCrudFrm.getTipoCalificacionPersona() && tipoCalificacionPersona.getId() != null) {
+			modelo.setValueAt(tipoCalificacionPersona.getNombre(), tblTipoCalificacionPersona.getSelectedRow(), 1);
+		} else {
+			if (tipoCalificacionPersonaCrudFrm.getTipoCalificacionPersona() != null && tipoCalificacionPersonaCrudFrm.getTipoCalificacionPersona().getId() != null) {
+				modelo.addRow(agregarDatosAFila(tipoCalificacionPersonaCrudFrm.getTipoCalificacionPersona()));
+				tblTipoCalificacionPersona.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
+		}		
+	}
+	
+	private boolean llenarEntidadParaEnviarATipoCalificacionPersonaCrudFrm() {
+		tipoCalificacionPersona = new TipoCalificacionPersona();
+		if (tblTipoCalificacionPersona.getSelectedRow() != -1) {
+			tipoCalificacionPersona.setId(Integer.parseInt(modelo.getValueAt(tblTipoCalificacionPersona.getSelectedRow(), 0).toString()));
+			tipoCalificacionPersona.setNombre(modelo.getValueAt(tblTipoCalificacionPersona.getSelectedRow(), 1).toString());
+			tipoCalificacionPersonaCrudFrm.setTipoCalificacionPersona(tipoCalificacionPersona);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarTipoCalificacionPersona() {
+		if (llenarEntidadParaEnviarATipoCalificacionPersonaCrudFrm()) {
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tipoCalificacionPersona.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TipoCalificacionPersonaController tipoCalificacionPersonaController = new TipoCalificacionPersonaController();
+				String error = tipoCalificacionPersonaController.deleteTipoCalificacionPersona(tipoCalificacionPersona);
+				if (error == null) {
+					modelo.removeRow(tblTipoCalificacionPersona.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			
 		}
 	}
 
@@ -117,6 +150,8 @@ public class TipoCalificacionPersonaListFrm extends JInternalFrame {
 		
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				tipoCalificacionPersona = new TipoCalificacionPersona();
+				tipoCalificacionPersonaCrudFrm.setTipoCalificacionPersona(tipoCalificacionPersona);
 				if (!tipoCalificacionPersonaCrudFrm.isVisible()) {
 					tipoCalificacionPersonaCrudFrm.setModal(true);
 					tipoCalificacionPersonaCrudFrm.setVisible(true);
@@ -125,12 +160,17 @@ public class TipoCalificacionPersonaListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarATipoCalificacionPersonaCrudFrm()) {
+					if (!tipoCalificacionPersonaCrudFrm.isVisible()) {
+						tipoCalificacionPersonaCrudFrm.setModal(true);
+						tipoCalificacionPersonaCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarTipoCalificacionPersona();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
