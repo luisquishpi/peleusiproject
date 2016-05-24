@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -18,7 +19,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.models.entities.TarifaIva;
-
 import java.awt.Font;
 
 public class TarifaIvaListFrm extends JInternalFrame {
@@ -35,6 +35,7 @@ public class TarifaIvaListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblTarifaIva;
 	private TarifaIvaCrudFrm tarifaIvaCrudFrm = new TarifaIvaCrudFrm();
+	private TarifaIva tarifaIva;
 
 	public TarifaIvaListFrm() {
 		setTitle("Lista de las Tarifas IVA");
@@ -108,13 +109,49 @@ public class TarifaIvaListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaTarifaIvaATabla() {
-		TarifaIva tarifaIva = new TarifaIva();
-		tarifaIva = tarifaIvaCrudFrm.getTarifaIva();
-		if (tarifaIva != null && tarifaIva.getId() != null) {
-			modelo.addRow(agregarDatosAFila(tarifaIva));
-			tblTarifaIva.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tarifaIva == tarifaIvaCrudFrm.getTarifaIva() && tarifaIva.getId() != null) {
+			modelo.setValueAt(tarifaIva.getCodigo(), tblTarifaIva.getSelectedRow(), 1);
+			modelo.setValueAt(tarifaIva.getNombre(), tblTarifaIva.getSelectedRow(), 2);
+			modelo.setValueAt(tarifaIva.getPorcentaje(), tblTarifaIva.getSelectedRow(), 3);
+		} else {
+			if (tarifaIvaCrudFrm.getTarifaIva() != null && tarifaIvaCrudFrm.getTarifaIva().getId() != null) {
+				modelo.addRow(agregarDatosAFila(tarifaIvaCrudFrm.getTarifaIva()));
+				tblTarifaIva.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
 	}
+
+	private boolean llenarEntidadParaEnviarATarifaIvaCrudFrm() {
+		tarifaIva = new TarifaIva();
+		if (tblTarifaIva.getSelectedRow() != -1) {
+			tarifaIva.setId(Integer.parseInt(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 0).toString()));
+			tarifaIva.setCodigo(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 1).toString());
+			tarifaIva.setNombre(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 2).toString());
+			tarifaIva.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 3).toString()));
+			tarifaIvaCrudFrm.setTarifaIva(tarifaIva);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarTarifaIva(){
+		
+		if (llenarEntidadParaEnviarATarifaIvaCrudFrm()){
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tarifaIva.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TarifaIvaController tarifaiIvaController = new TarifaIvaController();
+				String error = tarifaiIvaController.deleteTarifaIva(tarifaIva);
+				if (error == null) {
+					modelo.removeRow(tblTarifaIva.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}			
+		}		
+	}
+	
 
 	private void crearEventos() {
 		tarifaIvaCrudFrm.addWindowListener(new WindowAdapter() {
@@ -126,6 +163,8 @@ public class TarifaIvaListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				tarifaIva = new TarifaIva();
+				tarifaIvaCrudFrm.setTarifaIva(tarifaIva);
 				if (!tarifaIvaCrudFrm.isVisible()) {
 					tarifaIvaCrudFrm.setModal(true);
 					tarifaIvaCrudFrm.setVisible(true);
@@ -134,12 +173,18 @@ public class TarifaIvaListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarATarifaIvaCrudFrm()) {
+					if (!tarifaIvaCrudFrm.isVisible()) {
+						tarifaIvaCrudFrm.setModal(true);
+						tarifaIvaCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
+
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarTarifaIva();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {

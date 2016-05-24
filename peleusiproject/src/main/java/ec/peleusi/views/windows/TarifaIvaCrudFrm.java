@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
@@ -30,18 +32,127 @@ public class TarifaIvaCrudFrm extends JDialog {
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
 	private JFormattedTextField txtPorcentaje;
-	private TarifaIva tarifaIvaRetorno;
+	private TarifaIva tarifaIva;
 	int limitecaja = 15;
 
 	public TarifaIvaCrudFrm() {
-		setTitle("Tarifa IVA");
 		crearControles();
 		crearEventos();
-		limpiarCampos();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				llenarCamposConEntidad();
+				txtCodigo.requestFocus();
+				}
+			});
+		}
+
+	private void llenarCamposConEntidad() {
+		if (tarifaIva != null && tarifaIva.getId() != null) {
+			this.setTitle("Actualizar Tarifa IVA");
+			btnGuardar.setText("Actualizar");
+			limpiarCampos();
+			txtCodigo.setText(tarifaIva.getCodigo());
+			txtNombre.setText(tarifaIva.getNombre());		
+			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));
+		} else {
+			this.setTitle("Creando Tarifa Iva");
+			btnGuardar.setText("Guardar");
+			limpiarCampos();
+		}
+	}
+	
+		private void llenarEntidadAntesDeGuardar(){
+		tarifaIva.setCodigo(txtCodigo.getText());
+		tarifaIva.setNombre(txtNombre.getText());
+		tarifaIva.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));		
 	}
 
-	private void crearControles() {
+	private void guardarNuevoTarifaIva(){
+		tarifaIva = new TarifaIva();
+		llenarEntidadAntesDeGuardar();
+		TarifaIvaController tarifaIvaController = new TarifaIvaController();
+		String error = tarifaIvaController.createTarifaIva(tarifaIva);
+		if (error == null){
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 		
+	private void actualizarTarifaIva() {
+		llenarEntidadAntesDeGuardar();
+		TarifaIvaController tarifaIvaController = new TarifaIvaController();
+		String error = tarifaIvaController.updateTarifaIva(tarifaIva);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public TarifaIva getTarifaIva() {
+		return tarifaIva;
+	}
+
+	public void setTarifaIva(TarifaIva tarifaIva) {
+		this.tarifaIva = new TarifaIva();
+		this.tarifaIva = tarifaIva;
+	}
+	
+	private void limpiarCampos() {
+		txtCodigo.setText("");
+		txtNombre.setText("");
+		txtPorcentaje.setText("0");
+		txtCodigo.requestFocus();
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+			llenos = false;
+		return llenos;
+	}
+
+	private void crearEventos() {
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tarifaIva = new TarifaIva();
+				llenarCamposConEntidad();				
+			}
+		});
+
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!isCamposLlenos()) {
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (tarifaIva != null && tarifaIva.getId() != null) {
+					actualizarTarifaIva();
+				} else {
+					guardarNuevoTarifaIva();
+				}				
+			}
+		});
+
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tarifaIva = null;
+				dispose();
+			}
+		});
+	}	
+	
+	private void crearControles() {
+
 		setBounds(100, 100, 611, 262);
 
 		JPanel panelCabecera = new JPanel();
@@ -96,7 +207,6 @@ public class TarifaIvaCrudFrm extends JDialog {
 		txtCodigo.setBounds(133, 26, 141, 20);
 		panelCuerpo.add(txtCodigo);
 		txtCodigo.setColumns(15);
-
 		txtCodigo.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
 				if (txtCodigo.getText().length() == limitecaja) {
@@ -117,65 +227,5 @@ public class TarifaIvaCrudFrm extends JDialog {
 		txtPorcentaje.setLocation(134, 109);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
-	}
-
-	private void crearEventos() {
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				limpiarCampos();
-			}
-		});
-
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				TarifaIva tarifaIva = new TarifaIva(txtCodigo.getText(), txtNombre.getText(),
-						Double.parseDouble(txtPorcentaje.getText()));
-				TarifaIvaController tarifaIvaController = new TarifaIvaController();
-				String error = tarifaIvaController.createTarifaIva(tarifaIva);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.PLAIN_MESSAGE);
-					tarifaIvaRetorno = tarifaIva;
-					dispose();
-					limpiarCampos();
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-				}
-
-			}
-		});
-
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tarifaIvaRetorno = null;
-				dispose();
-			}
-		});
-	}
-	
-	public TarifaIva getTarifaIva() {
-		return tarifaIvaRetorno;
-	}
-	
-	private void limpiarCampos() {
-		txtCodigo.setText("");
-		txtNombre.setText("");
-		txtPorcentaje.setText("0");
-	}
-
-	private boolean isCamposLlenos() {
-		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
-			llenos = false;
-		return llenos;
 	}
 }

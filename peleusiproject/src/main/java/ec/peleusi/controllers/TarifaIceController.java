@@ -16,6 +16,10 @@ public class TarifaIceController {
 	public String createTarifaIce(TarifaIce tarifaIce) {
 		return tarifaIceDao.create(tarifaIce);
 	}
+	
+	public String updateTarifaIce(TarifaIce tarifaIce) {
+		return tarifaIceDao.update(tarifaIce);
+	}
 
 	public List<TarifaIce> tarifaIceList() {
 		return tarifaIceDao.findAll();
@@ -25,5 +29,7 @@ public class TarifaIceController {
 		return tarifaIceDao.TarifaIceList(parametro);
 	}
 	
-	
+	public String deleteTarifaIce(TarifaIce tarifaIce) {
+		return tarifaIceDao.deleteById(tarifaIce.getId());
+	}	
 }

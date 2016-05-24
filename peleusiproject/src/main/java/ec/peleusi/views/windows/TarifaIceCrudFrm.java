@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
@@ -30,14 +32,123 @@ public class TarifaIceCrudFrm extends JDialog {
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
 	private JFormattedTextField txtPorcentaje;
-	private TarifaIce tarifaIceRetorno;
+	private TarifaIce tarifaIce;
 	int limitecaja = 15;
 
 	public TarifaIceCrudFrm() {
-		setTitle("Tarifa ICE");
 		crearControles();
 		crearEventos();
-		limpiarCampos();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0){
+				llenarCamposConEntidad();
+				txtCodigo.requestFocus();
+			}
+		});
+	}
+	
+	private void llenarCamposConEntidad(){
+		if (tarifaIce !=null && tarifaIce.getId() != null){
+			this.setTitle("Actualizar Tarifa ICE");
+			btnGuardar.setText("Actualizar");
+			limpiarCampos();
+			txtCodigo.setText(tarifaIce.getCodigo());
+			txtNombre.setText(tarifaIce.getNombre());		
+			txtPorcentaje.setText(Double.toString(tarifaIce.getPorcentaje()));
+		}else{
+			this.setTitle("Creando Tarifa Ice");
+			btnGuardar.setText("Guardar");
+			limpiarCampos();			
+		}
+	}
+	
+	private void llenarEntidadAntesDeGuardar(){
+		tarifaIce.setCodigo(txtCodigo.getText());
+		tarifaIce.setNombre(txtNombre.getText());
+		tarifaIce.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+		} 
+	
+	private void guardarNuevoTarifaIce(){
+		tarifaIce = new TarifaIce();
+		llenarEntidadAntesDeGuardar();
+		TarifaIceController tarifaIceController = new TarifaIceController();
+		String error = tarifaIceController.createTarifaIce(tarifaIce);
+		if (error == null){
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}		
+	}
+	
+	private void actualizarTarifaIce(){
+		llenarEntidadAntesDeGuardar();
+		TarifaIceController tarifaIceController = new TarifaIceController();
+		String error = tarifaIceController.updateTarifaIce(tarifaIce);
+		if (error == null){
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}		
+	}
+
+	public TarifaIce getTarifaIce() {
+		return tarifaIce;
+	}
+	
+	public void setTarifaIce(TarifaIce tarifaIce){
+		this.tarifaIce = new TarifaIce();
+		this.tarifaIce = tarifaIce;
+	}
+
+	private void limpiarCampos() {
+		txtCodigo.setText("");
+		txtNombre.setText("");
+		txtPorcentaje.setText("00");
+		txtCodigo.requestFocus();		
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+			llenos = false;
+		return llenos;
+	}
+	
+	private void crearEventos() {
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tarifaIce = new TarifaIce();
+				llenarCamposConEntidad();
+			}
+		});
+
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!isCamposLlenos()) {
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (tarifaIce != null && tarifaIce.getId()!= null) {
+					actualizarTarifaIce();
+				} else {
+					guardarNuevoTarifaIce();
+				}
+			}
+		});
+
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tarifaIce = null;
+				dispose();
+			}
+		});
 	}
 
 	private void crearControles() {
@@ -116,65 +227,5 @@ public class TarifaIceCrudFrm extends JDialog {
 		txtPorcentaje.setLocation(134, 109);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
-	}
-
-	private void crearEventos() {
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				limpiarCampos();
-			}
-		});
-
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
-							JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				TarifaIce tarifaIce = new TarifaIce(txtCodigo.getText(), txtNombre.getText(),
-						Double.parseDouble(txtPorcentaje.getText()));
-				TarifaIceController tarifaIceController = new TarifaIceController();
-				String error = tarifaIceController.createTarifaIce(tarifaIce);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-					tarifaIceRetorno = tarifaIce;
-					dispose();
-					limpiarCampos();
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-				}
-
-			}
-		});
-
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tarifaIceRetorno = null;
-				dispose();
-			}
-		});
-	}
-
-	public TarifaIce getTarifaIce() {
-		return tarifaIceRetorno;
-	}
-
-	private void limpiarCampos() {
-		txtCodigo.setText("");
-		txtNombre.setText("");
-		txtPorcentaje.setText("0");
-	}
-
-	private boolean isCamposLlenos() {
-		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
-			llenos = false;
-		return llenos;
 	}
 }

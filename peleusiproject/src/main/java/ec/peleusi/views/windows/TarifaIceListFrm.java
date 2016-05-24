@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -34,7 +35,8 @@ public class TarifaIceListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblTarifaIce;
 	private TarifaIceCrudFrm tarifaIceCrudFrm = new TarifaIceCrudFrm();
-
+	private TarifaIce tarifaIce;
+	
 	public TarifaIceListFrm() {
 		setTitle("Lista de las Tarifas ICE");
 		crearControles();
@@ -71,7 +73,7 @@ public class TarifaIceListFrm extends JInternalFrame {
 				case 2:
 					return String.class;
 				case 3:
-					return String.class;
+					return Double.class;
 				default:
 					return String.class;
 				}
@@ -107,11 +109,45 @@ public class TarifaIceListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaTarifaIceATabla() {
-		TarifaIce tarifaIce = new TarifaIce();
-		tarifaIce = tarifaIceCrudFrm.getTarifaIce();
-		if (tarifaIce != null && tarifaIce.getId() != null) {
-			modelo.addRow(agregarDatosAFila(tarifaIce));
-			tblTarifaIce.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tarifaIce == tarifaIceCrudFrm.getTarifaIce() && tarifaIce.getId() != null) {
+			modelo.setValueAt(tarifaIce.getCodigo(), tblTarifaIce.getSelectedRow(), 1);
+			modelo.setValueAt(tarifaIce.getNombre(), tblTarifaIce.getSelectedRow(), 2);
+			modelo.setValueAt(tarifaIce.getPorcentaje(), tblTarifaIce.getSelectedRow(), 3);
+		} else {
+			if (tarifaIceCrudFrm.getTarifaIce() != null && tarifaIceCrudFrm.getTarifaIce().getId() != null) {
+				modelo.addRow(agregarDatosAFila(tarifaIceCrudFrm.getTarifaIce()));
+				tblTarifaIce.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
+		}
+	}
+
+	private boolean llenarEntidadParaEnviarATarifaIceCrudFrm() {
+		tarifaIce = new TarifaIce();
+		if (tblTarifaIce.getSelectedRow() != -1) {
+			tarifaIce.setId(Integer.parseInt(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 0).toString()));
+			tarifaIce.setCodigo(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 1).toString());
+			tarifaIce.setNombre(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 2).toString());
+			tarifaIce.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 3).toString()));
+			tarifaIceCrudFrm.setTarifaIce(tarifaIce);
+			return true;
+		}
+		return false;
+	}
+
+	private void eliminarTarifaIce() {
+		if (llenarEntidadParaEnviarATarifaIceCrudFrm()) {			
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tarifaIce.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TarifaIceController tarifaiIceController = new TarifaIceController();
+				String error = tarifaiIceController.deleteTarifaIce(tarifaIce);
+				if (error == null) {
+					modelo.removeRow(tblTarifaIce.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		}
 	}
 
@@ -125,6 +161,8 @@ public class TarifaIceListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				tarifaIce = new TarifaIce();
+				tarifaIceCrudFrm.setTarifaIce(tarifaIce);
 				if (!tarifaIceCrudFrm.isVisible()) {
 					tarifaIceCrudFrm.setModal(true);
 					tarifaIceCrudFrm.setVisible(true);
@@ -133,12 +171,17 @@ public class TarifaIceListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarATarifaIceCrudFrm()) {
+					if (!tarifaIceCrudFrm.isVisible()) {
+						tarifaIceCrudFrm.setModal(true);
+						tarifaIceCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarTarifaIce();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
