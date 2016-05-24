@@ -20,7 +20,6 @@ import java.awt.event.ComponentEvent;
 public class CiudadCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
@@ -106,7 +105,7 @@ public class CiudadCrudFrm extends JDialog {
 	}
 
 	private void crearControles() {
-		setBounds(100, 100, 611, 162);
+		setBounds(100, 100, 447, 162);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -124,14 +123,9 @@ public class CiudadCrudFrm extends JDialog {
 		btnGuardar.setBounds(150, 11, 130, 39);
 		panelCabecera.add(btnGuardar);
 
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
-
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(CiudadCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(290, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -158,7 +152,7 @@ public class CiudadCrudFrm extends JDialog {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atención",
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -166,14 +160,9 @@ public class CiudadCrudFrm extends JDialog {
 					actualizarCiudad();
 				} else {
 					guardarNuevoCiudad();
-
 				}
 			}
 
-		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

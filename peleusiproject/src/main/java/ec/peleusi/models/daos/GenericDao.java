@@ -78,21 +78,21 @@ public abstract class GenericDao<T, ID extends Serializable> {
 			session.update(entity);
 			session.getTransaction().commit();
 		} catch (ConstraintViolationException err) {
-			if (session.isOpen()) {
+			if (session != null && session.isOpen()) {
 				if (session.getTransaction() != null)
 					session.getTransaction().rollback();
 			}
 			err.printStackTrace();
 			error = "Datos duplicados, ya existen en la base de datos";
 		} catch (DataException err) {
-			if (session.isOpen()) {
+			if (session != null && session.isOpen()) {
 				if (session.getTransaction() != null)
 					session.getTransaction().rollback();
 			}
 			err.printStackTrace();
 			error = "Campos incorrectos, posible causa: sobrepasa número de carateres permitidos";
 		} catch (HibernateException e) {
-			if (session.isOpen()) {
+			if (session != null && session.isOpen()) {
 				if (session.getTransaction() != null)
 					session.getTransaction().rollback();
 			}
@@ -106,25 +106,34 @@ public abstract class GenericDao<T, ID extends Serializable> {
 		return error;
 	}
 
-	public boolean deleteById(ID id) {
-		boolean deleted = false;
+	public String deleteById(ID id) {
+		String error = null;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			session.beginTransaction();
 			T entity = (T) session.load(persistentClass, id);
 			session.delete(entity);
 			session.getTransaction().commit();
-			deleted = true;
+		} catch (ConstraintViolationException err) {
+			if (session != null && session.isOpen()) {
+				if (session.getTransaction() != null)
+					session.getTransaction().rollback();
+			}
+			err.printStackTrace();
+			error = "No se pudo eliminar, Datos estan siendo usados";
 		} catch (HibernateException e) {
-			if (session.getTransaction() != null)
-				session.getTransaction().rollback();
+			if (session != null && session.isOpen()) {
+				if (session.getTransaction() != null)
+					session.getTransaction().rollback();
+			}
 			e.printStackTrace();
+			error = "No se pudo eliminar, consulte su administrador. Clave:" + e.getCause();
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
 			}
 		}
-		return deleted;
+		return error;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -99,8 +100,6 @@ public class CiudadListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaCiudadATabla() {
-		System.out.println("Enviado. " + ciudad);
-		System.out.println("Recibido. " + ciudadCrudFrm.getCiudad());
 		if (ciudad == ciudadCrudFrm.getCiudad() && ciudad.getId() != null) {
 			modelo.setValueAt(ciudad.getNombre(), tblCiudad.getSelectedRow(), 1);
 		} else {
@@ -120,6 +119,24 @@ public class CiudadListFrm extends JInternalFrame {
 			return true;
 		}
 		return false;
+	}
+
+	private void eliminarCiudad() {
+		if (llenarEntidadParaEnviarACiudadCrudFrm()) {
+			System.out.println("Ciudad >" + ciudad);
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + ciudad.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				CiudadController ciudadController = new CiudadController();
+				String error = ciudadController.deleteCiudad(ciudad);
+				if (error == null) {
+					modelo.removeRow(tblCiudad.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 	}
 
 	private void crearEventos() {
@@ -152,7 +169,7 @@ public class CiudadListFrm extends JInternalFrame {
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarCiudad();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {

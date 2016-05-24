@@ -20,6 +20,10 @@ public class CiudadController {
 		return ciudadDao.update(ciudad);
 	}
 
+	public String deleteCiudad(Ciudad ciudad) {
+		return ciudadDao.deleteById(ciudad.getId());
+	}
+
 	public List<Ciudad> ciudadList() {
 		return ciudadDao.findAll();
 	}
