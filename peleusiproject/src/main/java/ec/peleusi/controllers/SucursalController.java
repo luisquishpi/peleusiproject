@@ -36,7 +36,7 @@ public class SucursalController {
 		return DaoFactory.getFactory().getSucursalDao().read(selectedSucursald);
 	}
 
-	public boolean updateSucursal(Sucursal sucursal) {
+	public String updateSucursal(Sucursal sucursal) {
 		return sucursalDao.update(sucursal);
 
 	}

@@ -43,7 +43,7 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -110,6 +110,7 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JComboBox cmbUsuario;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbSucursal;
+	List<CompraDetalle> listaDetalle = new ArrayList<CompraDetalle>();
 
 	public CompraCrudFrm() {
 
@@ -149,7 +150,7 @@ public class CompraCrudFrm extends JInternalFrame {
 
 	private void crearTabla() {
 		Object[] cabecera = { "Id", "Código", "Nombre", "Cantidad", "Precio Bruto", "% Desc.", "Descuento",
-				"Precio Neto", "Subtotal", "% Iva", "Valor Iva", "Stock", "% Ice", "Valor Ice", "Total" , "IdProducto"};
+				"Precio Neto", "Subtotal", "% Iva", "Valor Iva", "Stock", "% Ice", "Valor Ice", "Total", "IdProducto" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -285,11 +286,13 @@ public class CompraCrudFrm extends JInternalFrame {
 			valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
 			filaDatos[13] = valorIceFila;
 			filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
-			filaDatos[15]=producto;
+			filaDatos[15] = producto;
 			modelo.addRow(filaDatos);
 			System.out.println(modelo);
 			tblProductos.setModel(modelo);
-			calcularTotales();
+			calcularTotales();		
+			System.out.println(listaDetalle);
+			
 
 		} catch (Exception e) {
 		}
@@ -525,24 +528,30 @@ public class CompraCrudFrm extends JInternalFrame {
 				compraController.createCompra(compra);
 
 				for (int filaDetalle = 0; filaDetalle < tblProductos.getRowCount(); filaDetalle++) {
-					
-					CompraDetalle compraDetalle= new CompraDetalle();
-					CompraDetalleController compraDetalleController= new CompraDetalleController();
+
+					CompraDetalle compraDetalle = new CompraDetalle();
+					CompraDetalleController compraDetalleController = new CompraDetalleController();
 					compraDetalle.setStock(Double.parseDouble(modelo.getValueAt(filaDetalle, 11).toString()));
-					compraDetalle.setCodigoProducto(modelo.getValueAt(filaDetalle, 1).toString());					
+					compraDetalle.setCodigoProducto(modelo.getValueAt(filaDetalle, 1).toString());
 					compraDetalle.setCostoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 4).toString()));
 					compraDetalle.setNombreProducto(modelo.getValueAt(filaDetalle, 2).toString());
-					compraDetalle.setPorcentajeDescuentoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
-					compraDetalle.setPorcentajeIceProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 12).toString()));
-					compraDetalle.setPorcentajeIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 9).toString()));
+					compraDetalle.setPorcentajeDescuentoProducto(
+							Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
+					compraDetalle.setPorcentajeIceProducto(
+							Double.parseDouble(modelo.getValueAt(filaDetalle, 12).toString()));
+					compraDetalle
+							.setPorcentajeIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 9).toString()));
 					compraDetalle.setSubtotal(Double.parseDouble(modelo.getValueAt(filaDetalle, 8).toString()));
-					compraDetalle.setValorDescuentoProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
-					compraDetalle.setValorIceProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 13).toString()));
-					compraDetalle.setValorIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 10).toString()));
+					compraDetalle.setValorDescuentoProducto(
+							Double.parseDouble(modelo.getValueAt(filaDetalle, 6).toString()));
+					compraDetalle
+							.setValorIceProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 13).toString()));
+					compraDetalle
+							.setValorIvaProducto(Double.parseDouble(modelo.getValueAt(filaDetalle, 10).toString()));
 					compraDetalle.setCompra(compra);
-					Producto producto= (Producto) modelo.getValueAt(filaDetalle, 15);
-					compraDetalle.setProducto(producto);					
-					compraDetalleController.createCompra(compraDetalle);					
+					Producto producto = (Producto) modelo.getValueAt(filaDetalle, 15);
+					compraDetalle.setProducto(producto);
+					compraDetalleController.createCompra(compraDetalle);
 
 				}
 

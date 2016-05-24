@@ -22,7 +22,7 @@ public class SeteoController {
 	public List<Seteo> seteoList() {
 		return seteoDao.findAll();
 	}
-	public boolean update(Seteo seteo) {
+	public String update(Seteo seteo) {
 		return seteoDao.update(seteo);
 	}
 	public Seteo getSeteo(Integer id)

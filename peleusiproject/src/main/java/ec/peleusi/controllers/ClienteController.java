@@ -24,6 +24,10 @@ public class ClienteController {
 		return clienteDao.create(cliente);
 
 	}
+	public Boolean deleteCliente(Integer id) {
+		return clienteDao.deleteById(id);
+
+	}
 	
 	public boolean existCliente(Cliente cliente) {
 		return clienteDao.read(cliente.getId()) != null;
@@ -38,7 +42,7 @@ public class ClienteController {
 	}
 	
 	
-	public boolean update(Cliente cliente) {
+	public String update(Cliente cliente) {
 		return clienteDao.update(cliente);
 	}
 	

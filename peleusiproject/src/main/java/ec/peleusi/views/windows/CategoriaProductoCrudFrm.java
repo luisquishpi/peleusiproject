@@ -207,7 +207,7 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 							txtNombre.getText(), Integer.parseInt(lblDepen.getText()),
 							chbxContieneProductos.isSelected());
 					CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
-					if (categoriaProductoController.updateCategoriaProducto(categoriaProducto)) {
+					if (categoriaProductoController.updateCategoriaProducto(categoriaProducto)!="0") {
 						actualizarNodoArbol(categoriaProducto);
 						limpiarcampos();
 					} else {

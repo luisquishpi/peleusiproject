@@ -33,7 +33,7 @@ public class CategoriaProductoController {
 		return DaoFactory.getFactory().getCategoriaProductoDao().read(selectedCategoriaProductoId);
 	}
 
-	public boolean updateCategoriaProducto(CategoriaProducto categoriaProducto) {
+	public String updateCategoriaProducto(CategoriaProducto categoriaProducto) {
 		return categoriaProductoDao.update(categoriaProducto);
 
 	}
