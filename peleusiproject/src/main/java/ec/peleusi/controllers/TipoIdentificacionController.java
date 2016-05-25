@@ -17,11 +17,20 @@ public class TipoIdentificacionController {
 	public String createTipoIdentificacion(TipoIdentificacion tipoIdentificacion) {
 		return tipoIdentificacionDao.create(tipoIdentificacion);
 	}
+	
+	public String updateTipoIdentificacion(TipoIdentificacion tipoIdentificacion) {
+			return tipoIdentificacionDao.update(tipoIdentificacion);
+		}	
+	
 	public List<TipoIdentificacion> tipoIdentificacionList() {
 		return tipoIdentificacionDao.findAll();
 	}
 	
 	public List<TipoIdentificacion> getTipoIdentificacionList(String parametro) {
 		return tipoIdentificacionDao.TipoIdentificacionList(parametro);
+	}	
+	
+	public String deleteTipoIdentificacion(TipoIdentificacion tipoIdentificacion) {
+		return tipoIdentificacionDao.deleteById(tipoIdentificacion.getId());
 	}	
 }

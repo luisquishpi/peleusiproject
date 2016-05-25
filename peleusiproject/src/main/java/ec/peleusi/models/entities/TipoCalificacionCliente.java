@@ -9,12 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tipocalificacionpersona")
-public class TipoCalificacionPersona {
-	public TipoCalificacionPersona(){
+@Table(name = "tipocalificacioncliente")
+public class TipoCalificacionCliente {
+	public TipoCalificacionCliente(){
 	}
 
-	public TipoCalificacionPersona( String nombre){
+	public TipoCalificacionCliente( String nombre){
 		super();
 		this.id = null;
 		this.nombre = nombre;

@@ -27,11 +27,7 @@ public class DireccionProveedorController {
 	}			
 	public DireccionProveedor getDireccionProveedor(int id) {
 		return DaoFactory.getFactory().getDireccionProveedorDao().read(id);
-	}	
-	
-	public boolean update(DireccionProveedor direccionProveedor) {
-		return direccionProveedorDao.update(direccionProveedor);
-	}
+	}		
 	
 	public DireccionProveedor getDireccionProveedorPorDefecto(Proveedor proveedor)
 	{

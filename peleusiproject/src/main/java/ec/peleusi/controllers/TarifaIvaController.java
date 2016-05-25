@@ -22,7 +22,7 @@ public class TarifaIvaController {
 		return tarifaIvaDao.update(tarifaIva);
 	}
 
-	public List<TarifaIva> TarifaIvaList() {
+	public List<TarifaIva> tarifaIvaList() {
 		return tarifaIvaDao.findAll();
 	}
 
