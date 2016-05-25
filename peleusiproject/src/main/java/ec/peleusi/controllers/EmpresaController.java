@@ -8,23 +8,25 @@ import ec.peleusi.models.daos.DaoFactory;
 
 import ec.peleusi.models.entities.Empresa;;
 
-
 public class EmpresaController {
-	
+
 	private EmpresaDao empresaDao;
-	public EmpresaController(){
-		empresaDao= new DaoFactory().getEmpresaDao();
-		
+
+	public EmpresaController() {
+		empresaDao = new DaoFactory().getEmpresaDao();
+
 	}
-	
-	public String createEmpresa(Empresa empresa){
+
+	public String createEmpresa(Empresa empresa) {
 		return empresaDao.create(empresa);
 	}
-	
+
 	public List<Empresa> EmpresaList() {
 		return empresaDao.findAll();
 	}
-	
+
+	public String updateEmpresa(Empresa empresa) {
+		return empresaDao.update(empresa);
+	}
 
 }
-

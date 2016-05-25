@@ -16,7 +16,7 @@ import ec.peleusi.models.entities.Ciudad;
 public class Empresa {
 
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, byte[] foto, String ruta, Ciudad ciudad) {
+			String url, byte[] foto, String rutaFotoProducto, Ciudad ciudad) {
 		super();
 		this.id = null;
 		this.nombre = nombre;
@@ -27,21 +27,6 @@ public class Empresa {
 		this.email = email;
 		this.url = url;
 		this.foto = foto;
-		this.ciudad = ciudad;
-		this.rutaFotoProducto = ruta;
-	}
-
-	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, String rutaFotoProducto, Ciudad ciudad) {
-		super();
-		this.id = null;
-		this.nombre = nombre;
-		this.identificacion = identificacion;
-		this.direccion = direccion;
-		this.telefono = telefono;
-		this.fax = fax;
-		this.email = email;
-		this.url = url;
 		this.ciudad = ciudad;
 		this.rutaFotoProducto = rutaFotoProducto;
 	}

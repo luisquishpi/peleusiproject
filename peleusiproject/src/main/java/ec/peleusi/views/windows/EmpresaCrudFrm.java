@@ -26,6 +26,7 @@ import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.EmpresaController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Empresa;
+import javax.swing.border.LineBorder;
 
 public class EmpresaCrudFrm extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
@@ -36,23 +37,23 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	private JTextField txtEMail;
 	private JTextField txtUrl;
 	private JTextField txtFax;
-	private JTextField txtImagen;
 	private JLabel lblFoto;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbCiudad;
-	private JButton btnSeleccionar;
+	private JButton btnSeleccionarFoto;
 	private JButton btnGuardar;
-	private JButton btnNuevo;
-	private JButton btnEliminar;
 	private JButton btnCancelar;
 	private Empresa empresa;
+	private JTextField txtRutaFotoProducto;
+	private File file = null;
+	private JButton btnEliminarFoto;
 
 	public EmpresaCrudFrm() {
-
-		setTitle("Empresa");
+		setTitle("Datos de la Empresa");
 		crearControles();
 		crearEventos();
 		llenarCiudad();
+		empresa = new Empresa();
 		recuperarEmpresa();
 		txtNombreEmpresa.requestFocus();
 	}
@@ -62,7 +63,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		List<Empresa> listaEmpresa;
 		listaEmpresa = empresaController.EmpresaList();
 		if (listaEmpresa.size() != 0) {
-			empresa=listaEmpresa.get(0);
+			empresa = listaEmpresa.get(0);
 			txtNombreEmpresa.setText(empresa.getNombre());
 			txtIdentificacion.setText(empresa.getIdentificacion());
 			txtDireccion.setText(empresa.getDireccion());
@@ -70,9 +71,14 @@ public class EmpresaCrudFrm extends JInternalFrame {
 			txtFax.setText(empresa.getFax());
 			txtEMail.setText(empresa.getEmail());
 			txtUrl.setText(empresa.getUrl());
+			txtRutaFotoProducto.setText(empresa.getRutaFotoProducto());
 			cmbCiudad.getModel().setSelectedItem(empresa.getCiudad());
+			if (empresa.getFoto() != null)
+				lblFoto.setIcon(getPhotoIcon(empresa.getFoto()));
+			else
+				lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
 			btnGuardar.setText("Actualizar");
-			this.setTitle("Actualiando Empresa");
+			this.setTitle("Actualizando Empresa");
 		} else {
 			this.setTitle("Creando nueva Empresa");
 		}
@@ -95,20 +101,6 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		return llenos;
 	}
 
-	private void limpiarCampos() {
-		txtIdentificacion.setText("");
-		txtNombreEmpresa.setText("");
-		txtDireccion.setText("");
-		txtTelefono.setText("");
-		txtFax.setText("");
-		txtEMail.setText("");
-		txtUrl.setText("");
-		txtImagen.setText("");
-		lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
-		txtNombreEmpresa.requestFocus();
-
-	}
-
 	private static byte[] readBytesFromFile(String filePath) throws IOException {
 		File inputFile = new File(filePath);
 		FileInputStream inputStream = new FileInputStream(inputFile);
@@ -122,25 +114,84 @@ public class EmpresaCrudFrm extends JInternalFrame {
 
 	}
 
-	private void crearEventos() {
-		btnSeleccionar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+	private void guardarNuevaEmpresa() {
+		empresa = new Empresa();
+		llenarEntidadAntesDeGuardar();
+		EmpresaController empresaController = new EmpresaController();
+		String error = empresaController.createEmpresa(empresa);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+			recuperarEmpresa();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
+	private void actualizarEmpresa() {
+		llenarEntidadAntesDeGuardar();
+		EmpresaController empresaController = new EmpresaController();
+		String error = empresaController.updateEmpresa(empresa);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private byte[] getPhotoBytes(String path) {
+		byte[] photoBytes = null;
+		try {
+			photoBytes = readBytesFromFile(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return photoBytes;
+	}
+
+	private ImageIcon getPhotoIcon(byte[] image) {
+		Image imagen = new ImageIcon(image).getImage();
+		imagen = imagen.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+		return new ImageIcon(imagen);
+	}
+
+	private void llenarEntidadAntesDeGuardar() {
+		Ciudad ciudad = (Ciudad) cmbCiudad.getSelectedItem();
+		empresa.setNombre(txtNombreEmpresa.getText());
+		empresa.setIdentificacion(txtIdentificacion.getText());
+		empresa.setDireccion(txtDireccion.getText());
+		empresa.setTelefono(txtTelefono.getText());
+		empresa.setFax(txtFax.getText());
+		empresa.setEmail(txtEMail.getText());
+		empresa.setUrl(txtUrl.getText());
+		empresa.setRutaFotoProducto(txtRutaFotoProducto.getText());
+		empresa.setCiudad(ciudad);
+		if (empresa.getId() == null)
+			empresa.setFoto(getPhotoBytes(String.valueOf(file)));
+	}
+
+	private void crearEventos() {
+		btnSeleccionarFoto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				FileNameExtensionFilter filtro = new FileNameExtensionFilter(
 						"Formatos de Archivos JPEG (*.JPG; *.JPEG) ", "jpg", "jpeg");
 				JFileChooser archivo = new JFileChooser();
 				archivo.addChoosableFileFilter(filtro);
-				archivo.setDialogTitle("Abrir archivo");
+				archivo.setDialogTitle("Escoja una imagen");
 				int ventana = archivo.showOpenDialog(null);
 				if (ventana == JFileChooser.APPROVE_OPTION) {
-					File file = archivo.getSelectedFile();
-
-					txtImagen.setText(String.valueOf(file));
-					Image foto = getToolkit().getImage(txtImagen.getText());
-					foto = foto.getScaledInstance(110, 110, Image.SCALE_DEFAULT);
+					file = archivo.getSelectedFile();
+					Image foto = getToolkit().getImage(String.valueOf(file));
+					foto = foto.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 					lblFoto.setIcon(new ImageIcon(foto));
-
+					empresa.setFoto(getPhotoBytes(String.valueOf(file)));
 				}
+			}
+		});
+		btnEliminarFoto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				file = null;
+				lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
+				empresa.setFoto(null);
 			}
 		});
 
@@ -152,39 +203,14 @@ public class EmpresaCrudFrm extends JInternalFrame {
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				byte[] photoBytes = null;
-
-				try {
-					photoBytes = readBytesFromFile(txtImagen.getText());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-
-				Ciudad ciudad = (Ciudad) cmbCiudad.getSelectedItem();
-				System.out.println("ciudad " + ciudad);
-				Empresa empresa = new Empresa(txtNombreEmpresa.getText(), txtIdentificacion.getText(),
-						txtDireccion.getText(), txtTelefono.getText(), txtFax.getText(), txtEMail.getText(),
-						txtUrl.getText(), photoBytes, txtImagen.getText(), ciudad);
-				EmpresaController empresaController = new EmpresaController();
-				String error = empresaController.createEmpresa(empresa);
-				System.out.println("raiz " + error);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.INFORMATION_MESSAGE);
-					limpiarCampos();
+				if (empresa.getId() == null) {
+					guardarNuevaEmpresa();
 				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+					actualizarEmpresa();
 				}
-
 			}
 		});
 
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				limpiarCampos();
-			}
-		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -195,33 +221,23 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 599, 421);
+		setBounds(100, 100, 599, 400);
 		JPanel pnlCabecera = new JPanel();
 		pnlCabecera.setLayout(null);
 		pnlCabecera.setPreferredSize(new Dimension(200, 70));
 		pnlCabecera.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(pnlCabecera, BorderLayout.NORTH);
 
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
-		pnlCabecera.add(btnNuevo);
-
 		btnGuardar = new JButton("Guardar");
 
 		btnGuardar.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+		btnGuardar.setBounds(154, 20, 130, 39);
 		pnlCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		pnlCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 
 		btnCancelar.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(294, 20, 130, 39);
 		pnlCabecera.add(btnCancelar);
 
 		JPanel pnlCuerpo = new JPanel();
@@ -235,7 +251,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		txtNombreEmpresa = new JTextField(13);
 
 		txtNombreEmpresa.setColumns(10);
-		txtNombreEmpresa.setBounds(79, 24, 414, 20);
+		txtNombreEmpresa.setBounds(79, 24, 304, 20);
 		pnlCuerpo.add(txtNombreEmpresa);
 
 		JLabel lblRuc = new JLabel("RUC*");
@@ -278,7 +294,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		txtEMail.setBounds(79, 208, 304, 20);
 		pnlCuerpo.add(txtEMail);
 
-		JLabel lblUrl = new JLabel("Url");
+		JLabel lblUrl = new JLabel("WebSite");
 		lblUrl.setBounds(10, 245, 65, 14);
 		pnlCuerpo.add(lblUrl);
 
@@ -294,23 +310,34 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		txtFax.setBounds(79, 177, 304, 20);
 		pnlCuerpo.add(txtFax);
 
-		txtImagen = new JTextField();
-		txtImagen.setBounds(79, 267, 6, 20);
-		pnlCuerpo.add(txtImagen);
-		txtImagen.setColumns(10);
-		txtImagen.setVisible(false);
+		btnSeleccionarFoto = new JButton("");
+		btnSeleccionarFoto
+				.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnSeleccionarFoto.setBounds(436, 200, 49, 44);
+		pnlCuerpo.add(btnSeleccionarFoto);
 
-		btnSeleccionar = new JButton("Seleccionar");
-		btnSeleccionar.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		btnEliminarFoto = new JButton("");
+		btnEliminarFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminarFoto.setBounds(488, 200, 49, 44);
+		pnlCuerpo.add(btnEliminarFoto);
 
-		btnSeleccionar.setBounds(403, 230, 140, 44);
-		pnlCuerpo.add(btnSeleccionar);
+		JLabel lblRutaFotos = new JLabel("Ruta fotos");
+		lblRutaFotos.setToolTipText("Ruta donde se va a guardar las fotos de los productos");
+		lblRutaFotos.setBounds(10, 276, 65, 14);
+		pnlCuerpo.add(lblRutaFotos);
+
+		txtRutaFotoProducto = new JTextField(10);
+		txtRutaFotoProducto.setBounds(79, 270, 304, 20);
+		pnlCuerpo.add(txtRutaFotoProducto);
+
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setBounds(393, 27, 166, 162);
+		pnlCuerpo.add(panel);
 
 		lblFoto = new JLabel("");
+		panel.add(lblFoto);
 		lblFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/foto.jpg")));
-		lblFoto.setBounds(393, 55, 166, 189);
-		pnlCuerpo.add(lblFoto);
 
 	}
-
 }
