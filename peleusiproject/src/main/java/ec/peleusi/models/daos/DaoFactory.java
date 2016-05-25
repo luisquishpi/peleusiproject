@@ -62,8 +62,8 @@ public class DaoFactory {
 		return new SucursalDao();
 	}
 
-	public TipoCalificacionPersonaDao getTipoCalificacionPersonaDao() {
-		return new TipoCalificacionPersonaDao();
+	public TipoCalificacionClienteDao getTipoCalificacionClienteDao() {
+		return new TipoCalificacionClienteDao();
 	}
 
 	public TipoRetencionDao getTipoRetencionDao() {
