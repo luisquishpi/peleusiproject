@@ -290,8 +290,7 @@ public class CompraCrudFrm extends JInternalFrame {
 					}
 					else
 					{
-						sumstock=1.00;
-						
+						sumstock=Double.parseDouble(modelo.getValueAt(filaDetalle, 3).toString());						
 					}
 				}
 				
