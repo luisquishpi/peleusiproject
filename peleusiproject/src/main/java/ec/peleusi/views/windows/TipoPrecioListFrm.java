@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -35,6 +36,7 @@ public class TipoPrecioListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblTipoPrecio;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm = new TipoPrecioCrudFrm();
+	private TipoPrecio tipoPrecio;
 
 	public TipoPrecioListFrm() {
 		setTitle("Lista de Tipo Precio");
@@ -70,7 +72,7 @@ public class TipoPrecioListFrm extends JInternalFrame {
 				case 1:
 					return String.class;
 				case 2:
-					return String.class;
+					return Double.class;
 				default:
 					return String.class;
 				}
@@ -104,24 +106,56 @@ public class TipoPrecioListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaTipoPrecioATabla() {
-		TipoPrecio tipoPrecio = new TipoPrecio();
-		tipoPrecio = tipoPrecioCrudFrm.getTipoPrecio();
-		if (tipoPrecio != null && tipoPrecio.getId() != null) {
-			modelo.addRow(agregarDatosAFila(tipoPrecio));
-			tblTipoPrecio.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tipoPrecio == tipoPrecioCrudFrm.getTipoPrecio() && tipoPrecio.getId() != null) {
+			modelo.setValueAt(tipoPrecio.getNombre(), tblTipoPrecio.getSelectedRow(), 1);
+			modelo.setValueAt(tipoPrecio.getPorcentaje(), tblTipoPrecio.getSelectedRow(), 2);
+		} else {
+			if (tipoPrecioCrudFrm.getTipoPrecio() != null && tipoPrecioCrudFrm.getTipoPrecio().getId() != null) {
+				modelo.addRow(agregarDatosAFila(tipoPrecioCrudFrm.getTipoPrecio()));
+				tblTipoPrecio.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
 	}
-
+	private boolean llenarEntidadParaEnviarATipoPrecioCrudFrm() {
+		tipoPrecio= new TipoPrecio();
+		if (tblTipoPrecio.getSelectedRow() != -1) {
+			tipoPrecio.setId(Integer.parseInt(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 0).toString()));
+			tipoPrecio.setNombre(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 1).toString());
+			tipoPrecio.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 2).toString()));
+			tipoPrecioCrudFrm.setTipoPrecio(tipoPrecio);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarTipoPrecio(){		
+		if (llenarEntidadParaEnviarATipoPrecioCrudFrm()){
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tipoPrecio.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TipoPrecioController tipoPrecioController = new TipoPrecioController();
+				String error = tipoPrecioController.deleteTipoPrecio(tipoPrecio);
+				if (error == null) {
+					modelo.removeRow(tblTipoPrecio.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}			
+		}		
+	}
 	private void crearEventos() {
 		tipoPrecioCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				capturaYAgregaTipoPrecioATabla();
+			capturaYAgregaTipoPrecioATabla();
 			}
-		});
+	});
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				tipoPrecio = new TipoPrecio();
+				tipoPrecioCrudFrm.setTipoPrecio(tipoPrecio);
 				if (!tipoPrecioCrudFrm.isVisible()) {
 					tipoPrecioCrudFrm.setModal(true);
 					tipoPrecioCrudFrm.setVisible(true);
@@ -130,12 +164,17 @@ public class TipoPrecioListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarATipoPrecioCrudFrm()) {
+					if (!tipoPrecioCrudFrm.isVisible()) {
+						tipoPrecioCrudFrm.setModal(true);
+						tipoPrecioCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarTipoPrecio();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {

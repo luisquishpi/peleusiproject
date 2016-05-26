@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,25 +22,125 @@ import javax.swing.JFormattedTextField;
 public class TipoPrecioCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JFormattedTextField txtPorcentaje;
-	private TipoPrecio tipoPrecioRetorno;
-	
-	
+	private TipoPrecio tipoPrecio;
+
 	public TipoPrecioCrudFrm() {
 		setTitle("Tipo de Precio");
 		crearControles();
 		crearEventos();
-		limpiarCampos();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				llenarCamposConEntidad();
+				txtNombre.requestFocus();
+			}
+		});
 	}
 
+	private void llenarCamposConEntidad() {
+		if (tipoPrecio != null && tipoPrecio.getId() != null) {
+			this.setTitle("Actualizar Tipo Precio");
+			btnGuardar.setText("Actualizar");
+			limpiarCampos();
+			txtNombre.setText(tipoPrecio.getNombre());
+			txtPorcentaje.setText(Double.toString(tipoPrecio.getPorcentaje()));
+		} else {
+			this.setTitle("Creando Tipo Precio");
+			btnGuardar.setText("Guardar");
+			limpiarCampos();
+		}
+	}
+
+	private void llenarEntidadAntesDeGuardar() {
+		tipoPrecio.setNombre(txtNombre.getText());
+		tipoPrecio.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+	}
+
+	private void guardarNuevoTipoPrecio() {
+		tipoPrecio = new TipoPrecio();
+		llenarEntidadAntesDeGuardar();
+		TipoPrecioController tipoPrecioController = new TipoPrecioController();
+		String error = tipoPrecioController.createTipoPrecio(tipoPrecio);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void actualizarTipoPrecio() {
+		llenarEntidadAntesDeGuardar();
+		TipoPrecioController tipoPrecioController = new TipoPrecioController();
+		String error = tipoPrecioController.updateTipoPrecio(tipoPrecio);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public TipoPrecio getTipoPrecio() {
+		return tipoPrecio;
+	}
+
+	public void setTipoPrecio(TipoPrecio tipoPrecio) {
+		this.tipoPrecio = new TipoPrecio();
+		this.tipoPrecio = tipoPrecio;
+	}
+	
+	private void limpiarCampos() {
+		txtNombre.setText("");
+		txtPorcentaje.setText("0");
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+			llenos = false;
+		return llenos;
+	}
+
+	private void crearEventos() {
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tipoPrecio = new TipoPrecio();
+				llenarCamposConEntidad();			
+			}
+		});
+
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (!isCamposLlenos()) {
+					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (tipoPrecio != null && tipoPrecio.getId() != null) {
+					actualizarTipoPrecio();
+				} else {
+					guardarNuevoTipoPrecio();
+				}
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tipoPrecio = null;
+				dispose();
+			}
+		});
+	}
+
+
 	private void crearControles() {
-		setBounds(100, 100, 611, 224);
+		setBounds(100, 100, 508, 221);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -48,29 +150,24 @@ public class TipoPrecioCrudFrm extends JDialog {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(20, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+		btnGuardar.setBounds(180, 14, 130, 39);
 		panelCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(TipoPrecioCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(340, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblNombre = new JLabel("Nombre");
+		JLabel lblNombre = new JLabel("Nombre");
 		lblNombre.setBounds(50, 30, 75, 14);
 		panelCuerpo.add(lblNombre);
 
@@ -89,65 +186,5 @@ public class TipoPrecioCrudFrm extends JDialog {
 		txtPorcentaje.setLocation(134, 69);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);
-	}
-
-	private void crearEventos() {
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				limpiarCampos();
-			}
-		});
-
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				if (!isCamposLlenos()) {
-					JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				TipoPrecio tipoPrecio = new TipoPrecio(txtNombre.getText(), Double.parseDouble(txtPorcentaje.getText())); 
-				TipoPrecioController tipoPrecioController = new TipoPrecioController();
-				String error = tipoPrecioController.createTipoPrecio(tipoPrecio);
-				
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito",
-							JOptionPane.PLAIN_MESSAGE);
-					tipoPrecioRetorno = tipoPrecio;
-					dispose();
-					limpiarCampos();
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-					limpiarCampos();
-				}
-
-			}
-		});
-
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tipoPrecioRetorno = null;
-				dispose();
-			}
-		});
-	}
-	
-	public TipoPrecio getTipoPrecio() {
-		return tipoPrecioRetorno;
-	}
-
-	private void limpiarCampos() {
-		txtNombre.setText("");
-		txtPorcentaje.setText("0");
-	}
-
-	private boolean isCamposLlenos() {
-		boolean llenos = true;
-		if (txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
-			llenos = false;
-		return llenos;
 	}
 }
