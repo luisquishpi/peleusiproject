@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -18,7 +19,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.models.entities.TipoIdentificacion;
-
 import java.awt.Font;
 
 public class TipoIdentificacionListFrm extends JInternalFrame {
@@ -35,6 +35,7 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 	private JTable tblTipoIdentificacion;
 	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm = new TipoIdentificacionCrudFrm();
 	private JButton btnBuscar;
+	private TipoIdentificacion tipoIdentificacion;
 
 	public TipoIdentificacionListFrm() {
 		setTitle("Lista del Tipo de Identificaciòn");
@@ -85,10 +86,9 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 		tblTipoIdentificacion.getColumnModel().getColumn(0).setMinWidth(0);
 		tblTipoIdentificacion.getColumnModel().getColumn(0).setPreferredWidth(0);
 		tblTipoIdentificacion.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tblTipoIdentificacion.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tblTipoIdentificacion.getColumnModel().getColumn(3).setPreferredWidth(143);
+		tblTipoIdentificacion.getColumnModel().getColumn(2).setPreferredWidth(243);
+		tblTipoIdentificacion.getColumnModel().getColumn(3).setPreferredWidth(100);
 		scrollPane.setViewportView(tblTipoIdentificacion);
-
 	}
 
 	private Object[] agregarDatosAFila(TipoIdentificacion tipoIdentificacion) {
@@ -108,12 +108,46 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaTipoIdentificacionATabla() {
-		TipoIdentificacion tipoIdentificacion = new TipoIdentificacion();
-		tipoIdentificacion = tipoIdentificacionCrudFrm.getTipoIdentificacion();
-		if (tipoIdentificacion != null && tipoIdentificacion.getId() != null) {
-			modelo.addRow(agregarDatosAFila(tipoIdentificacion));
+		if (tipoIdentificacion == tipoIdentificacionCrudFrm.getTipoIdentificacion() && tipoIdentificacion.getId() != null) {
+			modelo.setValueAt(tipoIdentificacion.getCodigo(), tblTipoIdentificacion.getSelectedRow(), 1);
+			modelo.setValueAt(tipoIdentificacion.getNombre(), tblTipoIdentificacion.getSelectedRow(), 2);
+			modelo.setValueAt(tipoIdentificacion.getValida(), tblTipoIdentificacion.getSelectedRow(), 3);
+		} else {		
+		if (tipoIdentificacionCrudFrm.getTipoIdentificacion() != null && tipoIdentificacionCrudFrm.getTipoIdentificacion().getId() != null) {
+			modelo.addRow(agregarDatosAFila(tipoIdentificacionCrudFrm.getTipoIdentificacion()));
 			tblTipoIdentificacion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
+	}
+	
+	private boolean llenarEntidadParaEnviarATipoIdentificacionCrudFrm() {
+		tipoIdentificacion = new TipoIdentificacion();
+		if (tblTipoIdentificacion.getSelectedRow() != -1) {
+			tipoIdentificacion.setId(Integer.parseInt(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 0).toString()));
+			tipoIdentificacion.setCodigo(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 1).toString());
+			tipoIdentificacion.setNombre(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 2).toString());
+			tipoIdentificacion.setValida((Boolean)modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 3));		
+			tipoIdentificacionCrudFrm.setTipoIdentificacion(tipoIdentificacion);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarTipoIdentificacion(){		
+		if (llenarEntidadParaEnviarATipoIdentificacionCrudFrm()){
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tipoIdentificacion.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
+				String error = tipoIdentificacionController.deleteTipoIdentificacion(tipoIdentificacion);
+				if (error == null) {
+					modelo.removeRow(tblTipoIdentificacion.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}			
+		}		
 	}
 
 	private void crearEventos() {
@@ -126,6 +160,8 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				tipoIdentificacion = new TipoIdentificacion();
+				tipoIdentificacionCrudFrm.setTipoIdentificacion(tipoIdentificacion);						
 				if (!tipoIdentificacionCrudFrm.isVisible()) {
 					tipoIdentificacionCrudFrm.setModal(true);
 					tipoIdentificacionCrudFrm.setVisible(true);
@@ -134,12 +170,17 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarATipoIdentificacionCrudFrm()) {
+					if (!tipoIdentificacionCrudFrm.isVisible()) {
+						tipoIdentificacionCrudFrm.setModal(true);
+						tipoIdentificacionCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarTipoIdentificacion();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
@@ -151,12 +192,11 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-				List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController
-						.getTipoIdentificacionList(txtBuscar.getText());
+				List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController.getTipoIdentificacionList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (TipoIdentificacion tipoIdentificacion : listaTipoIdentificacion) {
-					modelo.addRow(agregarDatosAFila(tipoIdentificacion));					
+					modelo.addRow(agregarDatosAFila(tipoIdentificacion));
 				}
 			}
 		});

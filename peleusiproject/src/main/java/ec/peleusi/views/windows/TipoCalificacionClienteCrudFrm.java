@@ -14,20 +14,20 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import ec.peleusi.controllers.TipoCalificacionPersonaController;
-import ec.peleusi.models.entities.TipoCalificacionPersona;
+import ec.peleusi.controllers.TipoCalificacionClienteController;
+import ec.peleusi.models.entities.TipoCalificacionCliente;
 
-public class TipoCalificacionPersonaCrudFrm extends JDialog{
+public class TipoCalificacionClienteCrudFrm extends JDialog{
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
-	private TipoCalificacionPersona tipoCalificacionPersona;
+	private TipoCalificacionCliente tipoCalificacionCliente;
 
-	public TipoCalificacionPersonaCrudFrm() {
+	public TipoCalificacionClienteCrudFrm() {
+		setTitle("Tipo Calificaciòn Cliente");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {
@@ -40,28 +40,28 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 	}
 	
 	private void llenarCamposConEntidad() {
-		if (tipoCalificacionPersona != null && tipoCalificacionPersona.getId() != null) {
-			this.setTitle("Actualizando Tipo Calificaciòn Persona");
+		if (tipoCalificacionCliente != null && tipoCalificacionCliente.getId() != null) {
+			this.setTitle("Actualizando Tipo Calificaciòn Cliente");
 			btnGuardar.setText("Actualizar");
 			limpiarCampos();
-			txtNombre.setText(tipoCalificacionPersona.getNombre());
+			txtNombre.setText(tipoCalificacionCliente.getNombre());
 
 		} else {
-			this.setTitle("Creando Tipo Calificaciòn Persona");
+			this.setTitle("Creando Tipo Calificaciòn Cliente");
 			btnGuardar.setText("Guardar");
 			limpiarCampos();
 		}
 	}
 	
 	private void llenarEntidadAntesDeGuardar() {
-		tipoCalificacionPersona.setNombre(txtNombre.getText());
+		tipoCalificacionCliente.setNombre(txtNombre.getText());
 	}
 	
-	private void guardarNuevoTipoCalificacionPersona() {
-		tipoCalificacionPersona= new TipoCalificacionPersona();
+	private void guardarNuevoTipoCalificacionCliente() {
+		tipoCalificacionCliente= new TipoCalificacionCliente();
 		llenarEntidadAntesDeGuardar();
-		TipoCalificacionPersonaController tipoCalificacionPersonaController = new TipoCalificacionPersonaController();
-		String error = tipoCalificacionPersonaController.createTipoCalificacionPersona(tipoCalificacionPersona);
+		TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
+		String error = tipoCalificacionClienteController.createTipoCalificacionCliente(tipoCalificacionCliente);
 		if (error == null) {
 			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 			dispose();
@@ -70,10 +70,10 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 		}
 	}
 	
-	private void actualizarTipoCalificacionPersona() {
+	private void actualizarTipoCalificacionCliente() {
 		llenarEntidadAntesDeGuardar();
-		TipoCalificacionPersonaController tipoCalificacionPersonaController = new TipoCalificacionPersonaController();
-		String error = tipoCalificacionPersonaController.updateTipoCalificacionPersona(tipoCalificacionPersona);
+		TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
+		String error = tipoCalificacionClienteController.updateTipoCalificacionCliente(tipoCalificacionCliente);
 		if (error == null) {
 			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 			dispose();
@@ -82,13 +82,13 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 		}
 	}
 	
-	public TipoCalificacionPersona getTipoCalificacionPersona() {
-		return tipoCalificacionPersona;
+	public TipoCalificacionCliente getTipoCalificacionCliente() {
+		return tipoCalificacionCliente;
 	}
 	
-	public void setTipoCalificacionPersona(TipoCalificacionPersona tipoCalificacionPersona) {
-		this.tipoCalificacionPersona = new TipoCalificacionPersona();
-		this.tipoCalificacionPersona = tipoCalificacionPersona;
+	public void setTipoCalificacionCliente(TipoCalificacionCliente tipoCalificacionCliente) {
+		this.tipoCalificacionCliente = new TipoCalificacionCliente();
+		this.tipoCalificacionCliente = tipoCalificacionCliente;
 	}
 	
 	private void limpiarCampos() {
@@ -106,7 +106,7 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 	private void crearEventos() {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				tipoCalificacionPersona = new TipoCalificacionPersona();
+				tipoCalificacionCliente = new TipoCalificacionCliente();
 				llenarCamposConEntidad();
 			}
 		});
@@ -118,28 +118,24 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 					return;
 				}
 
-				if (tipoCalificacionPersona != null && tipoCalificacionPersona.getId() != null) {
-					actualizarTipoCalificacionPersona();
+				if (tipoCalificacionCliente != null && tipoCalificacionCliente.getId() != null) {
+					actualizarTipoCalificacionCliente();
 				} else {
-					guardarNuevoTipoCalificacionPersona();
+					guardarNuevoTipoCalificacionCliente();
 				}
 			}
 
 		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tipoCalificacionPersona = new TipoCalificacionPersona();
+				tipoCalificacionCliente = new TipoCalificacionCliente();
 				dispose();
 			}
 		});
 	}
 	
 	private void crearControles() {		
-		setBounds(100, 100, 611, 225);
+		setBounds(100, 100, 500, 200);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -149,26 +145,20 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(
-				new ImageIcon(TipoCalificacionPersonaCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+				new ImageIcon(TipoCalificacionClienteCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setBounds(20, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.setIcon(
-				new ImageIcon(TipoCalificacionPersonaCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+				new ImageIcon(TipoCalificacionClienteCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
+		btnGuardar.setBounds(180, 14, 130, 39);
 		panelCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(
-				new ImageIcon(TipoCalificacionPersonaCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(
-				new ImageIcon(TipoCalificacionPersonaCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+				new ImageIcon(TipoCalificacionClienteCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setBounds(340, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -181,7 +171,7 @@ public class TipoCalificacionPersonaCrudFrm extends JDialog{
 
 		txtNombre = new JTextField();
 		txtNombre.setColumns(10);
-		txtNombre.setBounds(106, 39, 210, 20);
+		txtNombre.setBounds(106, 39, 214, 20);
 		panelCuerpo.add(txtNombre);
 	}
 }

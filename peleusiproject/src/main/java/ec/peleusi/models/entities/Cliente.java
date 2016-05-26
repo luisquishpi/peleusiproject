@@ -15,7 +15,7 @@ public class Cliente {
 	
 	
 	public Cliente(TipoIdentificacion tipoIdentificacion, String identificacion, String razonSocial, String direccion,
-			String telefono, TipoPrecio tipoPrecio, TipoCalificacionPersona tipoCalificacionPersona,
+			String telefono, TipoPrecio tipoPrecio, TipoCalificacionCliente tipoCalificacionCliente,
 			Integer diasCredito, Double porcentajeDescuento, String descripcion, String email, String celular,
 			Ciudad ciudad) {
 		this.id=null;
@@ -25,7 +25,7 @@ public class Cliente {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.tipoPrecio = tipoPrecio;
-		this.tipoCalificacionPersona = tipoCalificacionPersona;
+		this.tipoCalificacionCliente = tipoCalificacionCliente;
 		this.diasCredito = diasCredito;
 		this.porcentajeDescuento = porcentajeDescuento;
 		this.descripcion = descripcion;
@@ -62,7 +62,7 @@ public class Cliente {
 	private TipoPrecio tipoPrecio;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private TipoCalificacionPersona tipoCalificacionPersona;
+	private TipoCalificacionCliente tipoCalificacionCliente;
 
 	@Column(name = "diasCredito", nullable = false, length = 50)
 	private Integer diasCredito;
@@ -138,12 +138,12 @@ public class Cliente {
 		this.tipoPrecio = tipoPrecio;
 	}
 
-	public TipoCalificacionPersona getTipoCalificacionPersona() {
-		return tipoCalificacionPersona;
+	public TipoCalificacionCliente getTipoCalificacionCliente() {
+		return tipoCalificacionCliente;
 	}
 
-	public void setTipoCalificacionPersona(TipoCalificacionPersona tipoCalificacionPersona) {
-		this.tipoCalificacionPersona = tipoCalificacionPersona;
+	public void setTipoCalificacionCliente(TipoCalificacionCliente tipoCalificacionCliente) {
+		this.tipoCalificacionCliente = tipoCalificacionCliente;
 	}
 
 	public Integer getDiasCredito() {
@@ -197,7 +197,7 @@ public class Cliente {
 	@Override
 
 	public String toString() {
-		return "Persona [id=" + id + ",identificacion=" + identificacion + ", razonSocial=" + razonSocial
+		return "Cliente [id=" + id + ",identificacion=" + identificacion + ", razonSocial=" + razonSocial
 				+ ", tipoPrecio=" + tipoPrecio + ", diasCredito=" + diasCredito + ", porcentajeDescuento="
 				+ porcentajeDescuento + ", descripcion=" + descripcion + "]";
 	}

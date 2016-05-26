@@ -102,7 +102,7 @@ public class TarifaIvaListFrm extends JInternalFrame {
 
 	private void cargarTabla() {
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
-		List<TarifaIva> listaTarifaIva = tarifaIvaController.TarifaIvaList();
+		List<TarifaIva> listaTarifaIva = tarifaIvaController.tarifaIvaList();
 		for (TarifaIva tarifaIva : listaTarifaIva) {
 			modelo.addRow(agregarDatosAFila(tarifaIva));
 		}
