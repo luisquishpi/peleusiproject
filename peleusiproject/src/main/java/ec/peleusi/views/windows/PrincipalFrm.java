@@ -26,7 +26,7 @@ public class PrincipalFrm extends JFrame {
 	private SucursalCrudFrm sucursalCrudFrm;
 	private TarifaIceListFrm tarifaIceListFrm;
 	private TarifaIvaListFrm tarifaIvaListFrm;
-	private TipoCalificacionPersonaListFrm tipoCalificacionPersonaListFrm;
+	private TipoCalificacionClienteListFrm tipoCalificacionClienteListFrm;
 	private TipoGastoDeducibleCrudFrm tipoGastoDeducibleCrudFrm;
 	private TipoIdentificacionListFrm tipoIdentificacionListFrm;
 	private TipoPagoListFrm tipoPagoListFrm;
@@ -149,10 +149,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmCalificacinPersona = new JMenuItem("Calificación Persona");
 		mntmCalificacinPersona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoCalificacionPersonaListFrm == null || tipoCalificacionPersonaListFrm.isClosed()) {
-					tipoCalificacionPersonaListFrm = new TipoCalificacionPersonaListFrm();
-					dpContenedor.add(tipoCalificacionPersonaListFrm);
-					tipoCalificacionPersonaListFrm.show();
+				if (tipoCalificacionClienteListFrm == null || tipoCalificacionClienteListFrm.isClosed()) {
+					tipoCalificacionClienteListFrm = new TipoCalificacionClienteListFrm();
+					dpContenedor.add(tipoCalificacionClienteListFrm);
+					tipoCalificacionClienteListFrm.show();
 				}
 			}
 		});
