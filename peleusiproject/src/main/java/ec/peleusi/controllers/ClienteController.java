@@ -24,7 +24,7 @@ public class ClienteController {
 		return clienteDao.create(cliente);
 
 	}
-	public Boolean deleteCliente(Integer id) {
+	public String deleteCliente(Integer id) {
 		return clienteDao.deleteById(id);
 
 	}

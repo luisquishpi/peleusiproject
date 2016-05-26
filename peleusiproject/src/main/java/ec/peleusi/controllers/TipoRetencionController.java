@@ -35,10 +35,10 @@ public class TipoRetencionController {
 	public TipoRetencion geTipoRetencion(int id){
 		return DaoFactory.getFactory().getTipoRetencionDao().read(id);
 	}
-	public boolean update(TipoRetencion tipoRetencion){
+	public String update(TipoRetencion tipoRetencion){
 		return tipoRetencionDao.update(tipoRetencion);
 	}
-	public boolean delete(Integer id){
+	public String delete(Integer id){
 		return tipoRetencionDao.deleteById(id);
 	}
 	public TipoRetencion getTipoRetencion(String codigo){

@@ -84,7 +84,7 @@ public class SeteoCrudFrm extends JInternalFrame {
 	private void cargarComboTarifaIva() {
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
 		List<TarifaIva> listaTarifaIva;
-		listaTarifaIva = tarifaIvaController.TarifaIvaList();
+		listaTarifaIva = tarifaIvaController.tarifaIvaList();
 		cmdIva.setModel(new DefaultComboBoxModel(listaTarifaIva.toArray()));
 	}
 

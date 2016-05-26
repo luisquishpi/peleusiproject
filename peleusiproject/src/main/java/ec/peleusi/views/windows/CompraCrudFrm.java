@@ -28,6 +28,7 @@ import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Proveedor;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.Sucursal;
+import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.utils.Formatos;
 
 import javax.swing.DefaultComboBoxModel;
@@ -111,6 +112,9 @@ public class CompraCrudFrm extends JInternalFrame {
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbSucursal;
 	List<CompraDetalle> listaDetalle = new ArrayList<CompraDetalle>();
+	Double sumstock;
+	Boolean agregarFila = true;
+	int filaNuevoStock;
 
 	public CompraCrudFrm() {
 
@@ -145,6 +149,7 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtTotal.setText("0.0");
 		txtDiasCredito.setText("0");
 		txtCodigoProducto.requestFocus();
+		sumstock = 1.00;
 
 	}
 
@@ -261,37 +266,73 @@ public class CompraCrudFrm extends JInternalFrame {
 	private void agregarProductosAFila() {
 		try {
 
+			agregarFila = true;
 			Producto producto = new Producto();
 			ProductoController productoController = new ProductoController();
 			producto = productoController.getProductoCodigo(txtCodigoProducto.getText());
+			
+			System.out.println("Numero de Productos: " + tblProductos.getRowCount());
+			
+			if (tblProductos.getRowCount() != 0) {
 
-			filaDatos[0] = "1";
-			filaDatos[1] = producto.getCodigo();
-			filaDatos[2] = producto.getNombre();
-			filaDatos[3] = 1;
-			filaDatos[4] = producto.getCosto();
-			precioBrutoFila = Double.parseDouble(filaDatos[4].toString());
-			filaDatos[5] = "0";
-			filaDatos[6] = precioBrutoFila * (Double.parseDouble(filaDatos[5].toString()) / 100);
-			valorDescuentoFila = Double.parseDouble(filaDatos[6].toString());
-			precioNetoFila = precioBrutoFila - valorDescuentoFila;
-			subtotalFila = precioNetoFila * Double.parseDouble(filaDatos[3].toString());
-			filaDatos[7] = precioNetoFila;
-			filaDatos[8] = subtotalFila;
-			filaDatos[9] = cargarPorcentajeIvaProducto(producto.getTieneIva());
-			valorIvaFila = subtotalFila * (Double.parseDouble(filaDatos[9].toString()) / 100);
-			filaDatos[10] = valorIvaFila;
-			filaDatos[11] = 0;
-			filaDatos[12] = 0;
-			valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
-			filaDatos[13] = valorIceFila;
-			filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
-			filaDatos[15] = producto;
-			modelo.addRow(filaDatos);
-			System.out.println(modelo);
-			tblProductos.setModel(modelo);
-			calcularTotales();		
-			System.out.println(listaDetalle);
+				for (int filaDetalle = 0; filaDetalle < modelo.getRowCount(); filaDetalle++) {
+					
+					String codigo= modelo.getValueAt(filaDetalle, 1).toString();
+					System.out.println("Codigo Producto base datos: " + codigo);
+					System.out.println("Codigo Producto datos: " + txtCodigoProducto.getText());
+
+					if (txtCodigoProducto.getText().equals(modelo.getValueAt(filaDetalle, 1).toString())) {
+
+						sumstock = sumstock + 1;
+						System.out.println("sumstock: " + sumstock);
+						agregarFila = false;	
+						filaNuevoStock= filaDetalle;
+					}
+					else
+					{
+						sumstock=1.00;
+						
+					}
+				}
+				
+			}
+			
+			System.out.println("Estadooooooooo: " + agregarFila);
+			if (agregarFila == true) {
+				
+				filaDatos[0] = "1";
+				filaDatos[1] = producto.getCodigo();
+				filaDatos[2] = producto.getNombre();
+				filaDatos[3] = sumstock ;
+				filaDatos[4] = producto.getCosto();
+				precioBrutoFila = Double.parseDouble(filaDatos[4].toString());
+				filaDatos[5] = "0";
+				filaDatos[6] = precioBrutoFila * (Double.parseDouble(filaDatos[5].toString()) / 100);
+				valorDescuentoFila = Double.parseDouble(filaDatos[6].toString());
+				precioNetoFila = precioBrutoFila - valorDescuentoFila;
+				subtotalFila = precioNetoFila * Double.parseDouble(filaDatos[3].toString());
+				filaDatos[7] = precioNetoFila;
+				filaDatos[8] = subtotalFila;
+				filaDatos[9] = cargarPorcentajeIvaProducto(producto.getTieneIva());
+				valorIvaFila = subtotalFila * (Double.parseDouble(filaDatos[9].toString()) / 100);
+				filaDatos[10] = valorIvaFila;
+				filaDatos[11] = 0;
+				filaDatos[12] = 0;
+				valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
+				filaDatos[13] = valorIceFila;
+				filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
+				filaDatos[15] = producto;
+				modelo.addRow(filaDatos);
+				tblProductos.setModel(modelo);
+				calcularTotales();
+			}
+			else
+			{
+				System.out.println("Actualizando la tabla de productosNuevo stock: " + sumstock);
+				modelo.setValueAt(sumstock.toString(),filaNuevoStock, 3);				
+					
+				
+			}
 			
 
 		} catch (Exception e) {

@@ -17,12 +17,12 @@ import javax.swing.JTextField;
 
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.controllers.ClienteController;
-import ec.peleusi.controllers.TipoCalificacionPersonaController;
+import ec.peleusi.controllers.TipoCalificacionClienteController;
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.Cliente;
-import ec.peleusi.models.entities.TipoCalificacionPersona;
+import ec.peleusi.models.entities.TipoCalificacionCliente;
 import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.utils.Formatos;
 import javax.swing.JFormattedTextField;
@@ -86,10 +86,10 @@ public class ClienteCrudFrm extends JDialog {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void CargarListaTipoCalificiacionPersona() {
-		TipoCalificacionPersonaController tipoCalificacionPersonaController = new TipoCalificacionPersonaController();
-		List<TipoCalificacionPersona> listaTipoCalificacionPersona;
-		listaTipoCalificacionPersona = tipoCalificacionPersonaController.tipoCalificacionPersonaList();
-		cmbTipoCalificacionPersona.setModel(new DefaultComboBoxModel(listaTipoCalificacionPersona.toArray()));
+		TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
+		List<TipoCalificacionCliente> listaTipoCalificacionCliente;
+		listaTipoCalificacionCliente = tipoCalificacionClienteController.tipoCalificacionClienteList();
+		cmbTipoCalificacionPersona.setModel(new DefaultComboBoxModel(listaTipoCalificacionCliente.toArray()));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -151,13 +151,13 @@ public class ClienteCrudFrm extends JDialog {
 					TipoIdentificacion tipoIdentificacion = (TipoIdentificacion) cmbTipoIdentificacion
 							.getSelectedItem();
 					TipoPrecio tipoPrecio = (TipoPrecio) cmbTipoPrecio.getSelectedItem();
-					TipoCalificacionPersona tipoCalificacionPersona = (TipoCalificacionPersona) cmbTipoCalificacionPersona
+					TipoCalificacionCliente tipoCalificacionCliente = (TipoCalificacionCliente) cmbTipoCalificacionPersona
 							.getSelectedItem();
 					Ciudad ciudad = (Ciudad) cmbCiudad.getSelectedItem();
 
 					Cliente cliente = new Cliente(tipoIdentificacion, txtIdentificacion.getText(),
 							txtRazonSocial.getText(), txtDireccion.getText(), txtTelefono.getText(), tipoPrecio,
-							tipoCalificacionPersona, Integer.parseInt(txtDiasCredito.getText()),
+							tipoCalificacionCliente, Integer.parseInt(txtDiasCredito.getText()),
 							Double.parseDouble(txtPorcentajeDescuento.getText()), txtDescripcion.getText(),
 							txtEmail.getText(), txtCelular.getText(), ciudad);
 					ClienteController clienteController = new ClienteController();
@@ -298,7 +298,7 @@ public class ClienteCrudFrm extends JDialog {
 		lblCiudad.setBounds(8, 70, 83, 14);
 		panel_2.add(lblCiudad);
 
-		cmbCiudad = new JComboBox<TipoCalificacionPersona>();
+		cmbCiudad = new JComboBox<TipoCalificacionCliente>();
 		cmbCiudad.setBounds(101, 70, 139, 20);
 		panel_2.add(cmbCiudad);
 
@@ -378,7 +378,7 @@ public class ClienteCrudFrm extends JDialog {
 		label_4.setBounds(8, 49, 147, 14);
 		panel_3.add(label_4);
 
-		cmbTipoCalificacionPersona = new JComboBox<TipoCalificacionPersona>();
+		cmbTipoCalificacionPersona = new JComboBox<TipoCalificacionCliente>();
 		cmbTipoCalificacionPersona.setBounds(165, 50, 120, 20);
 		panel_3.add(cmbTipoCalificacionPersona);
 

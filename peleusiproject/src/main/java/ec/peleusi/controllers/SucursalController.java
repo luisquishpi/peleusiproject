@@ -41,7 +41,7 @@ public class SucursalController {
 
 	}
 
-	public boolean delete(Integer id) {
+	public String delete(Integer id) {
 		return sucursalDao.deleteById(id);
 	}
 

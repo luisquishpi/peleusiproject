@@ -38,7 +38,7 @@ public class CategoriaProductoController {
 
 	}
 
-	public boolean delete(Integer id) {
+	public String delete(Integer id) {
 		return categoriaProductoDao.deleteById(id);
 	}
 
