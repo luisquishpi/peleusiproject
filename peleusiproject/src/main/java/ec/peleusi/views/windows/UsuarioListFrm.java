@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -18,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Usuario;
+import ec.peleusi.utils.TipoUsuarioEnum;
+
 import java.awt.Font;
 
 public class UsuarioListFrm extends JInternalFrame {
@@ -33,7 +36,9 @@ public class UsuarioListFrm extends JInternalFrame {
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
 	private JTable tblUsuario;
+	@SuppressWarnings("rawtypes")
 	private UsuarioCrudFrm usuarioCrudFrm = new UsuarioCrudFrm();
+	private Usuario usuario;
 
 	public UsuarioListFrm() {
 		setTitle("Lista de Usuarios");
@@ -118,13 +123,52 @@ public class UsuarioListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaUsuarioATabla() {
-		Usuario usuario = new Usuario();
-		usuario = usuarioCrudFrm.getUsuario();
-		if (usuario != null && usuario.getId() != null) {
-			modelo.addRow(agregarDatosAFila(usuario));
-			tblUsuario.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (usuario == usuarioCrudFrm.getUsuario() && usuario.getId() != null) {
+			modelo.setValueAt(usuario.getNombres(), tblUsuario.getSelectedRow(), 1);
+			modelo.setValueAt(usuario.getApellidos(), tblUsuario.getSelectedRow(), 2);
+			modelo.setValueAt(usuario.getUsuario(), tblUsuario.getSelectedRow(), 3);
+			modelo.setValueAt(usuario.getContrasenia(), tblUsuario.getSelectedRow(), 4);
+			modelo.setValueAt(usuario.getTipoUsuario(), tblUsuario.getSelectedRow(), 5);
+		} else {
+			if (usuarioCrudFrm.getUsuario() != null && usuarioCrudFrm.getUsuario().getId() != null) {
+				modelo.addRow(agregarDatosAFila(usuarioCrudFrm.getUsuario()));
+				tblUsuario.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
 	}
+	
+	private boolean llenarEntidadParaEnviarAUsuarioCrudFrm() {
+		usuario = new Usuario();
+		if (tblUsuario.getSelectedRow() != -1) {
+			usuario.setId(Integer.parseInt(modelo.getValueAt(tblUsuario.getSelectedRow(), 0).toString()));
+			usuario.setNombres(modelo.getValueAt(tblUsuario.getSelectedRow(), 1).toString());
+			usuario.setApellidos(modelo.getValueAt(tblUsuario.getSelectedRow(), 2).toString());
+			usuario.setUsuario(modelo.getValueAt(tblUsuario.getSelectedRow(), 3).toString());
+			usuario.setContrasenia(modelo.getValueAt(tblUsuario.getSelectedRow(), 4).toString());
+			usuario.setTipoUsuario((TipoUsuarioEnum)(modelo.getValueAt(tblUsuario.getSelectedRow(), 5)));
+			usuarioCrudFrm.setUsuario(usuario);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarUsuario() {
+		if (llenarEntidadParaEnviarAUsuarioCrudFrm()) {			
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + usuario.getNombres()+ "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				UsuarioController usuarioController = new UsuarioController();
+				String error = usuarioController.deleteUsuario(usuario);
+				if (error == null) {
+					modelo.removeRow(tblUsuario.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
+	
 
 	private void crearEventos() {
 		usuarioCrudFrm.addWindowListener(new WindowAdapter() {
@@ -136,6 +180,8 @@ public class UsuarioListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				usuario = new Usuario();
+				usuarioCrudFrm.setUsuario(usuario);				
 				if (!usuarioCrudFrm.isVisible()) {
 					usuarioCrudFrm.setModal(true);
 					usuarioCrudFrm.setVisible(true);
@@ -144,12 +190,17 @@ public class UsuarioListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarAUsuarioCrudFrm()){
+					if (!usuarioCrudFrm.isVisible()) {
+						usuarioCrudFrm.setModal(true);
+						usuarioCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarUsuario();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
