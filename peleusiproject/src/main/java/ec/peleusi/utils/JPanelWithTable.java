@@ -1,13 +1,20 @@
 package ec.peleusi.utils;
 
+import java.awt.BorderLayout;
 import java.lang.reflect.Field;
 import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-public class JTableCustomized<T> {
+public class JPanelWithTable<T> {
 	Object[] filaDatos;
 	Integer[] columnasEditables = null;
 	Class<?>[] tipoColumnas = null;
@@ -17,7 +24,55 @@ public class JTableCustomized<T> {
 	Integer[] columnasFijas = null;
 	private transient TableRowSorter<? extends TableModel> sorter;
 
-	public JTable crearTabla(String[] cabecera, List<T> listaEntidad) {
+	private Box box;
+	private JPanel pnlFooter;
+	private JLabel lblFooter;
+	private JPanel pnlBox;
+	private JPanel pnlContenedor;
+	private JScrollPane sPnlTable;
+	private JTable jTable;
+	private Integer totalItems;
+
+	public JPanelWithTable() {
+		super();
+	}
+
+	public JPanel crear(String[] cabecera, List<T> listaEntidad) {
+		crearControles();
+		jTable = crearTabla(cabecera, listaEntidad);
+		modelo = getModelo();
+		sPnlTable.setViewportView(jTable);
+		Filtros filtros = new Filtros();
+		filtros.paginationBox(3, 1, box, modelo, getSorter());
+		lblFooter.setText("Encontrado " + modelo.getRowCount() + " de " + totalItems);
+
+		return pnlContenedor;
+	}
+
+	private void crearControles() {
+		pnlContenedor = new JPanel();
+		pnlContenedor.setLayout(new BorderLayout(0, 0));
+
+		pnlBox = new JPanel();
+		pnlContenedor.add(pnlBox, BorderLayout.NORTH);
+		{
+			box = Box.createHorizontalBox();
+			pnlBox.add(box);
+		}
+
+		sPnlTable = new JScrollPane();
+		pnlContenedor.add(sPnlTable, BorderLayout.CENTER);
+
+		pnlFooter = new JPanel();
+		pnlContenedor.add(pnlFooter, BorderLayout.SOUTH);
+		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
+
+		lblFooter = new JLabel("");
+		lblFooter.setBounds(250, 5, 94, 14);
+		pnlFooter.add(lblFooter);
+	}
+
+	private JTable crearTabla(String[] cabecera, List<T> listaEntidad) {
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
@@ -33,7 +88,6 @@ public class JTableCustomized<T> {
 			}
 		};
 		filaDatos = new Object[cabecera.length];
-		// Cargar Datos al modelo
 		for (T entidad : listaEntidad) {
 			modelo.addRow(agregarDatosAFila(entidad));
 		}
@@ -90,7 +144,7 @@ public class JTableCustomized<T> {
 		// Agrega Todos los Atributo a la fila
 		if (camposEntidad == null) {
 			for (int i = 0; i < atributos.length; i++) {
-				System.out.println("> "+atributos[i].getName());
+				System.out.println("> " + atributos[i].getName());
 				Field atributo = null;
 				try {
 					atributo = c.getClass().getDeclaredField(atributos[i].getName());
@@ -108,8 +162,8 @@ public class JTableCustomized<T> {
 					e.printStackTrace();
 				}
 			}
-		}else{
-			// Agrega los Atributos a la fila solo de la lista
+		} else {
+			// Agrega los Atributos a la fila solo los de la lista
 			for (int i = 0; i < camposEntidad.length; i++) {
 				Field atributo = null;
 				try {
@@ -128,7 +182,7 @@ public class JTableCustomized<T> {
 					e.printStackTrace();
 				}
 			}
-			
+
 		}
 		return filaDatos;
 	}
@@ -187,6 +241,22 @@ public class JTableCustomized<T> {
 
 	public void setSorter(TableRowSorter<? extends TableModel> sorter) {
 		this.sorter = sorter;
+	}
+
+	public JTable getJTable() {
+		return jTable;
+	}
+
+	public void setJTable(JTable jTable) {
+		this.jTable = jTable;
+	}
+
+	public Integer getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Integer totalItems) {
+		this.totalItems = totalItems;
 	}
 
 }
