@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class JTableCustomized<T> {
 	Object[] filaDatos;
@@ -13,6 +15,7 @@ public class JTableCustomized<T> {
 	String[] camposEntidad = null;
 	DefaultTableModel modelo;
 	Integer[] columnasFijas = null;
+	private transient TableRowSorter<? extends TableModel> sorter;
 
 	public JTable crearTabla(String[] cabecera, List<T> listaEntidad) {
 		modelo = new DefaultTableModel(null, cabecera) {
@@ -73,6 +76,10 @@ public class JTableCustomized<T> {
 		}
 		tabla.getTableHeader().setReorderingAllowed(false);
 		tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tabla.setFillsViewportHeight(true);
+		tabla.setShowGrid(false);
+		sorter = new TableRowSorter<DefaultTableModel>(modelo);
+		tabla.setRowSorter(sorter);
 		return tabla;
 	}
 
@@ -104,7 +111,6 @@ public class JTableCustomized<T> {
 		}else{
 			// Agrega los Atributos a la fila solo de la lista
 			for (int i = 0; i < camposEntidad.length; i++) {
-				System.out.println(">> "+camposEntidad[i]);
 				Field atributo = null;
 				try {
 					atributo = c.getClass().getDeclaredField(camposEntidad[i]);
@@ -173,6 +179,14 @@ public class JTableCustomized<T> {
 
 	public void setColumnasFijas(Integer[] columnasFijas) {
 		this.columnasFijas = columnasFijas;
+	}
+
+	public TableRowSorter<? extends TableModel> getSorter() {
+		return sorter;
+	}
+
+	public void setSorter(TableRowSorter<? extends TableModel> sorter) {
+		this.sorter = sorter;
 	}
 
 }

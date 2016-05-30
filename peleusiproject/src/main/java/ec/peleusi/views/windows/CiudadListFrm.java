@@ -18,8 +18,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.models.entities.Ciudad;
@@ -28,8 +26,9 @@ import ec.peleusi.utils.JTableCustomized;
 import ec.peleusi.utils.JTextFieldPH;
 
 import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
 public class CiudadListFrm extends JInternalFrame {
 
@@ -41,10 +40,18 @@ public class CiudadListFrm extends JInternalFrame {
 	private JTextFieldPH txtBuscar;
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
-	private Object[] filaDatos;
 	private JTable tblCiudad;
 	private CiudadCrudFrm ciudadCrudFrm = new CiudadCrudFrm();
 	private Ciudad ciudad;
+	private JPanel panel;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JPanel panel_3;
+	private Box box;
+	private JButton btnBuscar;
+	private JPanel panel_4;
+	private JLabel lblPieTabla;
+	private Integer totalItems = 0;
 
 	public CiudadListFrm() {
 		setTitle("Listado de Ciudades");
@@ -61,39 +68,45 @@ public class CiudadListFrm extends JInternalFrame {
 
 	private void crearTabla() {
 		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad = ciudadController.ciudadList();
-		String[] cabecera = new String[] { "ID", "NOMBRE DE LA CIUDAD" };
+		List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
+		String[] cabecera = new String[] { "ID", "CIUDADES" };
 		JTableCustomized<Ciudad> tblCiudadCustomized = new JTableCustomized<>();
 		tblCiudadCustomized.setAnchoColumnas(new Integer[] { 0, 441 });
 		tblCiudadCustomized.setColumnasFijas(new Integer[] { 0 });
 		tblCiudadCustomized.setCamposEntidad(new String[] { "id", "nombre" });
 
+		
 		tblCiudad = tblCiudadCustomized.crearTabla(cabecera, listaCiudad);
-		modelo = (DefaultTableModel) tblCiudad.getModel();
-		tblCiudad.setRowSorter(new TableRowSorter<TableModel>(modelo));
-		filaDatos = new Object[cabecera.length];
+		modelo = tblCiudadCustomized.getModelo();
+
 		scrollPane.setViewportView(tblCiudad);
+		Filtros filtros=new Filtros();
+		filtros.paginationBox(3, 1, box, modelo,tblCiudadCustomized.getSorter());
+		
+		
+		if (totalItems == 0)
+			totalItems = modelo.getRowCount();
+		lblPieTabla.setText("Encontrado " + modelo.getRowCount() + " de " + totalItems);
+		txtBuscar.requestFocus();
+
 	}
 
-	private Object[] agregarDatosAFila(Ciudad ciudad) {
-		filaDatos[0] = ciudad.getId();
-		filaDatos[1] = ciudad.getNombre();
-		return filaDatos;
-	}
+	
 
+	
 	private void capturaYAgregaCiudadATabla() {
 		if (ciudad == ciudadCrudFrm.getCiudad() && ciudad.getId() != null) {
-			tblCiudad.setValueAt(ciudad.getNombre(), tblCiudad.getSelectedRow(), 1);
 			txtBuscar.setText(ciudad.getNombre());
+			crearTabla();
+			tblCiudad.setRowSelectionInterval(0, 0);
 		} else {
 			if (ciudadCrudFrm.getCiudad() != null && ciudadCrudFrm.getCiudad().getId() != null) {
-				modelo.addRow(agregarDatosAFila(ciudadCrudFrm.getCiudad()));
+				totalItems++;
 				txtBuscar.setText(ciudadCrudFrm.getCiudad().getNombre());
+				crearTabla();
+				tblCiudad.setRowSelectionInterval(0, 0);
 			}
 		}
-		filtrarTabla();
-		if (tblCiudad.getRowCount() > 0)
-			tblCiudad.setRowSelectionInterval(tblCiudad.getRowCount() - 1, tblCiudad.getRowCount() - 1);
 	}
 
 	private boolean llenarEntidadParaEnviarACiudadCrudFrm() {
@@ -116,18 +129,13 @@ public class CiudadListFrm extends JInternalFrame {
 				CiudadController ciudadController = new CiudadController();
 				String error = ciudadController.deleteCiudad(ciudad);
 				if (error == null) {
+					totalItems--;
 					crearTabla();
-					filtrarTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
-	}
-
-	private void filtrarTabla() {
-		Filtros.filterModel(tblCiudad, modelo, txtBuscar.getText(), new int[] { 1 });
-		txtBuscar.requestFocus();
 	}
 
 	private void crearEventos() {
@@ -167,10 +175,10 @@ public class CiudadListFrm extends JInternalFrame {
 				dispose();
 			}
 		});
-		txtBuscar.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				filtrarTabla();
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// filtrarTabla();
+				crearTabla();
 			}
 		});
 	}
@@ -206,21 +214,60 @@ public class CiudadListFrm extends JInternalFrame {
 		btnCancelar.setBounds(430, 11, 130, 39);
 		panelCabecera.add(btnCancelar);
 
-		JPanel panelCuerpo = new JPanel();
-		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panel = new JPanel();
+		getContentPane().add(panel, BorderLayout.CENTER);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		panel_1 = new JPanel();
+		panel.add(panel_1, BorderLayout.NORTH);
+		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
 		txtBuscar = new JTextFieldPH();
 		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 575, 41);
+		txtBuscar.setColumns(10);
 		txtBuscar.setPlaceholder("Buscar");
 		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
-		panelCuerpo.add(txtBuscar);
-		txtBuscar.setColumns(10);
+		panel_1.add(txtBuscar);
+
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setIcon(new ImageIcon(CiudadListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		panel_1.add(btnBuscar);
+
+		panel_2 = new JPanel();
+		panel.add(panel_2, BorderLayout.CENTER);
+		panel_2.setLayout(new BorderLayout(0, 0));
+
+		panel_3 = new JPanel();
+		panel_2.add(panel_3, BorderLayout.NORTH);
+		{
+			box = Box.createHorizontalBox();
+			panel_3.add(box);
+		}
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 575, 208);
-		panelCuerpo.add(scrollPane);
+		panel_2.add(scrollPane, BorderLayout.CENTER);
+
+		panel_4 = new JPanel();
+		panel_2.add(panel_4, BorderLayout.SOUTH);
+		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
+
+		lblPieTabla = new JLabel("");
+		lblPieTabla.setBounds(250, 5, 94, 14);
+		panel_4.add(lblPieTabla);
+
+		/*
+		 * JPanel panelCuerpo = new JPanel(); getContentPane().add(panelCuerpo,
+		 * BorderLayout.CENTER); panelCuerpo.setLayout(null);
+		 * 
+		 * txtBuscar = new JTextFieldPH(); txtBuscar.setFont(new Font("Tahoma",
+		 * Font.PLAIN, 13)); txtBuscar.setBounds(10, 8, 575, 41);
+		 * txtBuscar.setPlaceholder("Buscar"); txtBuscar.setFont(new
+		 * Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		 * panelCuerpo.add(txtBuscar); txtBuscar.setColumns(10);
+		 * 
+		 * scrollPane = new JScrollPane(); scrollPane.setBounds(10, 60, 575,
+		 * 208); panelCuerpo.add(scrollPane);
+		 */
 
 	}
 }
