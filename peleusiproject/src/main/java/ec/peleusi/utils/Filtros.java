@@ -14,8 +14,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import ec.peleusi.pruebas.LinkViewRadioButtonUI;
-
 public class Filtros {
 	
 	private Box box;

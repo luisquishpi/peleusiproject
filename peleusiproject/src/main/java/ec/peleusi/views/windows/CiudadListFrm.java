@@ -59,7 +59,7 @@ public class CiudadListFrm extends JInternalFrame {
 		if (totalItems == 0)
 			totalItems = listaCiudad.size();
 
-		jPanelWithTable = new JPanelWithTable<>();
+		jPanelWithTable = new JPanelWithTable<Ciudad>();
 		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre" });
 		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 441 });
 		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
