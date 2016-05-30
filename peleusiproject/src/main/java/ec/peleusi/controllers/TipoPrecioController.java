@@ -17,14 +17,20 @@ public class TipoPrecioController {
 	public String createTipoPrecio(TipoPrecio tipoPrecio) {
 		return tipoPrecioDao.create(tipoPrecio);
 	}
-	
+
+	public String updateTipoPrecio(TipoPrecio tipoPrecio) {
+		return tipoPrecioDao.update(tipoPrecio);
+	}
+
+	public String deleteTipoPrecio(TipoPrecio tipoPrecio) {
+		return tipoPrecioDao.deleteById(tipoPrecio.getId());
+	}
+
 	public List<TipoPrecio> tipoPrecioList() {
 		return tipoPrecioDao.findAll();
 	}
-	
+
 	public List<TipoPrecio> getTipoPrecioList(String parametro) {
 		return tipoPrecioDao.TipoPrecioList(parametro);
 	}
-
-
 }
