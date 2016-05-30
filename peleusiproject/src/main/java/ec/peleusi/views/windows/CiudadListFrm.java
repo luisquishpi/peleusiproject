@@ -9,18 +9,27 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.models.entities.Ciudad;
+import ec.peleusi.utils.Filtros;
+import ec.peleusi.utils.JTableCustomized;
+import ec.peleusi.utils.JTextFieldPH;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class CiudadListFrm extends JInternalFrame {
 
@@ -29,8 +38,7 @@ public class CiudadListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
-	private JButton btnBuscar;
+	private JTextFieldPH txtBuscar;
 	private JScrollPane scrollPane;
 	private DefaultTableModel modelo;
 	private Object[] filaDatos;
@@ -43,45 +51,27 @@ public class CiudadListFrm extends JInternalFrame {
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
+		CiudadController ciudadController = new CiudadController();
+		List<Ciudad> listaCiudad = ciudadController.ciudadList();
+		String[] cabecera = new String[] { "ID", "NOMBRE DE LA CIUDAD" };
+		JTableCustomized<Ciudad> tblCiudadCustomized = new JTableCustomized<>();
+		tblCiudadCustomized.setAnchoColumnas(new Integer[] { 0, 441 });
+		tblCiudadCustomized.setColumnasFijas(new Integer[] { 0 });
+		tblCiudadCustomized.setCamposEntidad(new String[] { "id", "nombre" });
 
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1) {
-					return false;
-				}
-				return true;
-			}
-		};
+		tblCiudad = tblCiudadCustomized.crearTabla(cabecera, listaCiudad);
+		modelo = (DefaultTableModel) tblCiudad.getModel();
+		tblCiudad.setRowSorter(new TableRowSorter<TableModel>(modelo));
 		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblCiudad = new JTable(modelo) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblCiudad.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblCiudad.setPreferredScrollableViewportSize(tblCiudad.getPreferredSize());
-		tblCiudad.getTableHeader().setReorderingAllowed(true);
-		tblCiudad.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblCiudad.getColumnModel().getColumn(0).setMinWidth(0);
-		tblCiudad.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblCiudad.getColumnModel().getColumn(1).setPreferredWidth(443);
 		scrollPane.setViewportView(tblCiudad);
 	}
 
@@ -91,30 +81,26 @@ public class CiudadListFrm extends JInternalFrame {
 		return filaDatos;
 	}
 
-	private void cargarTabla() {
-		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad = ciudadController.ciudadList();
-		for (Ciudad ciudad : listaCiudad) {
-			modelo.addRow(agregarDatosAFila(ciudad));
-		}
-	}
-
 	private void capturaYAgregaCiudadATabla() {
 		if (ciudad == ciudadCrudFrm.getCiudad() && ciudad.getId() != null) {
-			modelo.setValueAt(ciudad.getNombre(), tblCiudad.getSelectedRow(), 1);
+			tblCiudad.setValueAt(ciudad.getNombre(), tblCiudad.getSelectedRow(), 1);
+			txtBuscar.setText(ciudad.getNombre());
 		} else {
 			if (ciudadCrudFrm.getCiudad() != null && ciudadCrudFrm.getCiudad().getId() != null) {
 				modelo.addRow(agregarDatosAFila(ciudadCrudFrm.getCiudad()));
-				tblCiudad.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				txtBuscar.setText(ciudadCrudFrm.getCiudad().getNombre());
 			}
 		}
+		filtrarTabla();
+		if (tblCiudad.getRowCount() > 0)
+			tblCiudad.setRowSelectionInterval(tblCiudad.getRowCount() - 1, tblCiudad.getRowCount() - 1);
 	}
 
 	private boolean llenarEntidadParaEnviarACiudadCrudFrm() {
 		ciudad = new Ciudad();
 		if (tblCiudad.getSelectedRow() != -1) {
-			ciudad.setId(Integer.parseInt(modelo.getValueAt(tblCiudad.getSelectedRow(), 0).toString()));
-			ciudad.setNombre(modelo.getValueAt(tblCiudad.getSelectedRow(), 1).toString());
+			ciudad.setId(Integer.parseInt(tblCiudad.getValueAt(tblCiudad.getSelectedRow(), 0).toString()));
+			ciudad.setNombre(tblCiudad.getValueAt(tblCiudad.getSelectedRow(), 1).toString());
 			ciudadCrudFrm.setCiudad(ciudad);
 			return true;
 		}
@@ -123,7 +109,6 @@ public class CiudadListFrm extends JInternalFrame {
 
 	private void eliminarCiudad() {
 		if (llenarEntidadParaEnviarACiudadCrudFrm()) {
-			System.out.println("Ciudad >" + ciudad);
 			int confirmacion = JOptionPane.showConfirmDialog(null,
 					"Está seguro que desea eliminar:\n\"" + ciudad.getNombre() + "\"?", "Confirmación",
 					JOptionPane.YES_NO_OPTION);
@@ -131,12 +116,18 @@ public class CiudadListFrm extends JInternalFrame {
 				CiudadController ciudadController = new CiudadController();
 				String error = ciudadController.deleteCiudad(ciudad);
 				if (error == null) {
-					modelo.removeRow(tblCiudad.getSelectedRow());
+					crearTabla();
+					filtrarTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
+	}
+
+	private void filtrarTabla() {
+		Filtros.filterModel(tblCiudad, modelo, txtBuscar.getText(), new int[] { 1 });
+		txtBuscar.requestFocus();
 	}
 
 	private void crearEventos() {
@@ -146,12 +137,11 @@ public class CiudadListFrm extends JInternalFrame {
 				capturaYAgregaCiudadATabla();
 			}
 		});
-
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ciudad = new Ciudad();
-				ciudadCrudFrm.setCiudad(ciudad);
 				if (!ciudadCrudFrm.isVisible()) {
+					ciudad = new Ciudad();
+					ciudadCrudFrm.setCiudad(ciudad);
 					ciudadCrudFrm.setModal(true);
 					ciudadCrudFrm.setVisible(true);
 				}
@@ -177,16 +167,10 @@ public class CiudadListFrm extends JInternalFrame {
 				dispose();
 			}
 		});
-
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CiudadController ciudadController = new CiudadController();
-				List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (Ciudad ciudad : listaCiudad) {
-					modelo.addRow(agregarDatosAFila(ciudad));
-				}
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				filtrarTabla();
 			}
 		});
 	}
@@ -226,20 +210,17 @@ public class CiudadListFrm extends JInternalFrame {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		txtBuscar = new JTextField();
+		txtBuscar = new JTextFieldPH();
 		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
+		txtBuscar.setBounds(10, 8, 575, 41);
+		txtBuscar.setPlaceholder("Buscar");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
 		panelCuerpo.add(txtBuscar);
 		txtBuscar.setColumns(10);
-
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(CiudadListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
 
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 60, 575, 208);
 		panelCuerpo.add(scrollPane);
-	}
 
+	}
 }
