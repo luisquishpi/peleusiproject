@@ -17,6 +17,14 @@ public class UnidadMedidaController {
 	public String createUnidadMedida(UnidadMedida unidadMedida) {
 		return unidadMedidaDao.create(unidadMedida);
 	}
+	
+	public String updateUnidadMedida(UnidadMedida unidadMedida) {
+		return unidadMedidaDao.update(unidadMedida);
+	}
+	
+	public String deleteUnidadMedida(UnidadMedida unidadMedida) {
+		return unidadMedidaDao.deleteById(unidadMedida.getId());
+	}	
 
 	public List<UnidadMedida> unidadMedidaList() {
 		return unidadMedidaDao.findAll();

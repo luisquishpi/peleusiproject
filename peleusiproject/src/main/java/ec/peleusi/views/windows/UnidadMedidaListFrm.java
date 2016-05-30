@@ -3,6 +3,7 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -18,7 +19,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.UnidadMedidaController;
 import ec.peleusi.models.entities.UnidadMedida;
-
 import java.awt.Font;
 
 public class UnidadMedidaListFrm extends JInternalFrame {
@@ -35,6 +35,7 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 	private Object[] filaDatos;
 	private JTable tblUnidadMedida;
 	private UnidadMedidaCrudFrm unidadMedidaCrudFrm = new UnidadMedidaCrudFrm();
+	private UnidadMedida unidadMedida;
 
 	public UnidadMedidaListFrm() {
 		setTitle("Listado de Unidad de Medida");
@@ -82,8 +83,8 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		tblUnidadMedida.getColumnModel().getColumn(0).setMaxWidth(0);
 		tblUnidadMedida.getColumnModel().getColumn(0).setMinWidth(0);
 		tblUnidadMedida.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblUnidadMedida.getColumnModel().getColumn(1).setPreferredWidth(240);
-		tblUnidadMedida.getColumnModel().getColumn(2).setPreferredWidth(187);
+		tblUnidadMedida.getColumnModel().getColumn(1).setPreferredWidth(260);
+		tblUnidadMedida.getColumnModel().getColumn(2).setPreferredWidth(183);
 		scrollPane.setViewportView(tblUnidadMedida);
 
 	}
@@ -104,15 +105,46 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 	}
 
 	private void capturaYAgregaUnidadMedidaATabla() {
-		UnidadMedida unidadMedida = new UnidadMedida();
-		unidadMedida = unidadMedidaCrudFrm.getUnidadMedida();
-		System.out.println("Captura UnidadMedida retornado: " + unidadMedida);
-		if (unidadMedida != null && unidadMedida.getId() != null) {
-			modelo.addRow(agregarDatosAFila(unidadMedida));
-			tblUnidadMedida.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (unidadMedida == unidadMedidaCrudFrm.getUnidadMedida() && unidadMedida.getId() != null) {
+			modelo.setValueAt(unidadMedida.getNombre(), tblUnidadMedida.getSelectedRow(), 1);
+			modelo.setValueAt(unidadMedida.getAbreviatura(), tblUnidadMedida.getSelectedRow(), 2);
+		} else {
+			if (unidadMedidaCrudFrm.getUnidadMedida() != null && unidadMedidaCrudFrm.getUnidadMedida().getId() != null) {
+				modelo.addRow(agregarDatosAFila(unidadMedidaCrudFrm.getUnidadMedida()));
+				tblUnidadMedida.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+			}
 		}
 	}
 
+	private boolean llenarEntidadParaEnviarAUnidadMedidaCrudFrm() {
+		unidadMedida = new UnidadMedida();
+		if (tblUnidadMedida.getSelectedRow() != -1) {
+			unidadMedida.setId(Integer.parseInt(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 0).toString()));
+			unidadMedida.setNombre(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 1).toString());
+			unidadMedida.setAbreviatura(modelo.getValueAt(tblUnidadMedida.getSelectedRow(), 2).toString());
+			unidadMedidaCrudFrm.setUnidadMedida(unidadMedida);
+			return true;
+		}
+		return false;
+	}
+	
+	private void eliminarUnidadMedida() {
+		if (llenarEntidadParaEnviarAUnidadMedidaCrudFrm()) {			
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + unidadMedida.getNombre() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				UnidadMedidaController unidadMedidaController = new UnidadMedidaController();
+				String error = unidadMedidaController.deleteUnidadMedida(unidadMedida);
+				if (error == null) {
+					modelo.removeRow(tblUnidadMedida.getSelectedRow());
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
+	
 	private void crearEventos() {
 		unidadMedidaCrudFrm.addWindowListener(new WindowAdapter() {
 			@Override
@@ -123,6 +155,8 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				unidadMedida = new UnidadMedida();
+				unidadMedidaCrudFrm.setUnidadMedida(unidadMedida);
 				if (!unidadMedidaCrudFrm.isVisible()) {
 					unidadMedidaCrudFrm.setModal(true);
 					unidadMedidaCrudFrm.setVisible(true);
@@ -131,12 +165,17 @@ public class UnidadMedidaListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarAUnidadMedidaCrudFrm()){
+					if (!unidadMedidaCrudFrm.isVisible()) {
+						unidadMedidaCrudFrm.setModal(true);
+						unidadMedidaCrudFrm.setVisible(true);
+					}
+				}	
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarUnidadMedida();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
