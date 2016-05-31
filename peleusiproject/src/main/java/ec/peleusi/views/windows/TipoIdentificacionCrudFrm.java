@@ -34,6 +34,7 @@ public class TipoIdentificacionCrudFrm extends JDialog {
 	int limitecaja = 15;
 
 	public TipoIdentificacionCrudFrm() {
+		setTitle("Tipo Identificación");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {

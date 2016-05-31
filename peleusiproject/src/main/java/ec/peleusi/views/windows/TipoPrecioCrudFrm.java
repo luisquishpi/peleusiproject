@@ -140,7 +140,7 @@ public class TipoPrecioCrudFrm extends JDialog {
 
 
 	private void crearControles() {
-		setBounds(100, 100, 508, 221);
+		setBounds(100, 100, 504, 218);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -167,22 +167,23 @@ public class TipoPrecioCrudFrm extends JDialog {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		JLabel lblNombre = new JLabel("Nombre");
+		JLabel lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(50, 30, 75, 14);
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField(50);
-		txtNombre.setBounds(133, 27, 214, 20);
+		txtNombre.setText("PVP, Mayorista, Comisionista");
+		txtNombre.setBounds(133, 27, 152, 20);
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(50);
 
-		JLabel lblPorcentaje = new JLabel("Porcentaje");
+		JLabel lblPorcentaje = new JLabel("Porcentaje*");
 		lblPorcentaje.setBounds(50, 72, 85, 14);
 		panelCuerpo.add(lblPorcentaje);
 
 		txtPorcentaje = new JFormattedTextField();
 		txtPorcentaje.setToolTipText("");
-		txtPorcentaje.setSize(75, 20);
+		txtPorcentaje.setSize(152, 20);
 		txtPorcentaje.setLocation(134, 69);
 		txtPorcentaje.setFormatterFactory(new Formatos().getDecimalFormat());
 		panelCuerpo.add(txtPorcentaje);

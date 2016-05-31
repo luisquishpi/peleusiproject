@@ -19,7 +19,6 @@ import ec.peleusi.models.entities.TipoPago;
 public class TipoPagoCrudFrm extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
@@ -27,6 +26,7 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 	private TipoPago tipoPago;
 	
 	public TipoPagoCrudFrm() {
+		setTitle("Tipo Pago");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {
@@ -123,11 +123,6 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 				}
 			}			
 		});
-		
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tipoPago = new TipoPago();
@@ -138,7 +133,7 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 
 	
 	private void crearControles() {		
-		setBounds(100, 100, 611, 225);
+		setBounds(100, 100, 505, 199);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -148,22 +143,17 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TipoPagoCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(20, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.setIcon(new ImageIcon(TipoPagoCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+		btnGuardar.setBounds(180, 14, 130, 39);
 		panelCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TipoPagoCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(TipoPagoCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(340, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -175,6 +165,7 @@ public class TipoPagoCrudFrm extends javax.swing.JDialog {
 		panelCuerpo.add(lblNombre);
 
 		txtNombre = new JTextField();
+		txtNombre.setToolTipText("Efectivo, cheque. crédito");
 		txtNombre.setColumns(10);
 		txtNombre.setBounds(106, 39, 210, 20);
 		panelCuerpo.add(txtNombre);		
