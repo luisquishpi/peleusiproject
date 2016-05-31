@@ -9,19 +9,20 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-
 import ec.peleusi.controllers.TipoCalificacionClienteController;
 import ec.peleusi.models.entities.TipoCalificacionCliente;
-
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TipoCalificacionClienteListFrm extends JInternalFrame {
 
@@ -30,96 +31,72 @@ public class TipoCalificacionClienteListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblTipoCalificacionCliente;
 	private TipoCalificacionClienteCrudFrm tipoCalificacionClienteCrudFrm = new TipoCalificacionClienteCrudFrm();
 	private TipoCalificacionCliente tipoCalificacionCliente;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TipoCalificacionCliente> jPanelWithTable;
 
 	public TipoCalificacionClienteListFrm() {
-		setTitle("Listado de Tipo Calificacion Cliente");
+		setTitle("Listado de Tipo Calificación Cliente");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});	
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTipoCalificacionCliente = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTipoCalificacionCliente.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTipoCalificacionCliente.setPreferredScrollableViewportSize(tblTipoCalificacionCliente.getPreferredSize());
-		tblTipoCalificacionCliente.getTableHeader().setReorderingAllowed(true);
-		tblTipoCalificacionCliente.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTipoCalificacionCliente.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTipoCalificacionCliente.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTipoCalificacionCliente.getColumnModel().getColumn(1).setPreferredWidth(443);
-		scrollPane.setViewportView(tblTipoCalificacionCliente);
-
-	}
-
-	private Object[] agregarDatosAFila(TipoCalificacionCliente tipoCalificacionCliente) {
-		filaDatos[0] = tipoCalificacionCliente.getId();
-		filaDatos[1] = tipoCalificacionCliente.getNombre();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
-		List<TipoCalificacionCliente> listaTipoCalificacionCliente = tipoCalificacionClienteController.tipoCalificacionClienteList();
-		for (TipoCalificacionCliente tipoCalificacionCliente : listaTipoCalificacionCliente) {
-			modelo.addRow(agregarDatosAFila(tipoCalificacionCliente));
-		}
+		List<TipoCalificacionCliente> listaTipoCalificacionCliente = tipoCalificacionClienteController
+				.getTipoCalificacionClienteList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaTipoCalificacionCliente != null)
+			totalItems = listaTipoCalificacionCliente.size();
+
+		jPanelWithTable = new JPanelWithTable<TipoCalificacionCliente>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 597 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "NOMBRE" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTipoCalificacionCliente), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
 	}
 
 	private void capturaYAgregaTipoCalificacionClienteATabla() {
 		if (tipoCalificacionCliente == tipoCalificacionClienteCrudFrm.getTipoCalificacionCliente()
 				&& tipoCalificacionCliente.getId() != null) {
-			modelo.setValueAt(tipoCalificacionCliente.getNombre(), tblTipoCalificacionCliente.getSelectedRow(), 1);
+			txtBuscar.setText(tipoCalificacionCliente.getNombre());
+			crearTabla();
 		} else {
 			if (tipoCalificacionClienteCrudFrm.getTipoCalificacionCliente() != null
 					&& tipoCalificacionClienteCrudFrm.getTipoCalificacionCliente().getId() != null) {
-				modelo.addRow(agregarDatosAFila(tipoCalificacionClienteCrudFrm.getTipoCalificacionCliente()));
-				tblTipoCalificacionCliente.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(tipoCalificacionClienteCrudFrm.getTipoCalificacionCliente().getNombre());
+				crearTabla();
 			}
 		}
 	}
 
 	private boolean llenarEntidadParaEnviarATipoCalificacionClienteCrudFrm() {
 		tipoCalificacionCliente = new TipoCalificacionCliente();
-		if (tblTipoCalificacionCliente.getSelectedRow() != -1) {
-			tipoCalificacionCliente.setId(Integer.parseInt(modelo.getValueAt(tblTipoCalificacionCliente.getSelectedRow(), 0).toString()));
-			tipoCalificacionCliente.setNombre(modelo.getValueAt(tblTipoCalificacionCliente.getSelectedRow(), 1).toString());
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tipoCalificacionCliente.setId(Integer.parseInt(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tipoCalificacionCliente.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
 			tipoCalificacionClienteCrudFrm.setTipoCalificacionCliente(tipoCalificacionCliente);
 			return true;
 		}
@@ -135,7 +112,8 @@ public class TipoCalificacionClienteListFrm extends JInternalFrame {
 				TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
 				String error = tipoCalificacionClienteController.deleteTipoCalificacionCliente(tipoCalificacionCliente);
 				if (error == null) {
-					modelo.removeRow(tblTipoCalificacionCliente.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -185,13 +163,19 @@ public class TipoCalificacionClienteListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TipoCalificacionClienteController tipoCalificacionClienteController = new TipoCalificacionClienteController();
-				List<TipoCalificacionCliente> listaTipoCalificacionCliente = tipoCalificacionClienteController
-						.getTipoCalificacionClienteList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TipoCalificacionCliente tipoCalificacionCliente : listaTipoCalificacionCliente) {
-					modelo.addRow(agregarDatosAFila(tipoCalificacionCliente));
+				crearTabla();
+			}
+		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -211,46 +195,49 @@ public class TipoCalificacionClienteListFrm extends JInternalFrame {
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(
 				new ImageIcon(TipoCalificacionClienteListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(
 				new ImageIcon(TipoCalificacionClienteListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(
 				new ImageIcon(TipoCalificacionClienteListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 15, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(
 				new ImageIcon(TipoCalificacionClienteListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
 
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba nombre");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(
 				new ImageIcon(TipoCalificacionClienteListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
+		pnlBuscar.add(btnBuscar);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
+		
 	}
-
 }

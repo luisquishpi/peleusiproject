@@ -27,7 +27,7 @@ public class TipoCalificacionClienteCrudFrm extends JDialog{
 	private TipoCalificacionCliente tipoCalificacionCliente;
 
 	public TipoCalificacionClienteCrudFrm() {
-		setTitle("Tipo Calificaciòn Cliente");
+		setTitle("Tipo Calificación Cliente");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {
@@ -41,13 +41,13 @@ public class TipoCalificacionClienteCrudFrm extends JDialog{
 	
 	private void llenarCamposConEntidad() {
 		if (tipoCalificacionCliente != null && tipoCalificacionCliente.getId() != null) {
-			this.setTitle("Actualizando Tipo Calificaciòn Cliente");
+			this.setTitle("Actualizando Tipo Calificación Cliente");
 			btnGuardar.setText("Actualizar");
 			limpiarCampos();
 			txtNombre.setText(tipoCalificacionCliente.getNombre());
 
 		} else {
-			this.setTitle("Creando Tipo Calificaciòn Cliente");
+			this.setTitle("Creando Tipo Calificación Cliente");
 			btnGuardar.setText("Guardar");
 			limpiarCampos();
 		}

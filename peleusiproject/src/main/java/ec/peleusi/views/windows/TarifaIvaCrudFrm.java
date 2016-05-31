@@ -55,7 +55,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 			txtNombre.setText(tarifaIva.getNombre());
 			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));
 		} else {
-			this.setTitle("Creando Tarifa Iva");
+			this.setTitle("Creando Tarifa IVA");
 			btnGuardar.setText("Guardar");
 			limpiarCampos();
 		}

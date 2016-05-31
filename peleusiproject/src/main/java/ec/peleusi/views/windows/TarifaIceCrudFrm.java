@@ -35,7 +35,7 @@ public class TarifaIceCrudFrm extends JDialog {
 	int limitecaja = 15;
 
 	public TarifaIceCrudFrm() {
-		setTitle("Tarifa Ice");
+		setTitle("Tarifa ICE");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {
@@ -56,7 +56,7 @@ public class TarifaIceCrudFrm extends JDialog {
 			txtNombre.setText(tarifaIce.getNombre());		
 			txtPorcentaje.setText(Double.toString(tarifaIce.getPorcentaje()));
 		}else{
-			this.setTitle("Creando Tarifa Ice");
+			this.setTitle("Creando Tarifa ICE");
 			btnGuardar.setText("Guardar");
 			limpiarCampos();			
 		}

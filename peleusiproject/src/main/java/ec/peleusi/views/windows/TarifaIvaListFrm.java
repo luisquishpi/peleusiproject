@@ -9,17 +9,20 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TarifaIvaController;
 import ec.peleusi.models.entities.TarifaIva;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TarifaIvaListFrm extends JInternalFrame {
 
@@ -28,115 +31,78 @@ public class TarifaIvaListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblTarifaIva;
 	private TarifaIvaCrudFrm tarifaIvaCrudFrm = new TarifaIvaCrudFrm();
 	private TarifaIva tarifaIva;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TarifaIva> jPanelWithTable;
 
 	public TarifaIvaListFrm() {
-		setTitle("Lista de las Tarifas IVA");
+		setTitle("Listado de Tarifas IVA");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});	
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Còdigo", "Nombre", "Porcentaje" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTarifaIva = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return String.class;
-				case 3:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTarifaIva.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTarifaIva.setPreferredScrollableViewportSize(tblTarifaIva.getPreferredSize());
-		tblTarifaIva.getTableHeader().setReorderingAllowed(true);
-		tblTarifaIva.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTarifaIva.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTarifaIva.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTarifaIva.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tblTarifaIva.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tblTarifaIva.getColumnModel().getColumn(3).setPreferredWidth(143);
-		scrollPane.setViewportView(tblTarifaIva);
-
-	}
-
-	private Object[] agregarDatosAFila(TarifaIva tarifaIva) {
-		filaDatos[0] = tarifaIva.getId();
-		filaDatos[1] = tarifaIva.getCodigo();
-		filaDatos[2] = tarifaIva.getNombre();
-		filaDatos[3] = tarifaIva.getPorcentaje();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
-		List<TarifaIva> listaTarifaIva = tarifaIvaController.tarifaIvaList();
-		for (TarifaIva tarifaIva : listaTarifaIva) {
-			modelo.addRow(agregarDatosAFila(tarifaIva));
-		}
+		List<TarifaIva> listaTarifaIva = tarifaIvaController.getTarifaIvaList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaTarifaIva != null)
+			totalItems = listaTarifaIva.size();
+
+		jPanelWithTable = new JPanelWithTable<TarifaIva>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "codigo", "nombre", "porcentaje" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 100, 328, 170 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0, 1 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "CODIGO", "NOMBRE", "PORCENTAJE" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTarifaIva), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
+
 	}
 
 	private void capturaYAgregaTarifaIvaATabla() {
 		if (tarifaIva == tarifaIvaCrudFrm.getTarifaIva() && tarifaIva.getId() != null) {
-			modelo.setValueAt(tarifaIva.getCodigo(), tblTarifaIva.getSelectedRow(), 1);
-			modelo.setValueAt(tarifaIva.getNombre(), tblTarifaIva.getSelectedRow(), 2);
-			modelo.setValueAt(tarifaIva.getPorcentaje(), tblTarifaIva.getSelectedRow(), 3);
+			txtBuscar.setText(tarifaIva.getNombre());
+			crearTabla();
 		} else {
 			if (tarifaIvaCrudFrm.getTarifaIva() != null && tarifaIvaCrudFrm.getTarifaIva().getId() != null) {
-				modelo.addRow(agregarDatosAFila(tarifaIvaCrudFrm.getTarifaIva()));
-				tblTarifaIva.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(tarifaIvaCrudFrm.getTarifaIva().getNombre());
+				crearTabla();
 			}
 		}
 	}
 
 	private boolean llenarEntidadParaEnviarATarifaIvaCrudFrm() {
 		tarifaIva = new TarifaIva();
-		if (tblTarifaIva.getSelectedRow() != -1) {
-			tarifaIva.setId(Integer.parseInt(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 0).toString()));
-			tarifaIva.setCodigo(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 1).toString());
-			tarifaIva.setNombre(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 2).toString());
-			tarifaIva.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTarifaIva.getSelectedRow(), 3).toString()));
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tarifaIva.setId(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tarifaIva.setCodigo(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			tarifaIva.setNombre(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			tarifaIva.setPorcentaje(Double.parseDouble(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString()));
 			tarifaIvaCrudFrm.setTarifaIva(tarifaIva);
 			return true;
 		}
 		return false;
 	}
-	
-	private void eliminarTarifaIva(){
-		
-		if (llenarEntidadParaEnviarATarifaIvaCrudFrm()){
+
+	private void eliminarTarifaIva() {
+		if (llenarEntidadParaEnviarATarifaIvaCrudFrm()) {
 			int confirmacion = JOptionPane.showConfirmDialog(null,
 					"Está seguro que desea eliminar:\n\"" + tarifaIva.getNombre() + "\"?", "Confirmación",
 					JOptionPane.YES_NO_OPTION);
@@ -144,14 +110,14 @@ public class TarifaIvaListFrm extends JInternalFrame {
 				TarifaIvaController tarifaiIvaController = new TarifaIvaController();
 				String error = tarifaiIvaController.deleteTarifaIva(tarifaIva);
 				if (error == null) {
-					modelo.removeRow(tblTarifaIva.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-			}			
-		}		
+			}
+		}
 	}
-	
 
 	private void crearEventos() {
 		tarifaIvaCrudFrm.addWindowListener(new WindowAdapter() {
@@ -195,12 +161,19 @@ public class TarifaIvaListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TarifaIvaController tarifaIvaController = new TarifaIvaController();
-				List<TarifaIva> listaTarifaIva = tarifaIvaController.getTarifaIvaList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TarifaIva tarifaIva : listaTarifaIva) {
-					modelo.addRow(agregarDatosAFila(tarifaIva));
+				crearTabla();
+			}
+		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -219,42 +192,44 @@ public class TarifaIvaListFrm extends JInternalFrame {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
 
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba código o nombre o porcentaje");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(TarifaIvaListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
+		pnlBuscar.add(btnBuscar);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
 	}
-
 }
