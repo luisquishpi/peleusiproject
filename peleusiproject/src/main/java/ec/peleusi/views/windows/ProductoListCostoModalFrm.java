@@ -66,7 +66,7 @@ public class ProductoListCostoModalFrm extends JDialog {
 		if (totalItems == 0 && listaProducto != null)
 			totalItems = listaProducto.size();
 
-		jPanelWithTable = new JPanelWithTable<Producto>();
+		jPanelWithTable = new JPanelWithTable<Producto>(txtBuscar);
 		jPanelWithTable.setCamposEntidad(
 				new String[] { "id", "codigo", "nombre", "stock", "costo", "unidadMedidaCompra", "tieneIva" });
 		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 70, 200, 50, 50, 100, 50 });
@@ -83,7 +83,6 @@ public class ProductoListCostoModalFrm extends JDialog {
 
 		if (jPanelWithTable.getJTable() != null) {
 			jPanelWithTable.getJTable().addKeyListener(new KeyAdapter() {
-				@Override
 				public void keyReleased(KeyEvent e) {
 					if (KeyEvent.VK_ENTER == e.getKeyCode()) {
 						aceptar();
@@ -162,7 +161,7 @@ public class ProductoListCostoModalFrm extends JDialog {
 			pnlBuscar.add(txtBuscar);
 			txtBuscar.setPreferredSize(new Dimension(6, 38));
 			txtBuscar.setColumns(25);
-			txtBuscar.setPlaceholder("Buscar");
+			txtBuscar.setPlaceholder("Escriba código o nombre");
 			txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
 		}
 		{

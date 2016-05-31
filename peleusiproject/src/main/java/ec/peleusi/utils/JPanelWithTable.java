@@ -1,6 +1,8 @@
 package ec.peleusi.utils;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -34,23 +36,39 @@ public class JPanelWithTable<T> {
 	private JScrollPane sPnlTable;
 	private JTable jTable;
 	private Integer totalItems;
+	private JTextFieldPH txtBuscar;
 
-	public JPanelWithTable() {
+	public JPanelWithTable(JTextFieldPH txtBuscar) {
 		super();
+		this.setTxtBuscar(txtBuscar);
 	}
 
 	public JPanel crear(String[] cabecera, List<T> listaEntidad) {
 		crearControles();
 		if (listaEntidad != null) {
 			jTable = crearTabla(cabecera, listaEntidad);
-			jTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .put(KeyStroke.getKeyStroke("ENTER"), "none");
+			jTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("ENTER"),
+					"none");
 
 			modelo = getModelo();
 			sPnlTable.setViewportView(jTable);
 			Filtros filtros = new Filtros();
 			filtros.paginationBox(3, 1, box, modelo, getSorter());
 			lblFooter.setText("Encontrado " + modelo.getRowCount() + " de " + totalItems);
+			if (jTable != null && txtBuscar != null) {
+				jTable.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+						if (Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar())) {
+							txtBuscar.setText("" + e.getKeyChar());
+							txtBuscar.requestFocus();
+						}
+						if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+							txtBuscar.requestFocus();
+						}
+					}
+				});
+			}
 		}
 		return pnlContenedor;
 	}
@@ -190,24 +208,24 @@ public class JPanelWithTable<T> {
 
 		}
 		// Agrega los Atributos a la fila solo los de la lista
-					for (int i = 0; i < camposEntidad.length; i++) {
-						Field atributo = null;
-						try {
-							atributo = objEntidad.getClass().getDeclaredField(camposEntidad[i]);
-						} catch (NoSuchFieldException e1) {
-							e1.printStackTrace();
-						} catch (SecurityException e1) {
-							e1.printStackTrace();
-						}
-						atributo.setAccessible(true);
-						try {
-							filaDatos[i] = atributo.get(objEntidad);
-						} catch (IllegalArgumentException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-					}
+		for (int i = 0; i < camposEntidad.length; i++) {
+			Field atributo = null;
+			try {
+				atributo = objEntidad.getClass().getDeclaredField(camposEntidad[i]);
+			} catch (NoSuchFieldException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			}
+			atributo.setAccessible(true);
+			try {
+				filaDatos[i] = atributo.get(objEntidad);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 		return filaDatos;
 	}
 
@@ -281,6 +299,14 @@ public class JPanelWithTable<T> {
 
 	public void setTotalItems(Integer totalItems) {
 		this.totalItems = totalItems;
+	}
+
+	public JTextFieldPH getTxtBuscar() {
+		return txtBuscar;
+	}
+
+	public void setTxtBuscar(JTextFieldPH txtBuscar) {
+		this.txtBuscar = txtBuscar;
 	}
 
 }

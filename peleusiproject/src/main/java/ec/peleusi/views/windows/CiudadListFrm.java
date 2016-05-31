@@ -11,6 +11,8 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -58,7 +60,7 @@ public class CiudadListFrm extends JInternalFrame {
 		if (totalItems == 0 && listaCiudad != null)
 			totalItems = listaCiudad.size();
 		
-		jPanelWithTable = new JPanelWithTable<Ciudad>();
+		jPanelWithTable = new JPanelWithTable<Ciudad>(txtBuscar);
 		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre" });
 		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 441 });
 		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
@@ -157,6 +159,18 @@ public class CiudadListFrm extends JInternalFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				crearTabla();
+			}
+		});
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
+				}
 			}
 		});
 	}
