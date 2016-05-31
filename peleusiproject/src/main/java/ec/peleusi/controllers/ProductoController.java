@@ -21,6 +21,11 @@ public class ProductoController {
 	public List<Producto> productoList() {
 		return productoDao.findAll();
 	}
+
+	public List<Producto> productoList(String parametro) {
+		return productoDao.ProductoList(parametro);
+	}
+
 	public Producto getProductoCodigo(String codigo) {
 		return productoDao.getProductoCodigo(codigo);
 	}

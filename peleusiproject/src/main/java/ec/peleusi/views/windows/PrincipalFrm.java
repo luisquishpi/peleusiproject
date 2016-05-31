@@ -49,9 +49,11 @@ public class PrincipalFrm extends JFrame {
 		});
 	}
 	public PrincipalFrm() {
+		this.setExtendedState(MAXIMIZED_BOTH);
+
 		setTitle("Peleusí v.1.0.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 643, 457);
+		setBounds(0, 0, 800, 600);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

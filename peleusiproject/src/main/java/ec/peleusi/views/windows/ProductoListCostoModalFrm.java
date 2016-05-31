@@ -2,41 +2,36 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
+import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.ProductoController;
-import ec.peleusi.controllers.TipoPrecioController;
-import ec.peleusi.models.entities.Cliente;
 import ec.peleusi.models.entities.Producto;
-import ec.peleusi.models.entities.TipoPrecio;
-
-import javax.swing.DefaultComboBoxModel;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import javax.swing.ImageIcon;
-import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JComboBox;
+import javax.swing.BoxLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ProductoListCostoModalFrm extends JDialog {
 	private static final long serialVersionUID = 1L;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField txtBuscar;
-	private JTable tblProductos;
-	private JScrollPane scrollPane;
-	private JComboBox<TipoPrecio> cmbTipoPrecio;
+	private JTextFieldPH txtBuscar;
 	private JButton btnAceptar;
-	Producto producto= new Producto();
-	
+	Producto producto = new Producto();
+	private JPanel pnlTabla;
+	JPanelWithTable<Producto> jPanelWithTable;
+	private Integer totalItems = 0;
+	private JButton btnBuscar;
 
 	public static void main(String[] args) {
 		try {
@@ -51,148 +46,135 @@ public class ProductoListCostoModalFrm extends JDialog {
 	public ProductoListCostoModalFrm() {
 		crearControles();
 		crearEventos();
-		cargarCompoTipoPrecio();
 		crearTabla();
-		cargarTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void cargarCompoTipoPrecio() {
-		TipoPrecioController tipoPrecioController = new TipoPrecioController();
-		List<TipoPrecio> listaTipoPrecio;
-		listaTipoPrecio = tipoPrecioController.tipoPrecioList();
-		cmbTipoPrecio.setModel(new DefaultComboBoxModel(listaTipoPrecio.toArray()));
-	}
 	public Producto getProducto() {
 		return producto;
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Código", "Nombre", "Stock", "Costo", "Unidad", "IVA" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3 || columnIndex == 4
-						|| columnIndex == 5 || columnIndex == 6) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		tblProductos = new JTable(modelo){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 6:
-					return Boolean.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblProductos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblProductos.setPreferredScrollableViewportSize(tblProductos.getPreferredSize());
-		tblProductos.getTableHeader().setReorderingAllowed(true);
-		tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
-		tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblProductos.getColumnModel().getColumn(1).setPreferredWidth(50);
-		tblProductos.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tblProductos.getColumnModel().getColumn(3).setPreferredWidth(50);
-		tblProductos.getColumnModel().getColumn(4).setPreferredWidth(85);
-		tblProductos.getColumnModel().getColumn(5).setPreferredWidth(80);
-		scrollPane.setViewportView(tblProductos);
-	}
-
-	private Object[] agregarDatosAFila(Producto producto) {
-		filaDatos[0] = producto.getId();
-		filaDatos[1] = producto.getCodigo();
-		filaDatos[2] = producto.getNombre();
-		filaDatos[3] = producto.getStock();
-		filaDatos[4] = producto.getCosto();
-		filaDatos[5] = producto.getUnidadMedidaCompra();
-		filaDatos[6] = producto.getTieneIva();
-		return filaDatos;
-	}
-
-	public void cargarTabla() {
 		ProductoController productoController = new ProductoController();
-		List<Producto> listaProducto = productoController.productoList();
-		for (Producto producto : listaProducto) {
-			modelo.addRow(agregarDatosAFila(producto));
+		List<Producto> listaProducto = productoController.productoList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaProducto != null)
+			totalItems = listaProducto.size();
+
+		jPanelWithTable = new JPanelWithTable<Producto>();
+		jPanelWithTable.setCamposEntidad(
+				new String[] { "id", "codigo", "nombre", "stock", "costo", "unidadMedidaCompra", "tieneIva" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 70, 200, 50, 50, 100, 50 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTipoColumnas(new Class[] { Integer.class, String.class, String.class, Double.class,
+				Double.class, String.class, Boolean.class });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "Id", "Código", "Nombre", "Stock", "Costo", "Unidad", "IVA" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaProducto), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+
+		if (jPanelWithTable.getJTable() != null) {
+			jPanelWithTable.getJTable().addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+						aceptar();
+					}
+				}
+			});
 		}
+		txtBuscar.requestFocus();
 	}
 
-	private void crearEventos()
-	{
+	private void aceptar() {
+		int fila = jPanelWithTable.getJTable().getSelectedRow();
+		if (fila != -1) {
+			producto = new Producto();
+			producto.setId(Integer.parseInt(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			producto.setCodigo(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			producto.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			producto.setStock(Double.parseDouble(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString()));
+			producto.setCosto(Double.parseDouble(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 4).toString()));
+			producto.setTieneIva(Boolean.parseBoolean(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 6).toString()));
+		}
+		System.out.println("producto: " + producto);
+		dispose();
+	}
+
+	private void crearEventos() {
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				int fila = tblProductos.getSelectedRow();
-
-				System.out.println(">>>> " + fila + "<<<<<");
-				if (fila != -1) {
-					producto = new Producto();
-					producto.setId(Integer.parseInt(modelo.getValueAt(tblProductos.getSelectedRow(), 0).toString()));
-					producto.setCodigo(modelo.getValueAt(tblProductos.getSelectedRow(), 1).toString());
-					producto.setNombre(modelo.getValueAt(tblProductos.getSelectedRow(), 2).toString());
-					producto.setStock(Double.parseDouble(modelo.getValueAt(tblProductos.getSelectedRow(), 3).toString()));
-					producto.setCosto(Double.parseDouble(modelo.getValueAt(tblProductos.getSelectedRow(), 4).toString()));
-					producto.setTieneIva(Boolean.parseBoolean(modelo.getValueAt(tblProductos.getSelectedRow(), 6).toString()));
-					
-					
-					
+				aceptar();
+			}
+		});
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				crearTabla();
+			}
+		});
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
-				dispose();
-				
 
 			}
 		});
-		
+
 	}
+
 	private void crearControles() {
-		setTitle("Lista de Productos");
-		setBounds(100, 100, 501, 375);
+		setTitle("Lista de Productos - Costos de compra");
+		setBounds(100, 100, 550, 400);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel = new JPanel();
+		contentPanel.add(panel, BorderLayout.CENTER);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JPanel pnlBuscar = new JPanel();
+		panel.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
 		{
-			JPanel panel = new JPanel();
-			panel.setPreferredSize(new Dimension(300, 100));
-			contentPanel.add(panel, BorderLayout.NORTH);
-			panel.setLayout(null);
-			{
-				cmbTipoPrecio = new JComboBox<TipoPrecio>();
-				cmbTipoPrecio.setBounds(0, 0, 465, 20);
-				panel.add(cmbTipoPrecio);
-			}
-			{
-				txtBuscar = new JTextField();
-				txtBuscar.setBounds(0, 27, 354, 38);
-				txtBuscar.setPreferredSize(new Dimension(6, 38));
-				txtBuscar.setColumns(25);
-				panel.add(txtBuscar);
-			}
-			{
-				JButton btnBuscar = new JButton("Buscar");
-				btnBuscar.setBounds(364, 26, 101, 41);
-				btnBuscar.setIcon(new ImageIcon(
-						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-				panel.add(btnBuscar);
-			}
+			txtBuscar = new JTextFieldPH();
+			pnlBuscar.add(txtBuscar);
+			txtBuscar.setPreferredSize(new Dimension(6, 38));
+			txtBuscar.setColumns(25);
+			txtBuscar.setPlaceholder("Buscar");
+			txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
 		}
 		{
-			scrollPane = new JScrollPane();
-			contentPanel.add(scrollPane, BorderLayout.CENTER);
-			{
-				tblProductos = new JTable();
-			}
+			btnBuscar = new JButton("Buscar");
+			pnlBuscar.add(btnBuscar);
+			btnBuscar.setIcon(
+					new ImageIcon(ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		}
+		{
+			pnlTabla = new JPanel();
+			panel.add(pnlTabla, BorderLayout.CENTER);
+			pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -200,11 +182,11 @@ public class ProductoListCostoModalFrm extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				btnAceptar = new JButton("Aceptar");
-				
+
 				btnAceptar.setIcon(new ImageIcon(
 						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
 				buttonPane.add(btnAceptar);
-				getRootPane().setDefaultButton(btnAceptar);
+				// getRootPane().setDefaultButton(btnAceptar);
 			}
 			{
 				JButton btnCancelar = new JButton("Cancelar");
@@ -220,5 +202,4 @@ public class ProductoListCostoModalFrm extends JDialog {
 		}
 
 	}
-
 }

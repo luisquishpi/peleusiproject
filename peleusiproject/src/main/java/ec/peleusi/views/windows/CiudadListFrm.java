@@ -54,11 +54,10 @@ public class CiudadListFrm extends JInternalFrame {
 
 	private void crearTabla() {
 		CiudadController ciudadController = new CiudadController();
-		List<Ciudad> listaCiudad = ciudadController.getCiudadList(txtBuscar.getText());
-
-		if (totalItems == 0)
+		List<Ciudad> listaCiudad = ciudadController.ciudadList(txtBuscar.getText());
+		if (totalItems == 0 && listaCiudad != null)
 			totalItems = listaCiudad.size();
-
+		
 		jPanelWithTable = new JPanelWithTable<Ciudad>();
 		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre" });
 		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 441 });
@@ -92,8 +91,8 @@ public class CiudadListFrm extends JInternalFrame {
 		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
 			ciudad.setId(Integer.parseInt(jPanelWithTable.getJTable()
 					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
-			ciudad.setNombre(jPanelWithTable.getJTable()
-					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			ciudad.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
 			ciudadCrudFrm.setCiudad(ciudad);
 			return true;
 		}
