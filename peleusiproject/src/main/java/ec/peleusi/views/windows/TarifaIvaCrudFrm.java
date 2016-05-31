@@ -27,7 +27,6 @@ public class TarifaIvaCrudFrm extends JDialog {
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JLabel lblNombre;
 	private JTextField txtNombre;
 	private JTextField txtCodigo;
 	private JFormattedTextField txtPorcentaje;
@@ -43,9 +42,9 @@ public class TarifaIvaCrudFrm extends JDialog {
 			public void componentShown(ComponentEvent arg0) {
 				llenarCamposConEntidad();
 				txtCodigo.requestFocus();
-				}
-			});
-		}
+			}
+		});
+	}
 
 	private void llenarCamposConEntidad() {
 		if (tarifaIva != null && tarifaIva.getId() != null) {
@@ -53,7 +52,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 			btnGuardar.setText("Actualizar");
 			limpiarCampos();
 			txtCodigo.setText(tarifaIva.getCodigo());
-			txtNombre.setText(tarifaIva.getNombre());		
+			txtNombre.setText(tarifaIva.getNombre());
 			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));
 		} else {
 			this.setTitle("Creando Tarifa Iva");
@@ -61,26 +60,26 @@ public class TarifaIvaCrudFrm extends JDialog {
 			limpiarCampos();
 		}
 	}
-	
-		private void llenarEntidadAntesDeGuardar(){
+
+	private void llenarEntidadAntesDeGuardar() {
 		tarifaIva.setCodigo(txtCodigo.getText());
 		tarifaIva.setNombre(txtNombre.getText());
-		tarifaIva.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));		
+		tarifaIva.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
 	}
 
-	private void guardarNuevoTarifaIva(){
+	private void guardarNuevoTarifaIva() {
 		tarifaIva = new TarifaIva();
 		llenarEntidadAntesDeGuardar();
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
 		String error = tarifaIvaController.createTarifaIva(tarifaIva);
-		if (error == null){
+		if (error == null) {
 			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 			dispose();
 		} else {
 			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-		
+
 	private void actualizarTarifaIva() {
 		llenarEntidadAntesDeGuardar();
 		TarifaIvaController tarifaIvaController = new TarifaIvaController();
@@ -101,7 +100,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 		this.tarifaIva = new TarifaIva();
 		this.tarifaIva = tarifaIva;
 	}
-	
+
 	private void limpiarCampos() {
 		txtCodigo.setText("");
 		txtNombre.setText("");
@@ -120,7 +119,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				tarifaIva = new TarifaIva();
-				llenarCamposConEntidad();				
+				llenarCamposConEntidad();
 			}
 		});
 
@@ -135,7 +134,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 					actualizarTarifaIva();
 				} else {
 					guardarNuevoTarifaIva();
-				}				
+				}
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
@@ -144,8 +143,8 @@ public class TarifaIvaCrudFrm extends JDialog {
 				dispose();
 			}
 		});
-	}	
-	
+	}
+
 	private void crearControles() {
 
 		setBounds(100, 100, 505, 263);
@@ -175,7 +174,7 @@ public class TarifaIvaCrudFrm extends JDialog {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblNombre = new JLabel("Nombre*");
+		JLabel lblNombre = new JLabel("Nombre*");
 		lblNombre.setBounds(50, 70, 101, 14);
 		panelCuerpo.add(lblNombre);
 

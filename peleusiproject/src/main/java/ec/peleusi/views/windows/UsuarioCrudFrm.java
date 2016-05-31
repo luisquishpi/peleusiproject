@@ -8,6 +8,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,12 +17,11 @@ import javax.swing.JTextField;
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Usuario;
 import ec.peleusi.utils.TipoUsuarioEnum;
-
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 
-public class UsuarioCrudFrm extends JDialog {
+public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnEliminar;
@@ -36,18 +37,140 @@ public class UsuarioCrudFrm extends JDialog {
 	private JTextField txtContrasenia;
 	private JLabel lblTipoUsuario;
 	private JComboBox <TipoUsuarioEnum> cmbTipoUsuario;
-	private Usuario usuarioRetorno;
+	private Usuario usuario;
 
 	public UsuarioCrudFrm() {
 		setTitle("Usuario");
 		crearControles();
 		crearEventos();
 		cargarComboTipoUsuario();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				llenarCamposConEntidad();
+				txtNombre.requestFocus();
+			}
+		});
 	}
+	
 	private void cargarComboTipoUsuario(){
 		cmbTipoUsuario.setModel(new DefaultComboBoxModel<TipoUsuarioEnum>(TipoUsuarioEnum.values()));
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void llenarCamposConEntidad() {
+		if (usuario != null && usuario.getId() != null) {
+			this.setTitle("Actualizando Usuario");
+			btnGuardar.setText("Actualizar");
+			limpiarCampos();
+			txtNombre.setText(usuario.getNombres());
+			txtApellido.setText(usuario.getApellidos());
+			txtUsuario.setText(usuario.getUsuario());
+			txtContrasenia.setText(usuario.getContrasenia());
+			cmbTipoUsuario.setSelectedItem((TipoUsuario)usuario.getTipoUsuario());
+		} else {
+			this.setTitle("Creando Unidad de Medida");
+			btnGuardar.setText("Guardar");
+			limpiarCampos();
+		}
+	}
+	
+	private void llenarEntidadAntesDeGuardar() {
+		usuario.setNombres(txtNombre.getText());
+		usuario.setApellidos(txtApellido.getText());
+		usuario.setUsuario(txtUsuario.getText());
+		usuario.setContrasenia(txtContrasenia.getText());
+		usuario.setTipoUsuario((TipoUsuarioEnum) cmbTipoUsuario.getSelectedItem());
+		}
+	
+	private void guardarNuevoUsuario() {
+		usuario = new Usuario();
+		llenarEntidadAntesDeGuardar();
+		UsuarioController usuarioController = new UsuarioController();
+		String error = usuarioController.createUsuario(usuario);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
+	private void actualizarUsuario() {
+		llenarEntidadAntesDeGuardar();
+		UsuarioController usuarioController = new UsuarioController();
+		String error = usuarioController.updateUsuario(usuario);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	
+	public void setUsuario(Usuario usuario) {
+		this.usuario = new Usuario();
+		this.usuario = usuario;
+	}
+	
+	private void limpiarCampos() {
+		txtNombre.setText("");
+		txtApellido.setText("");
+		txtUsuario.setText("");
+		txtContrasenia.setText("");
+		txtNombre.requestFocus();
+		
+	}
+	
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtNombre.getText().isEmpty() || txtApellido.getText().isEmpty() || txtUsuario.getText().isEmpty() || txtContrasenia.getText().isEmpty())
+			llenos = false;
+		return llenos;
+	}
+
+	private void crearEventos() {
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				usuario = new Usuario();
+				llenarCamposConEntidad();
+			}
+		});
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    if (!isCamposLlenos()){
+			    	JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
+							JOptionPane.WARNING_MESSAGE);
+			    	return;
+			    }
+			   
+			  //TipoUsuarioEnum tipoUsuario = (TipoUsuarioEnum) cmbTipoUsuario.getSelectedItem(); 
+			    if (usuario != null && usuario.getId() != null) {
+					actualizarUsuario();
+				} else {
+					guardarNuevoUsuario();
+				}
+			    
+			}
+			
+		});
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				usuario = new Usuario();
+				dispose();
+			}
+		});
+	}
+
+	
 	private void crearControles() {		
 		setBounds(100, 100, 666, 340);
 
@@ -124,69 +247,5 @@ public class UsuarioCrudFrm extends JDialog {
 		cmbTipoUsuario = new JComboBox<TipoUsuarioEnum>();
 		cmbTipoUsuario.setBounds(106, 183, 210, 20);
 		panelCuerpo.add(cmbTipoUsuario);
-	}
-
-	private void crearEventos() {
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				limpiarCampos();
-			}
-		});
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			    if (!isCamposLlenos()){
-			    	JOptionPane.showMessageDialog(null, "Datos incompletos, no es posible guardar", "Atenciòn",
-							JOptionPane.WARNING_MESSAGE);
-			    	return;
-			    }
-			   
-			  TipoUsuarioEnum tipoUsuario = (TipoUsuarioEnum) cmbTipoUsuario.getSelectedItem(); 
-			  Usuario usuario = new Usuario(txtNombre.getText(), txtApellido.getText(), txtUsuario.getText(), txtContrasenia.getText(), tipoUsuario);
-			  UsuarioController usuarioController = new UsuarioController();
-			  String error = usuarioController.createUsuario(usuario);
-			  
-			  if(error == null){
-				  JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-					usuarioRetorno = usuario;
-					dispose();	
-				  limpiarCampos();
-			  }
-			  else{
-				  JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
-				  limpiarCampos();
-			  }  
-			}
-			
-		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				usuarioRetorno = null;
-				dispose();
-			}
-		});
-	}
-
-	public Usuario getUsuario() {
-		return usuarioRetorno;
-	}
-	
-	private void limpiarCampos() {
-		txtNombre.setText(" ");
-		txtApellido.setText("");
-		txtUsuario.setText(" ");
-		txtContrasenia.setText("");
-		txtNombre.requestFocus();
-		
-	}
-	
-	private boolean isCamposLlenos() {
-		boolean llenos = true;
-		if (txtNombre.getText().isEmpty() || txtApellido.getText().isEmpty() || txtUsuario.getText().isEmpty() || txtContrasenia.getText().isEmpty())
-			llenos = false;
-		return llenos;
 	}
 }
