@@ -105,5 +105,8 @@ public class DaoFactory {
 	public CajaDao getCajaDao() {
 		return new CajaDao();
 	}
+	public CompraRetencionDao getCompraRetencionDao() {
+		return new CompraRetencionDao();
+	}
 
 }

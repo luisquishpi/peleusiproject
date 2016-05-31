@@ -102,7 +102,8 @@ public class CompraCrudFrm extends JInternalFrame {
 	private JFormattedTextField txtDiasCredito;
 	private JButton btnBuscarProveedor;
 	private ProveedorListModalFrm proveedorListModalFrm = new ProveedorListModalFrm();
-	private ProductoListModalFrm productoListModalFrm = new ProductoListModalFrm();
+	private ProductoListCostoModalFrm productoListModalFrm = new ProductoListCostoModalFrm();
+	private CompraRetencionFrm compraRetencionFrm= new CompraRetencionFrm(); 
 	private Proveedor proveedor;
 	private JDateChooser dtcFechaAutorizacion;
 	private Sucursal sucursal;
@@ -115,6 +116,8 @@ public class CompraCrudFrm extends JInternalFrame {
 	Double sumstock;
 	Boolean agregarFila = true;
 	int filaNuevoStock;
+	Producto producto= new Producto();
+	private JButton btnIngresarRetencion;
 
 	public CompraCrudFrm() {
 
@@ -150,18 +153,19 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtDiasCredito.setText("0");
 		txtCodigoProducto.requestFocus();
 		sumstock = 1.00;
+		crearTabla();
 
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Código", "Nombre", "Cantidad", "Precio Bruto", "% Desc.", "Descuento",
+		Object[] cabecera = { "Id", "Código", "Nombre", "Cantidad", "Costo", "% Desc.", "Descuento",
 				"Precio Neto", "Subtotal", "% Iva", "Valor Iva", "Stock", "% Ice", "Valor Ice", "Total", "IdProducto" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 4 || columnIndex == 6
+				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 ||  columnIndex == 6
 						|| columnIndex == 7 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10
 						|| columnIndex == 11 || columnIndex == 12 || columnIndex == 13 || columnIndex == 14) {
 					return false;
@@ -233,6 +237,32 @@ public class CompraCrudFrm extends JInternalFrame {
 		} catch (Exception e) {
 		}
 	}
+	public void modificarCosto() {
+		try {
+			Integer fila = tblProductos.getSelectedRow();
+			if (tblProductos.getSelectedRow() != -1 && tblProductos.getSelectedColumn() == 4) {
+				cantidadFila = Double.parseDouble(tblProductos.getValueAt(fila, 3).toString());
+				precioBrutoFila = Double.parseDouble(tblProductos.getValueAt(fila, 4).toString());
+				valorDescuentoFila = Double.parseDouble(tblProductos.getValueAt(fila, 6).toString());
+				precioNetoFila = precioBrutoFila - valorDescuentoFila;
+				subtotalFila = precioNetoFila * cantidadFila;
+				tblProductos.setValueAt(precioNetoFila, fila, 7);
+				tblProductos.setValueAt(subtotalFila, fila, 8);
+				valorIvaFila = subtotalFila * (Double.parseDouble(tblProductos.getValueAt(fila, 9).toString()) / 100);
+				valorIceFila = subtotalFila * (Double.parseDouble(tblProductos.getValueAt(fila, 12).toString()) / 100);
+				tblProductos.setValueAt(valorIvaFila, fila, 10);
+				tblProductos.setValueAt(valorIvaFila, fila, 13);
+				Double totalIva = valorIvaFila + subtotalFila + valorIceFila;
+				tblProductos.setValueAt(totalIva, fila, 14);
+				calcularTotales();
+
+			}
+			System.out.println("Fila " + cantidadFila);
+
+		} catch (Exception e) {
+		}
+	}
+
 
 	public void modificarDescuento() {
 
@@ -263,76 +293,35 @@ public class CompraCrudFrm extends JInternalFrame {
 		}
 	}
 
-	private void agregarProductosAFila() {
-		try {
+	private void agregarProductosAFila(Producto producto) {
+		try {		
 
-			agregarFila = true;
-			Producto producto = new Producto();
-			ProductoController productoController = new ProductoController();
-			producto = productoController.getProductoCodigo(txtCodigoProducto.getText());
-			
-			System.out.println("Numero de Productos: " + tblProductos.getRowCount());
-			
-			if (tblProductos.getRowCount() != 0) {
-
-				for (int filaDetalle = 0; filaDetalle < modelo.getRowCount(); filaDetalle++) {
-					
-					String codigo= modelo.getValueAt(filaDetalle, 1).toString();
-					System.out.println("Codigo Producto base datos: " + codigo);
-					System.out.println("Codigo Producto datos: " + txtCodigoProducto.getText());
-
-					if (txtCodigoProducto.getText().equals(modelo.getValueAt(filaDetalle, 1).toString())) {
-
-						sumstock = sumstock + 1;
-						System.out.println("sumstock: " + sumstock);
-						agregarFila = false;	
-						filaNuevoStock= filaDetalle;
-					}
-					else
-					{
-						sumstock=Double.parseDouble(modelo.getValueAt(filaDetalle, 3).toString());						
-					}
-				}
-				
-			}
-			
-			System.out.println("Estadooooooooo: " + agregarFila);
-			if (agregarFila == true) {
-				
-				filaDatos[0] = "1";
-				filaDatos[1] = producto.getCodigo();
-				filaDatos[2] = producto.getNombre();
-				filaDatos[3] = sumstock ;
-				filaDatos[4] = producto.getCosto();
-				precioBrutoFila = Double.parseDouble(filaDatos[4].toString());
-				filaDatos[5] = "0";
-				filaDatos[6] = precioBrutoFila * (Double.parseDouble(filaDatos[5].toString()) / 100);
-				valorDescuentoFila = Double.parseDouble(filaDatos[6].toString());
-				precioNetoFila = precioBrutoFila - valorDescuentoFila;
-				subtotalFila = precioNetoFila * Double.parseDouble(filaDatos[3].toString());
-				filaDatos[7] = precioNetoFila;
-				filaDatos[8] = subtotalFila;
-				filaDatos[9] = cargarPorcentajeIvaProducto(producto.getTieneIva());
-				valorIvaFila = subtotalFila * (Double.parseDouble(filaDatos[9].toString()) / 100);
-				filaDatos[10] = valorIvaFila;
-				filaDatos[11] = 0;
-				filaDatos[12] = 0;
-				valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
-				filaDatos[13] = valorIceFila;
-				filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
-				filaDatos[15] = producto;
-				modelo.addRow(filaDatos);
-				tblProductos.setModel(modelo);
-				calcularTotales();
-			}
-			else
-			{
-				System.out.println("Actualizando la tabla de productosNuevo stock: " + sumstock);
-				modelo.setValueAt(sumstock.toString(),filaNuevoStock, 3);				
-					
-				
-			}
-			
+			sumstock = 1.0;
+			filaDatos[0] = "1";
+			filaDatos[1] = producto.getCodigo();
+			filaDatos[2] = producto.getNombre();
+			filaDatos[3] = sumstock;
+			filaDatos[4] = producto.getCosto();
+			precioBrutoFila = Double.parseDouble(filaDatos[4].toString());
+			filaDatos[5] = "0";
+			filaDatos[6] = precioBrutoFila * (Double.parseDouble(filaDatos[5].toString()) / 100);
+			valorDescuentoFila = Double.parseDouble(filaDatos[6].toString());
+			precioNetoFila = precioBrutoFila - valorDescuentoFila;
+			subtotalFila = precioNetoFila * Double.parseDouble(filaDatos[3].toString());
+			filaDatos[7] = precioNetoFila;
+			filaDatos[8] = subtotalFila;
+			filaDatos[9] = cargarPorcentajeIvaProducto(producto.getTieneIva());
+			valorIvaFila = subtotalFila * (Double.parseDouble(filaDatos[9].toString()) / 100);
+			filaDatos[10] = valorIvaFila;
+			filaDatos[11] = 0;
+			filaDatos[12] = 0;
+			valorIceFila = subtotalFila * (Double.parseDouble(filaDatos[12].toString()) / 100);
+			filaDatos[13] = valorIceFila;
+			filaDatos[14] = valorIvaFila + subtotalFila + valorIceFila;
+			filaDatos[15] = producto;
+			modelo.addRow(filaDatos);
+			tblProductos.setModel(modelo);
+			calcularTotales();
 
 		} catch (Exception e) {
 		}
@@ -448,7 +437,15 @@ public class CompraCrudFrm extends JInternalFrame {
 			productoListModalFrm.setModal(true);
 			productoListModalFrm.setVisible(true);
 		}
-
+		
+		producto= productoListModalFrm.getProducto();
+		if(producto!=null)
+		{
+			
+			agregarProductosAFila(producto);
+			
+		}
+		
 	}
 
 	private void llamarVentanaProveedor() {
@@ -530,7 +527,11 @@ public class CompraCrudFrm extends JInternalFrame {
 			public void keyTyped(KeyEvent arg0) {
 				char cTeclaPrecionada = arg0.getKeyChar();
 				if (cTeclaPrecionada == KeyEvent.VK_ENTER) {
-					agregarProductosAFila();
+					
+					Producto producto = new Producto();
+					ProductoController productoController = new ProductoController();
+					producto = productoController.getProductoCodigo(txtCodigoProducto.getText());
+					agregarProductosAFila(producto);
 				}
 			}
 		});
@@ -595,6 +596,27 @@ public class CompraCrudFrm extends JInternalFrame {
 
 				}
 
+			}
+		});
+		
+		
+		btnIngresarRetencion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if (!compraRetencionFrm.isVisible()) {
+					compraRetencionFrm.setModal(true);
+					compraRetencionFrm.setVisible(true);
+				}
+				
+				//producto= productoListModalFrm.getProducto();
+				//if(producto!=null)
+				//{
+					
+					//agregarProductosAFila(producto);
+					
+				//}
+				
+				
 			}
 		});
 	}
@@ -917,12 +939,22 @@ public class CompraCrudFrm extends JInternalFrame {
 		txtTotal.setFormatterFactory(new Formatos().getDecimalFormat());
 
 		cmbUsuario = new JComboBox<Usuario>();
-		cmbUsuario.setBounds(63, 429, 137, 20);
+		cmbUsuario.setBounds(10, 429, 137, 20);
 		panel_1.add(cmbUsuario);
 
 		cmbSucursal = new JComboBox<Sucursal>();
-		cmbSucursal.setBounds(238, 429, 137, 20);
+		cmbSucursal.setBounds(10, 449, 137, 20);
 		panel_1.add(cmbSucursal);
+		
+		btnIngresarRetencion = new JButton("Ingresar Retención");		
+		btnIngresarRetencion.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/script_edit.png")));
+		btnIngresarRetencion.setBounds(579, 418, 170, 41);
+		panel_1.add(btnIngresarRetencion);
+		
+		JButton btnIngresarPago = new JButton("Ingresar Pago");
+		btnIngresarPago.setIcon(new ImageIcon(CompraCrudFrm.class.getResource("/ec/peleusi/utils/images/money_add.png")));
+		btnIngresarPago.setBounds(766, 418, 170, 41);
+		panel_1.add(btnIngresarPago);
 
 		CellEditorListener changeNotification = new CellEditorListener() {
 			public void editingStopped(ChangeEvent e) {
@@ -932,7 +964,12 @@ public class CompraCrudFrm extends JInternalFrame {
 					if (tblProductos.getSelectedColumn() == 5) {
 						modificarDescuento();
 					}
+					
 				}
+				if (tblProductos.getSelectedColumn() == 4) {
+					modificarCosto();
+				}
+				
 			}
 
 			public void editingCanceled(ChangeEvent arg0) {

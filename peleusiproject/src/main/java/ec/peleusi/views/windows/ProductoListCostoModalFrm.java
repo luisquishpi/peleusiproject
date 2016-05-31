@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.TipoPrecioController;
+import ec.peleusi.models.entities.Cliente;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.TipoPrecio;
 
@@ -33,6 +34,9 @@ public class ProductoListCostoModalFrm extends JDialog {
 	private JTable tblProductos;
 	private JScrollPane scrollPane;
 	private JComboBox<TipoPrecio> cmbTipoPrecio;
+	private JButton btnAceptar;
+	Producto producto= new Producto();
+	
 
 	public static void main(String[] args) {
 		try {
@@ -46,6 +50,7 @@ public class ProductoListCostoModalFrm extends JDialog {
 
 	public ProductoListCostoModalFrm() {
 		crearControles();
+		crearEventos();
 		cargarCompoTipoPrecio();
 		crearTabla();
 		cargarTabla();
@@ -57,6 +62,9 @@ public class ProductoListCostoModalFrm extends JDialog {
 		List<TipoPrecio> listaTipoPrecio;
 		listaTipoPrecio = tipoPrecioController.tipoPrecioList();
 		cmbTipoPrecio.setModel(new DefaultComboBoxModel(listaTipoPrecio.toArray()));
+	}
+	public Producto getProducto() {
+		return producto;
 	}
 
 	private void crearTabla() {
@@ -120,6 +128,33 @@ public class ProductoListCostoModalFrm extends JDialog {
 		}
 	}
 
+	private void crearEventos()
+	{
+		btnAceptar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int fila = tblProductos.getSelectedRow();
+
+				System.out.println(">>>> " + fila + "<<<<<");
+				if (fila != -1) {
+					producto = new Producto();
+					producto.setId(Integer.parseInt(modelo.getValueAt(tblProductos.getSelectedRow(), 0).toString()));
+					producto.setCodigo(modelo.getValueAt(tblProductos.getSelectedRow(), 1).toString());
+					producto.setNombre(modelo.getValueAt(tblProductos.getSelectedRow(), 2).toString());
+					producto.setStock(Double.parseDouble(modelo.getValueAt(tblProductos.getSelectedRow(), 3).toString()));
+					producto.setCosto(Double.parseDouble(modelo.getValueAt(tblProductos.getSelectedRow(), 4).toString()));
+					producto.setTieneIva(Boolean.parseBoolean(modelo.getValueAt(tblProductos.getSelectedRow(), 6).toString()));
+					
+					
+					
+				}
+				dispose();
+				
+
+			}
+		});
+		
+	}
 	private void crearControles() {
 		setTitle("Lista de Productos");
 		setBounds(100, 100, 501, 375);
@@ -164,12 +199,8 @@ public class ProductoListCostoModalFrm extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton btnAceptar = new JButton("Aceptar");
-				btnAceptar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-
-					}
-				});
+				btnAceptar = new JButton("Aceptar");
+				
 				btnAceptar.setIcon(new ImageIcon(
 						ProductoListCostoModalFrm.class.getResource("/ec/peleusi/utils/images/Select.png")));
 				buttonPane.add(btnAceptar);
