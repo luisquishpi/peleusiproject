@@ -54,7 +54,6 @@ public class TipoPrecioListFrm extends JInternalFrame {
 	}
 
 	private void crearTabla() {
-		//Object[] cabecera = { "Id", "Nombre", "Porcentaje" };
 		TipoPrecioController tipoPrecioController = new TipoPrecioController();
 		List<TipoPrecio> listaTipoPrecio = tipoPrecioController.getTipoPrecioList(txtBuscar.getText());
 
@@ -63,7 +62,7 @@ public class TipoPrecioListFrm extends JInternalFrame {
 
 		jPanelWithTable = new JPanelWithTable<TipoPrecio>(txtBuscar);
 		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre", "porcentaje" });
-		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 300,190 });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 400,198 });
 		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
 		jPanelWithTable.setTotalItems(totalItems);
 		String[] cabecera = new String[] { "ID", "NOMBRE", "PORCENTAJE" };	
