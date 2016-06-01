@@ -165,7 +165,7 @@ public class UnidadMedidaCrudFrm extends JDialog {
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
 		panelCuerpo.setLayout(null);
 
-		lblUnidadDeMedida = new JLabel("Unidad de Medida");
+		lblUnidadDeMedida = new JLabel("Unidad de Medida*");
 		lblUnidadDeMedida.setBounds(43, 24, 101, 14);
 		panelCuerpo.add(lblUnidadDeMedida);
 
@@ -175,7 +175,7 @@ public class UnidadMedidaCrudFrm extends JDialog {
 		panelCuerpo.add(txtNombre);
 		txtNombre.setColumns(10);
 
-		JLabel lblAbreviatura = new JLabel("Abreviatura ");
+		JLabel lblAbreviatura = new JLabel("Abreviatura *");
 		lblAbreviatura.setBounds(43, 66, 85, 14);
 		panelCuerpo.add(lblAbreviatura);
 
