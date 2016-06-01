@@ -9,17 +9,20 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TipoIdentificacionController;
 import ec.peleusi.models.entities.TipoIdentificacion;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TipoIdentificacionListFrm extends JInternalFrame {
 
@@ -28,113 +31,84 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblTipoIdentificacion;
+	private JTextFieldPH txtBuscar;
 	private TipoIdentificacionCrudFrm tipoIdentificacionCrudFrm = new TipoIdentificacionCrudFrm();
 	private JButton btnBuscar;
 	private TipoIdentificacion tipoIdentificacion;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TipoIdentificacion> jPanelWithTable;
 
 	public TipoIdentificacionListFrm() {
-		setTitle("Lista del Tipo de Identificaciòn");
+		setTitle("Listado de los Tipos de Identificación");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Còdigo", "Nombre", "Valida" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTipoIdentificacion = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return String.class;
-				case 3:
-					return Boolean.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTipoIdentificacion.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTipoIdentificacion.setPreferredScrollableViewportSize(tblTipoIdentificacion.getPreferredSize());
-		tblTipoIdentificacion.getTableHeader().setReorderingAllowed(true);
-		tblTipoIdentificacion.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTipoIdentificacion.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTipoIdentificacion.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTipoIdentificacion.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tblTipoIdentificacion.getColumnModel().getColumn(2).setPreferredWidth(243);
-		tblTipoIdentificacion.getColumnModel().getColumn(3).setPreferredWidth(100);
-		scrollPane.setViewportView(tblTipoIdentificacion);
-	}
-
-	private Object[] agregarDatosAFila(TipoIdentificacion tipoIdentificacion) {
-		filaDatos[0] = tipoIdentificacion.getId();
-		filaDatos[1] = tipoIdentificacion.getCodigo();
-		filaDatos[2] = tipoIdentificacion.getNombre();
-		filaDatos[3] = tipoIdentificacion.getValida();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-		List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
-		for (TipoIdentificacion tipoIdentificacion : listaTipoIdentificacion) {
-			modelo.addRow(agregarDatosAFila(tipoIdentificacion));
-		}
+		List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController
+				.getTipoIdentificacionList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaTipoIdentificacion != null)
+			totalItems = listaTipoIdentificacion.size();
+
+		jPanelWithTable = new JPanelWithTable<TipoIdentificacion>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "codigo", "nombre", "valida" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 150, 302, 120 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTipoColumnas(new Class[] { Integer.class, String.class, String.class, Boolean.class });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "CODIGO", "NOMBRE", "VALIDA" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTipoIdentificacion), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
 	}
 
 	private void capturaYAgregaTipoIdentificacionATabla() {
-		if (tipoIdentificacion == tipoIdentificacionCrudFrm.getTipoIdentificacion() && tipoIdentificacion.getId() != null) {
-			modelo.setValueAt(tipoIdentificacion.getCodigo(), tblTipoIdentificacion.getSelectedRow(), 1);
-			modelo.setValueAt(tipoIdentificacion.getNombre(), tblTipoIdentificacion.getSelectedRow(), 2);
-			modelo.setValueAt(tipoIdentificacion.getValida(), tblTipoIdentificacion.getSelectedRow(), 3);
-		} else {		
-		if (tipoIdentificacionCrudFrm.getTipoIdentificacion() != null && tipoIdentificacionCrudFrm.getTipoIdentificacion().getId() != null) {
-			modelo.addRow(agregarDatosAFila(tipoIdentificacionCrudFrm.getTipoIdentificacion()));
-			tblTipoIdentificacion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tipoIdentificacion == tipoIdentificacionCrudFrm.getTipoIdentificacion()
+				&& tipoIdentificacion.getId() != null) {
+			crearTabla();
+		} else {
+			if (tipoIdentificacionCrudFrm.getTipoIdentificacion() != null
+					&& tipoIdentificacionCrudFrm.getTipoIdentificacion().getId() != null) {
+				totalItems++;
+				txtBuscar.setText(tipoIdentificacionCrudFrm.getTipoIdentificacion().getNombre());
+				crearTabla();
 			}
 		}
 	}
-	
+
 	private boolean llenarEntidadParaEnviarATipoIdentificacionCrudFrm() {
 		tipoIdentificacion = new TipoIdentificacion();
-		if (tblTipoIdentificacion.getSelectedRow() != -1) {
-			tipoIdentificacion.setId(Integer.parseInt(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 0).toString()));
-			tipoIdentificacion.setCodigo(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 1).toString());
-			tipoIdentificacion.setNombre(modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 2).toString());
-			tipoIdentificacion.setValida((Boolean)modelo.getValueAt(tblTipoIdentificacion.getSelectedRow(), 3));		
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tipoIdentificacion.setId(Integer.parseInt(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tipoIdentificacion.setCodigo(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			tipoIdentificacion.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			tipoIdentificacion.setValida(
+					(Boolean) jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3));
 			tipoIdentificacionCrudFrm.setTipoIdentificacion(tipoIdentificacion);
 			return true;
 		}
 		return false;
 	}
-	
-	private void eliminarTipoIdentificacion(){		
-		if (llenarEntidadParaEnviarATipoIdentificacionCrudFrm()){
+
+	private void eliminarTipoIdentificacion() {
+		if (llenarEntidadParaEnviarATipoIdentificacionCrudFrm()) {
 			int confirmacion = JOptionPane.showConfirmDialog(null,
 					"Está seguro que desea eliminar:\n\"" + tipoIdentificacion.getNombre() + "\"?", "Confirmación",
 					JOptionPane.YES_NO_OPTION);
@@ -142,12 +116,13 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
 				String error = tipoIdentificacionController.deleteTipoIdentificacion(tipoIdentificacion);
 				if (error == null) {
-					modelo.removeRow(tblTipoIdentificacion.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-			}			
-		}		
+			}
+		}
 	}
 
 	private void crearEventos() {
@@ -161,7 +136,7 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				tipoIdentificacion = new TipoIdentificacion();
-				tipoIdentificacionCrudFrm.setTipoIdentificacion(tipoIdentificacion);						
+				tipoIdentificacionCrudFrm.setTipoIdentificacion(tipoIdentificacion);
 				if (!tipoIdentificacionCrudFrm.isVisible()) {
 					tipoIdentificacionCrudFrm.setModal(true);
 					tipoIdentificacionCrudFrm.setVisible(true);
@@ -191,12 +166,18 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-				List<TipoIdentificacion> listaTipoIdentificacion = tipoIdentificacionController.getTipoIdentificacionList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TipoIdentificacion tipoIdentificacion : listaTipoIdentificacion) {
-					modelo.addRow(agregarDatosAFila(tipoIdentificacion));
+				crearTabla();
+			}
+		});
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -205,7 +186,7 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 611, 379);
+		setBounds(100, 100, 585, 387);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -216,45 +197,48 @@ public class TipoIdentificacionListFrm extends JInternalFrame {
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(
 				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(10, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(
 				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(150, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(
 				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(290, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(
 				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(430, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
 
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba código o nombre");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
-
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(
 				new ImageIcon(TipoIdentificacionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 9, 119, 41);
-		panelCuerpo.add(btnBuscar);
+		pnlBuscar.add(btnBuscar);
+
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
 	}
 }

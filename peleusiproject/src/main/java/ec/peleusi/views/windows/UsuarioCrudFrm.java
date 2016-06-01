@@ -20,22 +20,16 @@ import ec.peleusi.utils.TipoUsuarioEnum;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
-
-public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
+public class UsuarioCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JTextField txtNombre;
-	private JLabel lblApellidos;
 	private JTextField txtApellido;
-	private JLabel lblUsuario;
 	private JTextField txtUsuario;
-	private JLabel lblContrasenia;
 	private JTextField txtContrasenia;
-	private JLabel lblTipoUsuario;
 	private JComboBox <TipoUsuarioEnum> cmbTipoUsuario;
 	private Usuario usuario;
 
@@ -57,7 +51,6 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 		cmbTipoUsuario.setModel(new DefaultComboBoxModel<TipoUsuarioEnum>(TipoUsuarioEnum.values()));
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void llenarCamposConEntidad() {
 		if (usuario != null && usuario.getId() != null) {
 			this.setTitle("Actualizando Usuario");
@@ -67,7 +60,7 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 			txtApellido.setText(usuario.getApellidos());
 			txtUsuario.setText(usuario.getUsuario());
 			txtContrasenia.setText(usuario.getContrasenia());
-			cmbTipoUsuario.setSelectedItem((TipoUsuario)usuario.getTipoUsuario());
+			cmbTipoUsuario.setSelectedItem((TipoUsuarioEnum)usuario.getTipoUsuario());
 		} else {
 			this.setTitle("Creando Unidad de Medida");
 			btnGuardar.setText("Guardar");
@@ -148,7 +141,6 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 			    	return;
 			    }
 			   
-			  //TipoUsuarioEnum tipoUsuario = (TipoUsuarioEnum) cmbTipoUsuario.getSelectedItem(); 
 			    if (usuario != null && usuario.getId() != null) {
 					actualizarUsuario();
 				} else {
@@ -157,10 +149,6 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 			    
 			}
 			
-		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -172,7 +160,7 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 
 	
 	private void crearControles() {		
-		setBounds(100, 100, 666, 340);
+		setBounds(100, 100, 510, 321);
 
 		JPanel panelCabecera = new JPanel();
 		panelCabecera.setPreferredSize(new Dimension(200, 70));
@@ -182,22 +170,17 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(UsuarioCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(20, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.setIcon(new ImageIcon(UsuarioCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+		btnGuardar.setBounds(180, 14, 130, 39);
 		panelCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(UsuarioCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(UsuarioCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(340, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -205,24 +188,24 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 		panelCuerpo.setLayout(null);
 		
 		JLabel lblNombres = new JLabel("Nombres");
-		lblNombres.setBounds(10, 11, 65, 14);
+		lblNombres.setBounds(10, 15, 65, 14);
 		panelCuerpo.add(lblNombres);
 		
 		txtNombre = new JTextField();
 		txtNombre.setColumns(10);
-		txtNombre.setBounds(106, 8, 210, 20);
+		txtNombre.setBounds(106, 15, 210, 20);
 		panelCuerpo.add(txtNombre);
 		
-		lblApellidos = new JLabel("Apellidos");
-		lblApellidos.setBounds(10, 56, 65, 14);
+		JLabel lblApellidos = new JLabel("Apellidos");
+		lblApellidos.setBounds(10, 55, 65, 14);
 		panelCuerpo.add(lblApellidos);
 		
 		txtApellido = new JTextField();
 		txtApellido.setColumns(10);
-		txtApellido.setBounds(106, 53, 210, 20);
+		txtApellido.setBounds(106, 55, 210, 20);
 		panelCuerpo.add(txtApellido);
 		
-		lblUsuario = new JLabel("Usuario");
+		JLabel lblUsuario = new JLabel("Usuario");
 		lblUsuario.setBounds(10, 95, 65, 14);
 		panelCuerpo.add(lblUsuario);
 		
@@ -231,21 +214,21 @@ public class UsuarioCrudFrm<TipoUsuario> extends JDialog {
 		txtUsuario.setBounds(106, 92, 210, 20);
 		panelCuerpo.add(txtUsuario);
 		
-		lblContrasenia = new JLabel("Contraseña");
-		lblContrasenia.setBounds(10, 139, 86, 14);
+		JLabel lblContrasenia = new JLabel("Contraseña");
+		lblContrasenia.setBounds(10, 135, 86, 14);
 		panelCuerpo.add(lblContrasenia);
 		
 		txtContrasenia = new JTextField();
 		txtContrasenia.setColumns(10);
-		txtContrasenia.setBounds(106, 136, 210, 20);
+		txtContrasenia.setBounds(106, 135, 210, 20);
 		panelCuerpo.add(txtContrasenia);
 		
-		lblTipoUsuario = new JLabel("Tipo Usuario");
-		lblTipoUsuario.setBounds(10, 186, 65, 14);
+		JLabel lblTipoUsuario = new JLabel("Tipo Usuario");
+		lblTipoUsuario.setBounds(10, 175, 86, 14);
 		panelCuerpo.add(lblTipoUsuario);
 		
 		cmbTipoUsuario = new JComboBox<TipoUsuarioEnum>();
-		cmbTipoUsuario.setBounds(106, 183, 210, 20);
+		cmbTipoUsuario.setBounds(106, 175, 210, 20);
 		panelCuerpo.add(cmbTipoUsuario);
 	}
 }
