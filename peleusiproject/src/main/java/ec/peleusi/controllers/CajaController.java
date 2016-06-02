@@ -17,7 +17,19 @@ public class CajaController {
 		return cajaDao.create(caja);
 	}
 
+	public String updateCaja(Caja caja) {
+		return cajaDao.update(caja);
+	}
+
 	public List<Caja> cajaList() {
 		return cajaDao.findAll();
 	}
+
+	public List<Caja> getCajaList(String parametro) {
+		return cajaDao.CajaList(parametro);
+	}	
+		
+	public String deleteCaja(Caja caja) {
+		return cajaDao.deleteById(caja.getId());
+	}	
 }
