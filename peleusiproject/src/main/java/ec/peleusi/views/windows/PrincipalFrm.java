@@ -27,7 +27,7 @@ public class PrincipalFrm extends JFrame {
 	private TarifaIceListFrm tarifaIceListFrm;
 	private TarifaIvaListFrm tarifaIvaListFrm;
 	private TipoCalificacionClienteListFrm tipoCalificacionClienteListFrm;
-	private TipoGastoDeducibleCrudFrm tipoGastoDeducibleCrudFrm;
+	private TipoGastoDeducibleListFrm tipoGastoDeducibleListFrm;
 	private TipoIdentificacionListFrm tipoIdentificacionListFrm;
 	private TipoPagoListFrm tipoPagoListFrm;
 	private TipoPrecioListFrm tipoPrecioListFrm;
@@ -163,10 +163,10 @@ public class PrincipalFrm extends JFrame {
 		JMenuItem mntmGastosDeducibles = new JMenuItem("Gastos Deducibles");
 		mntmGastosDeducibles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tipoGastoDeducibleCrudFrm == null || tipoGastoDeducibleCrudFrm.isClosed()) {
-					tipoGastoDeducibleCrudFrm = new TipoGastoDeducibleCrudFrm();
-					dpContenedor.add(tipoGastoDeducibleCrudFrm);
-					tipoGastoDeducibleCrudFrm.show();
+				if (tipoGastoDeducibleListFrm == null || tipoGastoDeducibleListFrm.isClosed()) {
+					tipoGastoDeducibleListFrm = new TipoGastoDeducibleListFrm();
+					dpContenedor.add(tipoGastoDeducibleListFrm);
+					tipoGastoDeducibleListFrm.show();
 				}
 			}
 		});
