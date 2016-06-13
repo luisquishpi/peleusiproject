@@ -18,20 +18,24 @@ public class CiudadListFxController extends AnchorPane {
 	@FXML
 	private TextField txtBuscar;
 	@FXML
-	private TableView<Ciudad> tblCiudades = new TableView<Ciudad>();
-
-	@SuppressWarnings("unchecked")
+	private TableView<Ciudad> tblLista = new TableView<Ciudad>();
+	@FXML
+	TableColumn<Ciudad, Integer> idCol;
+	@FXML
+	TableColumn<Ciudad, String> nombreCol;
+	
 	@FXML
 	private void initialize() {
 		txtNombre.setText("Hola");
 		
 		//ObservableList<TableColumn<Ciudad, ?>> observableList = tblCiudades.getColumns();
 		//observableList.remove(0,2);
+		//tblCiudades.getColumns().clear();
 		
-		tblCiudades.setEditable(true);
-		TableColumn<Ciudad, Integer> idCol = new TableColumn<Ciudad, Integer>("Id");
-		TableColumn<Ciudad, String> nombreCol = new TableColumn<Ciudad, String>("Nombre");
-		tblCiudades.getColumns().addAll(idCol, nombreCol);
+		//tblCiudades.setEditable(true);
+		//TableColumn<Ciudad, Integer> idCol = new TableColumn<Ciudad, Integer>("Id");
+		//TableColumn<Ciudad, String> nombreCol = new TableColumn<Ciudad, String>("Nombre");
+		//tblCiudades.getColumns().addAll(idCol, nombreCol);
 		
 		CiudadController ciudadController = new CiudadController();
 		List<Ciudad> listaCiudad = ciudadController.ciudadList(txtBuscar.getText());
@@ -41,7 +45,8 @@ public class CiudadListFxController extends AnchorPane {
 		idCol.setPrefWidth(0);
 		idCol.setCellValueFactory(new PropertyValueFactory<Ciudad, Integer>("id"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<Ciudad, String>("nombre"));
-		tblCiudades.setItems(FXCollections.observableList(listaCiudad));
+		
+		tblLista.setItems(FXCollections.observableList(listaCiudad));
 	}
 
 	public CiudadListFxController() {

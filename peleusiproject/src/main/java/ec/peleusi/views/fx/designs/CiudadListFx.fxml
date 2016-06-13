@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -52,7 +53,11 @@
                         </GridPane>
                      </top>
                      <center>
-                        <TableView id="tblLista" fx:id="tblCiudades" BorderPane.alignment="CENTER" />
+                        <TableView fx:id="tblLista" editable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
+                              <TableColumn fx:id="nombreCol" prefWidth="336.0" text="Nombre" />
+                           </columns></TableView>
                      </center>
                   </BorderPane>
                </children>
