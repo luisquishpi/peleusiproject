@@ -10,6 +10,7 @@ import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.TipoRetencionDao;
 import ec.peleusi.models.entities.TipoRetencion;
 import ec.peleusi.utils.HibernateUtil;
+import ec.peleusi.utils.TipoRetencionEnum;
 
 public class TipoRetencionController {
 
@@ -40,6 +41,9 @@ public class TipoRetencionController {
 	}
 	public String delete(Integer id){
 		return tipoRetencionDao.deleteById(id);
+	}
+	public List<TipoRetencion> tipoRetencionTipoList(TipoRetencionEnum tipo) {
+		return  tipoRetencionDao.tipoRetencionTipoList(tipo);
 	}
 	public TipoRetencion getTipoRetencion(String codigo){
 		Session session = HibernateUtil.getSessionFactory().openSession();
