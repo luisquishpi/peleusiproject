@@ -9,19 +9,21 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.UsuarioController;
 import ec.peleusi.models.entities.Usuario;
 import ec.peleusi.utils.TipoUsuarioEnum;
-
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class UsuarioListFrm extends JInternalFrame {
 
@@ -30,122 +32,72 @@ public class UsuarioListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblUsuario;
-	@SuppressWarnings("rawtypes")
+	private JTextFieldPH txtBuscar;
 	private UsuarioCrudFrm usuarioCrudFrm = new UsuarioCrudFrm();
 	private Usuario usuario;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<Usuario> jPanelWithTable;	
+
 
 	public UsuarioListFrm() {
-		setTitle("Lista de Usuarios");
+		setTitle("Listado de Usuarios");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});		
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombres", "Apellidos", "Usuario", "Contraseña", "TipoUsuario" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3 || columnIndex == 4
-						|| columnIndex == 5) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblUsuario = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return String.class;
-				case 3:
-					return String.class;
-				case 4:
-					return String.class;
-				case 5:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblUsuario.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblUsuario.setPreferredScrollableViewportSize(tblUsuario.getPreferredSize());
-		tblUsuario.getTableHeader().setReorderingAllowed(true);
-		tblUsuario.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblUsuario.getColumnModel().getColumn(0).setMinWidth(0);
-		tblUsuario.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblUsuario.getColumnModel().getColumn(1).setPreferredWidth(132);
-		tblUsuario.getColumnModel().getColumn(2).setPreferredWidth(132);
-		tblUsuario.getColumnModel().getColumn(3).setPreferredWidth(75);
-		tblUsuario.getColumnModel().getColumn(4).setMaxWidth(0);
-		tblUsuario.getColumnModel().getColumn(4).setMinWidth(0);
-		tblUsuario.getColumnModel().getColumn(4).setPreferredWidth(0);
-		tblUsuario.getColumnModel().getColumn(5).setPreferredWidth(104);
-		scrollPane.setViewportView(tblUsuario);
-
-	}
-
-	private Object[] agregarDatosAFila(Usuario usuario) {
-		filaDatos[0] = usuario.getId();
-		filaDatos[1] = usuario.getNombres();
-		filaDatos[2] = usuario.getApellidos();
-		filaDatos[3] = usuario.getUsuario();
-		filaDatos[4] = usuario.getContrasenia();
-		filaDatos[5] = usuario.getTipoUsuario();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		UsuarioController usuarioController = new UsuarioController();
-		List<Usuario> listaUsuario = usuarioController.usuarioList();
-		for (Usuario usuario : listaUsuario) {
-			modelo.addRow(agregarDatosAFila(usuario));
-		}
-	}
+		List<Usuario> listaUsuario = usuarioController.getUsuarioList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaUsuario != null)
+			totalItems = listaUsuario.size();	
+		
+		jPanelWithTable = new JPanelWithTable<Usuario>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombres", "apellidos", "usuario", "contrasenia", "tipoUsuario" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 150, 150, 100 ,90, 108 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "NOMBRES", "APELLIDOS", "USUARIO", "CONTRASEÑA", "TIPO USUARIO" };
+		
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaUsuario), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
+	}			
 
 	private void capturaYAgregaUsuarioATabla() {
 		if (usuario == usuarioCrudFrm.getUsuario() && usuario.getId() != null) {
-			modelo.setValueAt(usuario.getNombres(), tblUsuario.getSelectedRow(), 1);
-			modelo.setValueAt(usuario.getApellidos(), tblUsuario.getSelectedRow(), 2);
-			modelo.setValueAt(usuario.getUsuario(), tblUsuario.getSelectedRow(), 3);
-			modelo.setValueAt(usuario.getContrasenia(), tblUsuario.getSelectedRow(), 4);
-			modelo.setValueAt(usuario.getTipoUsuario(), tblUsuario.getSelectedRow(), 5);
+			txtBuscar.setText(usuario.getNombres());
+			crearTabla();
 		} else {
 			if (usuarioCrudFrm.getUsuario() != null && usuarioCrudFrm.getUsuario().getId() != null) {
-				modelo.addRow(agregarDatosAFila(usuarioCrudFrm.getUsuario()));
-				tblUsuario.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(usuarioCrudFrm.getUsuario().getNombres());
+				crearTabla();	
 			}
 		}
 	}
 	
 	private boolean llenarEntidadParaEnviarAUsuarioCrudFrm() {
 		usuario = new Usuario();
-		if (tblUsuario.getSelectedRow() != -1) {
-			usuario.setId(Integer.parseInt(modelo.getValueAt(tblUsuario.getSelectedRow(), 0).toString()));
-			usuario.setNombres(modelo.getValueAt(tblUsuario.getSelectedRow(), 1).toString());
-			usuario.setApellidos(modelo.getValueAt(tblUsuario.getSelectedRow(), 2).toString());
-			usuario.setUsuario(modelo.getValueAt(tblUsuario.getSelectedRow(), 3).toString());
-			usuario.setContrasenia(modelo.getValueAt(tblUsuario.getSelectedRow(), 4).toString());
-			usuario.setTipoUsuario((TipoUsuarioEnum)(modelo.getValueAt(tblUsuario.getSelectedRow(), 5)));
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			usuario.setId(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			usuario.setNombres(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			usuario.setApellidos(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			usuario.setUsuario(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString());
+			usuario.setContrasenia(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 4).toString());
+			usuario.setTipoUsuario((TipoUsuarioEnum)(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 5)));
 			usuarioCrudFrm.setUsuario(usuario);
 			return true;
 		}
@@ -161,7 +113,8 @@ public class UsuarioListFrm extends JInternalFrame {
 				UsuarioController usuarioController = new UsuarioController();
 				String error = usuarioController.deleteUsuario(usuario);
 				if (error == null) {
-					modelo.removeRow(tblUsuario.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -211,15 +164,22 @@ public class UsuarioListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UsuarioController usuarioController = new UsuarioController();
-				List<Usuario> listaUsuario = usuarioController.getUsuarioList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (Usuario usuario : listaUsuario) {
-					modelo.addRow(agregarDatosAFila(usuario));
-				}
+				crearTabla();
 			}
 		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
+				}
+			}
+		});				
 	}
 
 	private void crearControles() {
@@ -235,42 +195,45 @@ public class UsuarioListFrm extends JInternalFrame {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(UsuarioListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(UsuarioListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(UsuarioListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(UsuarioListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
-
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
+		
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+		
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba nombre o apellido o usuario");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
-
+		
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(UsuarioListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
-
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		btnBuscar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		pnlBuscar.add(btnBuscar);
+		
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));	
+		
 	}
-
 }

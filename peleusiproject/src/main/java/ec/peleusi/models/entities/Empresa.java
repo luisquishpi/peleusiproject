@@ -16,7 +16,7 @@ import ec.peleusi.models.entities.Ciudad;
 public class Empresa {
 
 	public Empresa(String nombre, String identificacion, String direccion, String telefono, String fax, String email,
-			String url, byte[] foto, String rutaFotoProducto, Ciudad ciudad) {
+			String url, byte[] foto, Ciudad ciudad) {
 		super();
 		this.id = null;
 		this.nombre = nombre;
@@ -28,7 +28,6 @@ public class Empresa {
 		this.url = url;
 		this.foto = foto;
 		this.ciudad = ciudad;
-		this.rutaFotoProducto = rutaFotoProducto;
 	}
 
 	public Empresa() {
@@ -63,9 +62,6 @@ public class Empresa {
 
 	@Column(name = "foto", nullable = true, length = 16777215)
 	private byte[] foto;
-
-	@Column(name = "rutaFotoProducto", nullable = true, length = 512)
-	private String rutaFotoProducto;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
 	private Ciudad ciudad;
@@ -148,14 +144,6 @@ public class Empresa {
 
 	public void setCiudad(Ciudad ciudad) {
 		this.ciudad = ciudad;
-	}
-
-	public String getRutaFotoProducto() {
-		return rutaFotoProducto;
-	}
-
-	public void setRutaFotoProducto(String rutaFotoProducto) {
-		this.rutaFotoProducto = rutaFotoProducto;
 	}
 
 	@Override

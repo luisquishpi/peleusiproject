@@ -44,7 +44,6 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	private JButton btnGuardar;
 	private JButton btnCancelar;
 	private Empresa empresa;
-	private JTextField txtRutaFotoProducto;
 	private File file = null;
 	private JButton btnEliminarFoto;
 
@@ -71,7 +70,6 @@ public class EmpresaCrudFrm extends JInternalFrame {
 			txtFax.setText(empresa.getFax());
 			txtEMail.setText(empresa.getEmail());
 			txtUrl.setText(empresa.getUrl());
-			txtRutaFotoProducto.setText(empresa.getRutaFotoProducto());
 			cmbCiudad.getModel().setSelectedItem(empresa.getCiudad());
 			if (empresa.getFoto() != null)
 				lblFoto.setIcon(getPhotoIcon(empresa.getFoto()));
@@ -163,7 +161,6 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		empresa.setFax(txtFax.getText());
 		empresa.setEmail(txtEMail.getText());
 		empresa.setUrl(txtUrl.getText());
-		empresa.setRutaFotoProducto(txtRutaFotoProducto.getText());
 		empresa.setCiudad(ciudad);
 		if (empresa.getId() == null)
 			empresa.setFoto(getPhotoBytes(String.valueOf(file)));
@@ -221,7 +218,7 @@ public class EmpresaCrudFrm extends JInternalFrame {
 	private void crearControles() {
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 100, 599, 400);
+		setBounds(100, 100, 599, 375);
 		JPanel pnlCabecera = new JPanel();
 		pnlCabecera.setLayout(null);
 		pnlCabecera.setPreferredSize(new Dimension(200, 70));
@@ -320,15 +317,6 @@ public class EmpresaCrudFrm extends JInternalFrame {
 		btnEliminarFoto.setIcon(new ImageIcon(EmpresaCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
 		btnEliminarFoto.setBounds(488, 200, 49, 44);
 		pnlCuerpo.add(btnEliminarFoto);
-
-		JLabel lblRutaFotos = new JLabel("Ruta fotos");
-		lblRutaFotos.setToolTipText("Ruta donde se va a guardar las fotos de los productos");
-		lblRutaFotos.setBounds(10, 276, 65, 14);
-		pnlCuerpo.add(lblRutaFotos);
-
-		txtRutaFotoProducto = new JTextField(10);
-		txtRutaFotoProducto.setBounds(79, 270, 304, 20);
-		pnlCuerpo.add(txtRutaFotoProducto);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));

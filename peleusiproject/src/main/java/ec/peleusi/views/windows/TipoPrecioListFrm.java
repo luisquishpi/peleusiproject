@@ -9,18 +9,20 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.models.entities.TipoPrecio;
-
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TipoPrecioListFrm extends JInternalFrame {
 
@@ -29,99 +31,66 @@ public class TipoPrecioListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblTipoPrecio;
 	private TipoPrecioCrudFrm tipoPrecioCrudFrm = new TipoPrecioCrudFrm();
 	private TipoPrecio tipoPrecio;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TipoPrecio> jPanelWithTable;
 
 	public TipoPrecioListFrm() {
-		setTitle("Lista de Tipo Precio");
+		setTitle("Listado de Tipo Precio");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});	
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre", "Porcentaje" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTipoPrecio = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return Double.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTipoPrecio.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTipoPrecio.setPreferredScrollableViewportSize(tblTipoPrecio.getPreferredSize());
-		tblTipoPrecio.getTableHeader().setReorderingAllowed(true);
-		tblTipoPrecio.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTipoPrecio.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTipoPrecio.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTipoPrecio.getColumnModel().getColumn(1).setPreferredWidth(250);
-		tblTipoPrecio.getColumnModel().getColumn(2).setPreferredWidth(193);
-		scrollPane.setViewportView(tblTipoPrecio);
-
-	}
-
-	private Object[] agregarDatosAFila(TipoPrecio tipoPrecio) {
-		filaDatos[0] = tipoPrecio.getId();
-		filaDatos[1] = tipoPrecio.getNombre();
-		filaDatos[2] = tipoPrecio.getPorcentaje();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		TipoPrecioController tipoPrecioController = new TipoPrecioController();
-		List<TipoPrecio> listaTipoPrecio = tipoPrecioController.tipoPrecioList();
-		for (TipoPrecio tipoPrecio : listaTipoPrecio) {
-			modelo.addRow(agregarDatosAFila(tipoPrecio));
-		}
-	}
+		List<TipoPrecio> listaTipoPrecio = tipoPrecioController.getTipoPrecioList(txtBuscar.getText());
 
+		if (totalItems == 0 && listaTipoPrecio != null)
+			totalItems = listaTipoPrecio.size();
+
+		jPanelWithTable = new JPanelWithTable<TipoPrecio>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre", "porcentaje" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 400,198 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "NOMBRE", "PORCENTAJE" };	
+		
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTipoPrecio), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();	
+	}
+	
 	private void capturaYAgregaTipoPrecioATabla() {
 		if (tipoPrecio == tipoPrecioCrudFrm.getTipoPrecio() && tipoPrecio.getId() != null) {
-			modelo.setValueAt(tipoPrecio.getNombre(), tblTipoPrecio.getSelectedRow(), 1);
-			modelo.setValueAt(tipoPrecio.getPorcentaje(), tblTipoPrecio.getSelectedRow(), 2);
+			crearTabla();
 		} else {
 			if (tipoPrecioCrudFrm.getTipoPrecio() != null && tipoPrecioCrudFrm.getTipoPrecio().getId() != null) {
-				modelo.addRow(agregarDatosAFila(tipoPrecioCrudFrm.getTipoPrecio()));
-				tblTipoPrecio.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(tipoPrecioCrudFrm.getTipoPrecio().getNombre());				
+				crearTabla();
 			}
 		}
 	}
 	private boolean llenarEntidadParaEnviarATipoPrecioCrudFrm() {
 		tipoPrecio= new TipoPrecio();
-		if (tblTipoPrecio.getSelectedRow() != -1) {
-			tipoPrecio.setId(Integer.parseInt(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 0).toString()));
-			tipoPrecio.setNombre(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 1).toString());
-			tipoPrecio.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTipoPrecio.getSelectedRow(), 2).toString()));
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tipoPrecio.setId(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tipoPrecio.setNombre(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			tipoPrecio.setPorcentaje(Double.parseDouble(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString()));
 			tipoPrecioCrudFrm.setTipoPrecio(tipoPrecio);
 			return true;
 		}
@@ -137,7 +106,8 @@ public class TipoPrecioListFrm extends JInternalFrame {
 				TipoPrecioController tipoPrecioController = new TipoPrecioController();
 				String error = tipoPrecioController.deleteTipoPrecio(tipoPrecio);
 				if (error == null) {
-					modelo.removeRow(tblTipoPrecio.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -185,12 +155,19 @@ public class TipoPrecioListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TipoPrecioController tipoPrecioController = new TipoPrecioController();
-				List<TipoPrecio> listaTipoPrecio = tipoPrecioController.getTipoPrecioList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TipoPrecio tipoPrecio : listaTipoPrecio) {
-					modelo.addRow(agregarDatosAFila(tipoPrecio));
+				crearTabla();
+			}
+		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -209,42 +186,45 @@ public class TipoPrecioListFrm extends JInternalFrame {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setToolTipText("");
 		btnCancelar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
-
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
+		
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+		
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba nombre o porcentaje");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
-
+		
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(TipoPrecioListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
-
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		btnBuscar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		pnlBuscar.add(btnBuscar);
+		
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));		
 	}
-
 }

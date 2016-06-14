@@ -18,8 +18,19 @@ public class TipoGastoDeducibleController {
 		return tipoGastoDeducibleDao.create(tipoGastoDeducible);
 	}
 
+	public String updateTipoGastoDeducible(TipoGastoDeducible tipoGastoDeducible) {
+		return tipoGastoDeducibleDao.update(tipoGastoDeducible);
+	}
+
 	public List<TipoGastoDeducible> tipoGastoDeducibleList() {
 		return tipoGastoDeducibleDao.findAll();
 	}
 
+	public List<TipoGastoDeducible> getTipoGastoDeducibleList(String parametro) {
+		return tipoGastoDeducibleDao.TipoGastoDeducibleList(parametro);
+	}	
+		
+	public String deleteTipoGastoDeducible(TipoGastoDeducible tipoGastoDeducible) {
+		return tipoGastoDeducibleDao.deleteById(tipoGastoDeducible.getId());
+	}	
 }

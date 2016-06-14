@@ -34,6 +34,7 @@ public class TipoIdentificacionCrudFrm extends JDialog {
 	int limitecaja = 15;
 
 	public TipoIdentificacionCrudFrm() {
+		setTitle("Tipo Identificación");
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {
@@ -47,14 +48,14 @@ public class TipoIdentificacionCrudFrm extends JDialog {
 
 	private void llenarCamposConEntidad() {
 		if (tipoIdentificacion != null && tipoIdentificacion.getId() != null) {
-			this.setTitle("Actualizar Tipo Identificaciòn");
+			this.setTitle("Actualizar Tipo Identificación");
 			btnGuardar.setText("Actualizar");
 			limpiarCampos();
 			txtCodigo.setText(tipoIdentificacion.getCodigo());
 			txtNombre.setText(tipoIdentificacion.getNombre());
 			chkValida.setSelected(tipoIdentificacion.getValida());
 		} else {
-			this.setTitle("Creando Tipo Identificaciòn");
+			this.setTitle("Creando Tipo Identificación");
 			btnGuardar.setText("Guardar");
 			limpiarCampos();
 		}

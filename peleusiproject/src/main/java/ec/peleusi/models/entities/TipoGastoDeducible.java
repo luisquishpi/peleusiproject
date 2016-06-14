@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "tipogastodeducible")
 public class TipoGastoDeducible {
 
-	TipoGastoDeducible() {
+	public TipoGastoDeducible() {
 	}
 
 	public TipoGastoDeducible(String nombre) {

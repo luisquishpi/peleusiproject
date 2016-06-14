@@ -1,0 +1,14 @@
+HBox {
+	-fx-background-color: #dedede;
+	-fx-max-height: 80px;
+	-fx-pref-height: 80px;
+}
+
+.grid-buscar {
+	-fx-background-color: #dedede;
+	-fx-padding: 0 0 0 0;
+	-fx-hgap: 0;
+	-fx-vgap: 0;
+	-fx-max-height: 80px;
+	-fx-pref-height: 80px;
+}

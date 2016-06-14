@@ -1,154 +1,124 @@
 package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-
+import java.awt.event.ActionEvent;
 import ec.peleusi.controllers.TipoRetencionController;
 import ec.peleusi.models.entities.TipoRetencion;
+import ec.peleusi.utils.TipoRetencionEnum;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
+import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TipoRetencionListFrm extends JInternalFrame {
+
 	private static final long serialVersionUID = 1L;
-	private DefaultTableModel modelo;
-	private JTable tblTipoRetencion;
-	private Object[] filaDatos;
-	private JScrollPane scrollPane;
-	private TipoRetencionCrudFrm tipoRetencionCrudFrm = new TipoRetencionCrudFrm();
-	private JButton btnEditar;
 	private JButton btnEliminar;
+	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JButton btnBuscar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;	
+	private TipoRetencionCrudFrm tipoRetencionCrudFrm = new TipoRetencionCrudFrm();
 	private TipoRetencion tipoRetencion;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TipoRetencion> jPanelWithTable;	
 
 	public TipoRetencionListFrm() {
 		setTitle("Listado Tipos de Retencion");
-		setClosable(true);
 		crearControles();
 		crearEventos();
 		crearTabla();
-		cargarTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Código", "Descripcion", "Porcentaje", "Tipo" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3 || columnIndex == 4) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		tblTipoRetencion = new JTable(modelo);
-		tblTipoRetencion.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTipoRetencion.setPreferredScrollableViewportSize(tblTipoRetencion.getPreferredSize());
-		tblTipoRetencion.getTableHeader().setReorderingAllowed(true);
-		tblTipoRetencion.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTipoRetencion.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTipoRetencion.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTipoRetencion.getColumnModel().getColumn(1).setPreferredWidth(120);
-		tblTipoRetencion.getColumnModel().getColumn(2).setPreferredWidth(350);
-		tblTipoRetencion.getColumnModel().getColumn(3).setPreferredWidth(100);
-		tblTipoRetencion.getColumnModel().getColumn(4).setPreferredWidth(100);
-		scrollPane.setViewportView(tblTipoRetencion);
-	}
-
-	private Object[] agregarDatosAFila(TipoRetencion tipoRetencion) {
-		filaDatos[0] = tipoRetencion.getId();
-		filaDatos[1] = tipoRetencion.getCodigo();
-		filaDatos[2] = tipoRetencion.getDescripcion();
-		filaDatos[3] = tipoRetencion.getPorcentaje();
-		filaDatos[4] = tipoRetencion.getTipoRetencionEnum();
-		return filaDatos;
-	}
-
-	public void cargarTabla() {
+		//Object[] cabecera = { "Id", "Código", "Tipo", "Descripcion", "Porcentaje" };
 		TipoRetencionController tipoRetencionController = new TipoRetencionController();
-		List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList();
-		for (TipoRetencion tipoRetencion : listaTipoRetencion) {
-			modelo.addRow(agregarDatosAFila(tipoRetencion));
-		}
-	}
+		List<TipoRetencion> listaTipoRetencion = tipoRetencionController.getTipoRetencionList(txtBuscar.getText());
 
-	private void crearControles() {
-		setIconifiable(true);
-		setClosable(true);
-		setBounds(100, 100, 742, 379);
-
-		JPanel panelCabecera = new JPanel();
-		panelCabecera.setPreferredSize(new Dimension(200, 70));
-		panelCabecera.setBackground(Color.LIGHT_GRAY);
-		getContentPane().add(panelCabecera, BorderLayout.NORTH);
-		panelCabecera.setLayout(null);
-
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(122, 11, 130, 39);
-		panelCabecera.add(btnNuevo);
-
-		btnEditar = new JButton("Editar");
-		btnEditar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(262, 11, 130, 39);
-		panelCabecera.add(btnEditar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(406, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
-
-		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(546, 11, 130, 39);
-		panelCabecera.add(btnCancelar);
-
-		JPanel panelCuerpo = new JPanel();
-		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
-
-		txtBuscar = new JTextField();
-		txtBuscar.setBounds(10, 8, 577, 41);
-		panelCuerpo.add(txtBuscar);
-		txtBuscar.setColumns(10);
-
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(597, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
-
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 706, 208);
-		panelCuerpo.add(scrollPane);
-	}
+		if (totalItems == 0 && listaTipoRetencion != null)
+			totalItems = listaTipoRetencion.size();	
+		
+		jPanelWithTable = new JPanelWithTable<TipoRetencion>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "codigo", "tipoRetencionEnum", "descripcion", "porcentaje" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 60, 80, 370 ,90 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "CODIGO", "TIPO", "DESCRIPCION", "PORCENTAJE" };
+		
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTipoRetencion), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
+	}			
 
 	private void capturaYAgregaTipoRetencionATabla() {
-		tipoRetencion = new TipoRetencion();
-		tipoRetencion = tipoRetencionCrudFrm.getTipoRetencion();
-		if (tipoRetencion != null && tipoRetencion.getId() != null) {
-			System.out.println("Captura TipoRetencion retornado: " + tipoRetencion);
-			modelo.addRow(agregarDatosAFila(tipoRetencion));
-			tblTipoRetencion.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (tipoRetencion == tipoRetencionCrudFrm.getTipoRetencion() && tipoRetencion.getId() != null) {
+			txtBuscar.setText(tipoRetencion.getDescripcion());
+			crearTabla();
+		} else {
+			if (tipoRetencionCrudFrm.getTipoRetencion() != null && tipoRetencionCrudFrm.getTipoRetencion().getId() != null) {
+				totalItems++;
+				txtBuscar.setText(tipoRetencionCrudFrm.getTipoRetencion().getDescripcion());
+				crearTabla();
+			}
 		}
+	}
 
+	private boolean llenarEntidadParaEnviarATipoRetencionCrudFrm() {
+		tipoRetencion = new TipoRetencion();
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tipoRetencion.setId(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tipoRetencion.setCodigo(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			tipoRetencion.setTipoRetencionEnum((TipoRetencionEnum)jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2));			
+			tipoRetencion.setDescripcion(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString());
+			tipoRetencion.setPorcentaje(Double.parseDouble(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 4).toString()));
+			tipoRetencionCrudFrm.setTipoRetencion(tipoRetencion);
+			return true;
+		}
+		return false;
+	}
+
+	private void eliminarTipoRetencion() {
+		if (llenarEntidadParaEnviarATipoRetencionCrudFrm()) {
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + tipoRetencion.getDescripcion() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				TipoRetencionController tipoRetencionController = new TipoRetencionController();
+				String error = tipoRetencionController.deleteTipoRetencion(tipoRetencion);
+				if (error == null) {
+					totalItems--;
+					crearTabla();
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 	}
 
 	private void crearEventos() {
@@ -159,26 +129,109 @@ public class TipoRetencionListFrm extends JInternalFrame {
 			}
 		});
 		btnNuevo.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
+				tipoRetencion = new TipoRetencion();
+				tipoRetencionCrudFrm.setTipoRetencion(tipoRetencion);
 				if (!tipoRetencionCrudFrm.isVisible()) {
 					tipoRetencionCrudFrm.setModal(true);
 					tipoRetencionCrudFrm.setVisible(true);
 				}
 			}
 		});
-		btnBuscar.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				TipoRetencionController tipoRetencionController = new TipoRetencionController();
-				List<TipoRetencion> listaTipoRetencion = tipoRetencionController.tipoRetencionList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TipoRetencion tipoRetencion : listaTipoRetencion) {
-					modelo.addRow(agregarDatosAFila(tipoRetencion));
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (llenarEntidadParaEnviarATipoRetencionCrudFrm()) {
+					if (!tipoRetencionCrudFrm.isVisible()) {
+						tipoRetencionCrudFrm.setModal(true);
+						tipoRetencionCrudFrm.setVisible(true);
+					}
 				}
-
 			}
 		});
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				eliminarTipoRetencion();
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				crearTabla();
+			}
+		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
+				}
+			}
+		});		
+	}
+
+	private void crearControles() {
+		setIconifiable(true);
+		setClosable(true);
+		setBounds(100, 100, 613, 381);
+
+		JPanel panelCabecera = new JPanel();
+		panelCabecera.setPreferredSize(new Dimension(200, 70));
+		panelCabecera.setBackground(Color.LIGHT_GRAY);
+		getContentPane().add(panelCabecera, BorderLayout.NORTH);
+		panelCabecera.setLayout(null);
+
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
+		btnNuevo.setBounds(15, 14, 130, 39);
+		panelCabecera.add(btnNuevo);
+
+		btnEditar = new JButton("Editar");
+		btnEditar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
+		btnEditar.setBounds(160, 14, 130, 39);
+		panelCabecera.add(btnEditar);
+
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar
+				.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
+		btnEliminar.setBounds(305, 14, 130, 39);
+		panelCabecera.add(btnEliminar);
+
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar
+				.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
+		btnCancelar.setBounds(450, 14, 130, 39);
+		panelCabecera.add(btnCancelar);
+
+		JPanel panelCuerpo = new JPanel();
+		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
+		
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+		
+		txtBuscar = new JTextFieldPH();	
+		txtBuscar.setPlaceholder("Escriba código o descripción o porcentaje");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
+		txtBuscar.setColumns(10);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setIcon(new ImageIcon(TipoRetencionListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
+		pnlBuscar.add(btnBuscar);
+		
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));		
 	}
 }

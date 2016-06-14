@@ -1,15 +1,19 @@
 package ec.peleusi.utils;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -32,20 +36,40 @@ public class JPanelWithTable<T> {
 	private JScrollPane sPnlTable;
 	private JTable jTable;
 	private Integer totalItems;
+	private JTextFieldPH txtBuscar;
 
-	public JPanelWithTable() {
+	public JPanelWithTable(JTextFieldPH txtBuscar) {
 		super();
+		this.setTxtBuscar(txtBuscar);
 	}
 
 	public JPanel crear(String[] cabecera, List<T> listaEntidad) {
 		crearControles();
-		jTable = crearTabla(cabecera, listaEntidad);
-		modelo = getModelo();
-		sPnlTable.setViewportView(jTable);
-		Filtros filtros = new Filtros();
-		filtros.paginationBox(3, 1, box, modelo, getSorter());
-		lblFooter.setText("Encontrado " + modelo.getRowCount() + " de " + totalItems);
+		if (listaEntidad != null) {
+			jTable = crearTabla(cabecera, listaEntidad);
+			jTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("ENTER"),
+					"none");
 
+			modelo = getModelo();
+			sPnlTable.setViewportView(jTable);
+			Filtros filtros = new Filtros();
+			filtros.paginationBox(3, 1, box, modelo, getSorter());
+			lblFooter.setText("Encontrado " + modelo.getRowCount() + " de " + totalItems);
+			if (jTable != null && txtBuscar != null) {
+				jTable.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+						if (Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar())) {
+							txtBuscar.setText("" + e.getKeyChar());
+							txtBuscar.requestFocus();
+						}
+						if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+							txtBuscar.requestFocus();
+						}
+					}
+				});
+			}
+		}
 		return pnlContenedor;
 	}
 
@@ -101,7 +125,7 @@ public class JPanelWithTable<T> {
 				if (tipoColumnas != null) {
 					for (int i = 0; i < tipoColumnas.length; i++) {
 						if (column == i)
-							return tipoColumnas[i].getClass();
+							return tipoColumnas[i];
 					}
 				}
 				return String.class;
@@ -138,16 +162,15 @@ public class JPanelWithTable<T> {
 	}
 
 	private Object[] agregarDatosAFila(T entidad) {
-		Object c;
-		c = (T) entidad;
-		Field[] atributos = c.getClass().getDeclaredFields();
+		Object objEntidad;
+		objEntidad = (T) entidad;
+		Field[] atributos = objEntidad.getClass().getDeclaredFields();
 		// Agrega Todos los Atributo a la fila
 		if (camposEntidad == null) {
 			for (int i = 0; i < atributos.length; i++) {
-				System.out.println("> " + atributos[i].getName());
 				Field atributo = null;
 				try {
-					atributo = c.getClass().getDeclaredField(atributos[i].getName());
+					atributo = objEntidad.getClass().getDeclaredField(atributos[i].getName());
 				} catch (NoSuchFieldException e1) {
 					e1.printStackTrace();
 				} catch (SecurityException e1) {
@@ -155,7 +178,7 @@ public class JPanelWithTable<T> {
 				}
 				atributo.setAccessible(true);
 				try {
-					filaDatos[i] = atributo.get(c);
+					filaDatos[i] = atributo.get(objEntidad);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -167,7 +190,7 @@ public class JPanelWithTable<T> {
 			for (int i = 0; i < camposEntidad.length; i++) {
 				Field atributo = null;
 				try {
-					atributo = c.getClass().getDeclaredField(camposEntidad[i]);
+					atributo = objEntidad.getClass().getDeclaredField(camposEntidad[i]);
 				} catch (NoSuchFieldException e1) {
 					e1.printStackTrace();
 				} catch (SecurityException e1) {
@@ -175,7 +198,7 @@ public class JPanelWithTable<T> {
 				}
 				atributo.setAccessible(true);
 				try {
-					filaDatos[i] = atributo.get(c);
+					filaDatos[i] = atributo.get(objEntidad);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -183,6 +206,25 @@ public class JPanelWithTable<T> {
 				}
 			}
 
+		}
+		// Agrega los Atributos a la fila solo los de la lista
+		for (int i = 0; i < camposEntidad.length; i++) {
+			Field atributo = null;
+			try {
+				atributo = objEntidad.getClass().getDeclaredField(camposEntidad[i]);
+			} catch (NoSuchFieldException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			}
+			atributo.setAccessible(true);
+			try {
+				filaDatos[i] = atributo.get(objEntidad);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 		return filaDatos;
 	}
@@ -257,6 +299,14 @@ public class JPanelWithTable<T> {
 
 	public void setTotalItems(Integer totalItems) {
 		this.totalItems = totalItems;
+	}
+
+	public JTextFieldPH getTxtBuscar() {
+		return txtBuscar;
+	}
+
+	public void setTxtBuscar(JTextFieldPH txtBuscar) {
+		this.txtBuscar = txtBuscar;
 	}
 
 }

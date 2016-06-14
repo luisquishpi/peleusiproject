@@ -1,0 +1,63 @@
+/* .root{
+    -fx-font-size: 12pt;
+    -fx-font-family: "Courier New";
+    -fx-base: rgb(132, 145, 47);
+    -fx-background: rgb(225, 228, 203);
+}
+*/
+Button {
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center 10;
+	-fx-padding: 5 5 3 5;
+	/*-fx-text-fill: #336699;*/
+	-fx-border-radius: 5;
+	-fx-background-radius: 5;
+	-fx-max-height: 70px;
+	-fx-pref-height: 70px;
+	-fx-max-width: 80px;
+	-fx-pref-width: 80px;
+	-fx-font-size: 14;
+	-fx-alignment: bottom_center;
+    /*-fx-border-color: #000;*/
+}
+GridPane {
+	-fx-padding: 15 10 15 10;
+	-fx-hgap: 5;
+	-fx-vgap: 2;
+}
+
+TableView {
+	-fx-background-color: #ffffff;
+}
+#btnNuevo {
+	-fx-background-image: url('../images/fx-new.png');
+}
+
+#btnGuardar{
+	-fx-background-image: url('../images/fx-save.png');
+}
+
+#btnActualizar {
+	-fx-background-image: url('../images/fx-update.png');
+}
+
+#btnEliminar {
+	-fx-background-image: url('../images/fx-delete.png');
+}
+
+#btnBuscar {
+	-fx-background-image: url('../images/fx-search.png');
+}
+
+#btnCancelar {
+	-fx-background-image: url('../images/fx-exit.png');
+}
+
+#btnSalir {
+	-fx-background-image: url('../images/fx-exit.png');
+}
+#txtBuscar {
+	-fx-max-height: 40px;
+	-fx-pref-height: 40px;
+	-fx-font-size: 16;
+}

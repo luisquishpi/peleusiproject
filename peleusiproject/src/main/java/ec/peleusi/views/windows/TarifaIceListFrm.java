@@ -2,6 +2,7 @@ package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -9,17 +10,19 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.models.entities.TarifaIce;
-import java.awt.Font;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
+import javax.swing.BoxLayout;
 
 public class TarifaIceListFrm extends JInternalFrame {
 
@@ -28,106 +31,74 @@ public class TarifaIceListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblTarifaIce;
 	private TarifaIceCrudFrm tarifaIceCrudFrm = new TarifaIceCrudFrm();
 	private TarifaIce tarifaIce;
-	
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TarifaIce> jPanelWithTable;
+
 	public TarifaIceListFrm() {
-		setTitle("Lista de las Tarifas ICE");
+		setTitle("Listado de Tarifas ICE");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Còdigo", "Nombre", "Porcentaje" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
 
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTarifaIce = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return String.class;
-				case 3:
-					return Double.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTarifaIce.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTarifaIce.setPreferredScrollableViewportSize(tblTarifaIce.getPreferredSize());
-		tblTarifaIce.getTableHeader().setReorderingAllowed(true);
-		tblTarifaIce.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTarifaIce.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTarifaIce.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTarifaIce.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tblTarifaIce.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tblTarifaIce.getColumnModel().getColumn(3).setPreferredWidth(143);
-		scrollPane.setViewportView(tblTarifaIce);
-
-	}
-
-	private Object[] agregarDatosAFila(TarifaIce tarifaIce) {
-		filaDatos[0] = tarifaIce.getId();
-		filaDatos[1] = tarifaIce.getCodigo();
-		filaDatos[2] = tarifaIce.getNombre();
-		filaDatos[3] = tarifaIce.getPorcentaje();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		TarifaIceController tarifaIceController = new TarifaIceController();
-		List<TarifaIce> listaTarifaIce = tarifaIceController.tarifaIceList();
-		for (TarifaIce tarifaIce : listaTarifaIce) {
-			modelo.addRow(agregarDatosAFila(tarifaIce));
-		}
+		List<TarifaIce> listaTarifaIce = tarifaIceController.getTarifaIceList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaTarifaIce != null)
+			totalItems = listaTarifaIce.size();
+
+		jPanelWithTable = new JPanelWithTable<TarifaIce>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "codigo", "nombre", "porcentaje" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 100, 328, 170 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0, 1 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "CODIGO", "NOMBRE", "PORCENTAJE" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTarifaIce), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
 	}
 
 	private void capturaYAgregaTarifaIceATabla() {
 		if (tarifaIce == tarifaIceCrudFrm.getTarifaIce() && tarifaIce.getId() != null) {
-			modelo.setValueAt(tarifaIce.getCodigo(), tblTarifaIce.getSelectedRow(), 1);
-			modelo.setValueAt(tarifaIce.getNombre(), tblTarifaIce.getSelectedRow(), 2);
-			modelo.setValueAt(tarifaIce.getPorcentaje(), tblTarifaIce.getSelectedRow(), 3);
+			txtBuscar.setText(tarifaIce.getNombre());
+			crearTabla();
 		} else {
 			if (tarifaIceCrudFrm.getTarifaIce() != null && tarifaIceCrudFrm.getTarifaIce().getId() != null) {
-				modelo.addRow(agregarDatosAFila(tarifaIceCrudFrm.getTarifaIce()));
-				tblTarifaIce.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(tarifaIceCrudFrm.getTarifaIce().getNombre());
+				crearTabla();
 			}
 		}
 	}
 
 	private boolean llenarEntidadParaEnviarATarifaIceCrudFrm() {
 		tarifaIce = new TarifaIce();
-		if (tblTarifaIce.getSelectedRow() != -1) {
-			tarifaIce.setId(Integer.parseInt(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 0).toString()));
-			tarifaIce.setCodigo(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 1).toString());
-			tarifaIce.setNombre(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 2).toString());
-			tarifaIce.setPorcentaje(Double.parseDouble(modelo.getValueAt(tblTarifaIce.getSelectedRow(), 3).toString()));
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tarifaIce.setId(Integer.parseInt(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tarifaIce.setCodigo(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
+			tarifaIce.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			tarifaIce.setPorcentaje(Double.parseDouble(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString()));
 			tarifaIceCrudFrm.setTarifaIce(tarifaIce);
 			return true;
 		}
@@ -135,7 +106,7 @@ public class TarifaIceListFrm extends JInternalFrame {
 	}
 
 	private void eliminarTarifaIce() {
-		if (llenarEntidadParaEnviarATarifaIceCrudFrm()) {			
+		if (llenarEntidadParaEnviarATarifaIceCrudFrm()) {
 			int confirmacion = JOptionPane.showConfirmDialog(null,
 					"Está seguro que desea eliminar:\n\"" + tarifaIce.getNombre() + "\"?", "Confirmación",
 					JOptionPane.YES_NO_OPTION);
@@ -143,7 +114,8 @@ public class TarifaIceListFrm extends JInternalFrame {
 				TarifaIceController tarifaiIceController = new TarifaIceController();
 				String error = tarifaiIceController.deleteTarifaIce(tarifaIce);
 				if (error == null) {
-					modelo.removeRow(tblTarifaIce.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -192,12 +164,19 @@ public class TarifaIceListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TarifaIceController tarifaIceController = new TarifaIceController();
-				List<TarifaIce> listaTarifaIce = tarifaIceController.getTarifaIceList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TarifaIce tarifaIce : listaTarifaIce) {
-					modelo.addRow(agregarDatosAFila(tarifaIce));
+				crearTabla();
+			}
+		});
+
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -216,42 +195,44 @@ public class TarifaIceListFrm extends JInternalFrame {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TarifaIceListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(TarifaIceListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(TarifaIceListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(TarifaIceListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
 
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba código o nombre o porcentaje");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(TarifaIceListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
+		pnlBuscar.add(btnBuscar);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
 	}
-
 }

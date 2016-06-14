@@ -27,6 +27,7 @@ public class CiudadCrudFrm extends JDialog {
 	private Ciudad ciudad;
 
 	public CiudadCrudFrm() {
+		setResizable(false);
 		crearControles();
 		crearEventos();
 		addComponentListener(new ComponentAdapter() {

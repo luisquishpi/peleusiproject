@@ -1,118 +1,98 @@
 package ec.peleusi.views.windows;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.List;
+import java.awt.event.ActionEvent;
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
+import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class TipoPagoListFrm extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
-	private DefaultTableModel modelo;
-	private JTable tblTipoPago;
-	private Object[] filaDatos;
-	private JScrollPane ScrollPane;
-	private TipoPagoCrudFrm tipoPagoCrudFrm = new TipoPagoCrudFrm();
-	private JButton btnEditar;
 	private JButton btnEliminar;
+	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JTextField txtBuscar;
+	private TipoPagoCrudFrm tipoPagoCrudFrm = new TipoPagoCrudFrm();
 	private TipoPago tipoPago;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<TipoPago> jPanelWithTable;
 
 	public TipoPagoListFrm() {
 		setTitle("Listado Tipo de Pago");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Nombre" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblTipoPago = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblTipoPago.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblTipoPago.setPreferredScrollableViewportSize(tblTipoPago.getPreferredSize());
-		tblTipoPago.getTableHeader().setReorderingAllowed(true);
-		tblTipoPago.getColumnModel().getColumn(0).setMinWidth(0);
-		tblTipoPago.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblTipoPago.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblTipoPago.getColumnModel().getColumn(1).setPreferredWidth(443);
-		ScrollPane.setViewportView(tblTipoPago);
-	}
-
-	private Object[] agregarDatosAFila(TipoPago tipoPago) {
-		filaDatos[0] = tipoPago.getId();
-		filaDatos[1] = tipoPago.getNombre();
-		return filaDatos;
-	}
-
-	public void cargarTabla() {
 		TipoPagoController tipoPagoController = new TipoPagoController();
-		List<TipoPago> listaTipoPago = tipoPagoController.tipoPagoList();
-		for (TipoPago tipoPago : listaTipoPago) {
-			modelo.addRow(agregarDatosAFila(tipoPago));
-		}
+		List<TipoPago> listaTipoPago = tipoPagoController.getTipoPagoList(txtBuscar.getText());
+
+		if (totalItems == 0 && listaTipoPago != null)
+			totalItems = listaTipoPago.size();
+
+		jPanelWithTable = new JPanelWithTable<TipoPago>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "nombre" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 597 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID", "NOMBRE" };
+
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaTipoPago), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
 	}
 
 	private void capturaYAgregaTipoPagoATabla() {
 		if (tipoPago == tipoPagoCrudFrm.getTipoPago() && tipoPago.getId() != null) {
-			modelo.setValueAt(tipoPago.getNombre(), tblTipoPago.getSelectedRow(), 1);
+			txtBuscar.setText(tipoPago.getNombre());
+			crearTabla();
 		} else {
 			if (tipoPagoCrudFrm.getTipoPago() != null && tipoPagoCrudFrm.getTipoPago().getId() != null) {
-				modelo.addRow(agregarDatosAFila(tipoPagoCrudFrm.getTipoPago()));
-				tblTipoPago.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+				totalItems++;
+				txtBuscar.setText(tipoPagoCrudFrm.getTipoPago().getNombre());
+				crearTabla();
 			}
 		}
 	}
 
 	private boolean llenarEntidadParaEnviarATipoPagoCrudFrm() {
 		tipoPago = new TipoPago();
-		if (tblTipoPago.getSelectedRow() != -1) {
-			tipoPago.setId(Integer.parseInt(modelo.getValueAt(tblTipoPago.getSelectedRow(), 0).toString()));
-			tipoPago.setNombre(modelo.getValueAt(tblTipoPago.getSelectedRow(), 1).toString());
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			tipoPago.setId(Integer.parseInt(jPanelWithTable.getJTable()
+					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			tipoPago.setNombre(
+					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
 			tipoPagoCrudFrm.setTipoPago(tipoPago);
 			return true;
 		}
@@ -128,7 +108,8 @@ public class TipoPagoListFrm extends JInternalFrame {
 				TipoPagoController tipoPagoController = new TipoPagoController();
 				String error = tipoPagoController.deleteTipoPago(tipoPago);
 				if (error == null) {
-					modelo.removeRow(tblTipoPago.getSelectedRow());
+					totalItems--;
+					crearTabla();
 				} else {
 					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -178,12 +159,19 @@ public class TipoPagoListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TipoPagoController tipoPagoController = new TipoPagoController();
-				List<TipoPago> listaTipoPago = tipoPagoController.getTipoPagoList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (TipoPago tipoPago : listaTipoPago) {
-					modelo.addRow(agregarDatosAFila(tipoPago));
+				crearTabla();
+			}
+		});
+
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
 				}
 			}
 		});
@@ -202,40 +190,44 @@ public class TipoPagoListFrm extends JInternalFrame {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(15, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/edit.png")));
-		btnEditar.setBounds(150, 11, 130, 39);
+		btnEditar.setBounds(160, 14, 130, 39);
 		panelCabecera.add(btnEditar);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
+		btnEliminar.setBounds(305, 14, 130, 39);
 		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(432, 11, 130, 39);
+		btnCancelar.setBounds(450, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
 
-		txtBuscar = new JTextField();
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba nombre");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(TipoPagoListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
+		pnlBuscar.add(btnBuscar);
 
-		ScrollPane = new JScrollPane();
-		ScrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(ScrollPane);
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));
 	}
 }

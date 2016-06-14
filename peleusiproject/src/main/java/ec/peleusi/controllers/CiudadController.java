@@ -28,7 +28,7 @@ public class CiudadController {
 		return ciudadDao.findAll();
 	}
 
-	public List<Ciudad> getCiudadList(String parametro) {
+	public List<Ciudad> ciudadList(String parametro) {
 		return ciudadDao.CiudadList(parametro);
 	}
 }
