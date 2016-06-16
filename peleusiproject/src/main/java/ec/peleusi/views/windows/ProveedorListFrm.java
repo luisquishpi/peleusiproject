@@ -3,22 +3,27 @@ package ec.peleusi.views.windows;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.models.entities.Proveedor;
+import ec.peleusi.models.entities.TipoIdentificacion;
+import ec.peleusi.utils.JPanelWithTable;
+import ec.peleusi.utils.JTextFieldPH;
 import java.awt.Font;
+import javax.swing.BoxLayout;
 
 public class ProveedorListFrm extends JInternalFrame {
 
@@ -27,104 +32,95 @@ public class ProveedorListFrm extends JInternalFrame {
 	private JButton btnEditar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JTextField txtBuscar;
+	private JTextFieldPH txtBuscar;
 	private JButton btnBuscar;
-	private JScrollPane scrollPane;
-	private DefaultTableModel modelo;
-	private Object[] filaDatos;
-	private JTable tblProveedor;
 	private ProveedorCrudFrm proveedorCrudFrm = new ProveedorCrudFrm();
+	private Proveedor proveedor;
+	private JPanel pnlBuscar;
+	private JPanel pnlTabla;
+	private Integer totalItems = 0;
+	JPanelWithTable<Proveedor> jPanelWithTable;
 
 	public ProveedorListFrm() {
 		setTitle("Listado Proveedor");
 		crearControles();
 		crearEventos();
 		crearTabla();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				txtBuscar.requestFocus();
+			}
+		});	
 	}
 
 	private void crearTabla() {
-		Object[] cabecera = { "Id", "Identificaciòn", "Razòn Social", "Tipo Identificaciòn" };
-		modelo = new DefaultTableModel(null, cabecera) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
-					return false;
-				}
-				return true;
-			}
-		};
-		filaDatos = new Object[cabecera.length];
-		cargarTabla();
-		tblProveedor = new JTable(modelo) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return String.class;
-				case 1:
-					return String.class;
-				case 2:
-					return String.class;
-				case 3:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		tblProveedor.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblProveedor.setPreferredScrollableViewportSize(tblProveedor.getPreferredSize());
-		tblProveedor.getTableHeader().setReorderingAllowed(true);
-		tblProveedor.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblProveedor.getColumnModel().getColumn(0).setMinWidth(0);
-		tblProveedor.getColumnModel().getColumn(0).setPreferredWidth(0);
-		tblProveedor.getColumnModel().getColumn(1).setPreferredWidth(125);
-		tblProveedor.getColumnModel().getColumn(2).setPreferredWidth(210);
-		tblProveedor.getColumnModel().getColumn(3).setPreferredWidth(108);
-		scrollPane.setViewportView(tblProveedor);
-
-	}
-
-	private Object[] agregarDatosAFila(Proveedor proveedor) {
-		filaDatos[0] = proveedor.getId();
-		filaDatos[1] = proveedor.getIdentificacion();
-		filaDatos[2] = proveedor.getRazonSocial();
-		filaDatos[3] = proveedor.getTipoIdentificacion().getNombre();
-		return filaDatos;
-	}
-
-	private void cargarTabla() {
 		ProveedorController proveedorController = new ProveedorController();
-		List<Proveedor> listaProveedor = proveedorController.proveedorList();
-		for (Proveedor proveedor : listaProveedor) {
-			modelo.addRow(agregarDatosAFila(proveedor));
-		}
+		List<Proveedor> listaProveedor = proveedorController.getProveedorList(txtBuscar.getText());
 
-	}
-	@SuppressWarnings("unused")
-	private void cargarDireccionProveedor(Proveedor proveedor)
-	{
-		
-		
-		
-		
-	}
+		if (totalItems == 0 && listaProveedor != null)
+			totalItems = listaProveedor.size();
 
+		jPanelWithTable = new JPanelWithTable<Proveedor>(txtBuscar);
+		jPanelWithTable.setCamposEntidad(new String[] { "id", "tipoIdentificacion", "identificacion", "razonSocial", "diasCredito", "porcentajeDescuento", "descripcion" });
+		jPanelWithTable.setAnchoColumnas(new Integer[] { 0, 0, 150, 300, 0, 0, 0 });
+		jPanelWithTable.setColumnasFijas(new Integer[] { 0 });
+		jPanelWithTable.setTotalItems(totalItems);
+		String[] cabecera = new String[] { "ID","tipoIdentificacion", "identificacion", "razonSocial", "diasCredito", "porcentajeDescuento", "descripcion" };
+		
+		pnlTabla.removeAll();
+		pnlTabla.add(jPanelWithTable.crear(cabecera, listaProveedor), BorderLayout.CENTER);
+		pnlTabla.revalidate();
+		pnlTabla.repaint();
+		txtBuscar.requestFocus();
+	}
+	
 	private void capturaYAgregaProveedorATabla() {
-		Proveedor proveedor = new Proveedor();
-		proveedor = proveedorCrudFrm.getProveedor();
-		if (proveedor != null && proveedor.getId() != null) {
-			System.out.println("Captura Proveedor retornado: " + proveedor);
-			modelo.addRow(agregarDatosAFila(proveedor));
-			tblProveedor.setRowSelectionInterval(modelo.getRowCount() - 1, modelo.getRowCount() - 1);
+		if (proveedor == proveedorCrudFrm.getProveedor() && proveedor.getId() != null) {
+			txtBuscar.setText(proveedor.getRazonSocial());
+			crearTabla();
+		} else {
+			if (proveedorCrudFrm.getProveedor() != null && proveedorCrudFrm.getProveedor().getId() != null) {
+				totalItems++;
+				txtBuscar.setText(proveedorCrudFrm.getProveedor().getRazonSocial());
+				crearTabla();
+			}
 		}
 	}
 
+	private boolean llenarEntidadParaEnviarAProveedorCrudFrm() {
+		proveedor = new Proveedor();
+		if (jPanelWithTable.getJTable().getSelectedRow() != -1) {
+			proveedor.setId(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 0).toString()));
+			proveedor.setTipoIdentificacion((TipoIdentificacion)jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1));
+			proveedor.setRazonSocial(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString());
+			proveedor.setDiasCredito(Integer.parseInt(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3).toString()));
+			proveedor.setPorcentajeDescuento(Double.parseDouble(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 4).toString()));
+			proveedor.setDescripcion(jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 5).toString());
+			proveedorCrudFrm.setProveedor(proveedor);
+			return true;
+		}
+		return false;
+	}
+
+	private void eliminarProveedor() {
+		if (llenarEntidadParaEnviarAProveedorCrudFrm()) {
+			int confirmacion = JOptionPane.showConfirmDialog(null,
+					"Está seguro que desea eliminar:\n\"" + proveedor.getRazonSocial() + "\"?", "Confirmación",
+					JOptionPane.YES_NO_OPTION);
+			if (confirmacion == 0) {
+				ProveedorController proveedorController = new ProveedorController();
+				String error = proveedorController.deleteProveedor(proveedor);
+				if (error == null) {
+					totalItems--;
+					crearTabla();
+				} else {
+					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}	
+	
 	private void crearEventos() {
 
 		proveedorCrudFrm.addWindowListener(new WindowAdapter() {
@@ -136,6 +132,8 @@ public class ProveedorListFrm extends JInternalFrame {
 
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				proveedor = new Proveedor();
+				proveedorCrudFrm.setProveedor(proveedor);
 				if (!proveedorCrudFrm.isVisible()) {
 					proveedorCrudFrm.setModal(true);
 					proveedorCrudFrm.setVisible(true);
@@ -144,12 +142,17 @@ public class ProveedorListFrm extends JInternalFrame {
 		});
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (llenarEntidadParaEnviarAProveedorCrudFrm()) {
+					if (!proveedorCrudFrm.isVisible()) {
+						proveedorCrudFrm.setModal(true);
+						proveedorCrudFrm.setVisible(true);
+					}
+				}
 			}
 		});
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				eliminarProveedor();
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
@@ -160,15 +163,22 @@ public class ProveedorListFrm extends JInternalFrame {
 
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ProveedorController proveedorController = new ProveedorController();
-				List<Proveedor> listaProveedor = proveedorController.getProveedorList(txtBuscar.getText());
-				modelo.getDataVector().removeAllElements();
-				modelo.fireTableDataChanged();
-				for (Proveedor proveedor : listaProveedor) {
-					modelo.addRow(agregarDatosAFila(proveedor));
-				}
+				crearTabla();
 			}
 		});
+		
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					crearTabla();
+					if (jPanelWithTable.getJTable() != null) {
+						jPanelWithTable.getJTable().addRowSelectionInterval(0, 0);
+						jPanelWithTable.getJTable().requestFocus();
+					}
+				}
+			}
+		});				
 	}
 
 	private void crearControles() {
@@ -204,22 +214,24 @@ public class ProveedorListFrm extends JInternalFrame {
 
 		JPanel panelCuerpo = new JPanel();
 		getContentPane().add(panelCuerpo, BorderLayout.CENTER);
-		panelCuerpo.setLayout(null);
-
-		txtBuscar = new JTextField();
-		txtBuscar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtBuscar.setBounds(10, 8, 446, 41);
-		panelCuerpo.add(txtBuscar);
+		panelCuerpo.setLayout(new BorderLayout(0, 0));
+		
+		pnlBuscar = new JPanel();
+		panelCuerpo.add(pnlBuscar, BorderLayout.NORTH);
+		pnlBuscar.setLayout(new BoxLayout(pnlBuscar, BoxLayout.X_AXIS));
+		
+		txtBuscar = new JTextFieldPH();
+		txtBuscar.setPlaceholder("Escriba código o descripción o porcentaje");
+		txtBuscar.setFont(new Font(txtBuscar.getFont().getName(), Font.PLAIN, 16));
+		pnlBuscar.add(txtBuscar);
 		txtBuscar.setColumns(10);
-
+		
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(ProveedorListFrm.class.getResource("/ec/peleusi/utils/images/search.png")));
-		btnBuscar.setBounds(466, 8, 119, 41);
-		panelCuerpo.add(btnBuscar);
-
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 60, 446, 208);
-		panelCuerpo.add(scrollPane);
+		pnlBuscar.add(btnBuscar);
+		
+		pnlTabla = new JPanel();
+		panelCuerpo.add(pnlTabla, BorderLayout.CENTER);
+		pnlTabla.setLayout(new BoxLayout(pnlTabla, BoxLayout.X_AXIS));		
 	}
-
 }
