@@ -56,9 +56,9 @@
                         <TableView fx:id="tblLista" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                            <columns>
                               <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
-                              <TableColumn fx:id="codigoCol" prefWidth="63.0" text="Código" />
-                              <TableColumn fx:id="nombreCol" prefWidth="209.0" text="Nombre" />
-                              <TableColumn fx:id="porcentajeCol" minWidth="0.0" prefWidth="67.0" text="Porcentaje" />
+                              <TableColumn fx:id="codigoCol" prefWidth="60.0" text="Código" />
+                              <TableColumn fx:id="nombreCol" prefWidth="198.0" text="Nombre" />
+                              <TableColumn fx:id="porcentajeCol" prefWidth="75.0" text="Porcentaje" />
                            </columns></TableView>
                      </center>
                   </BorderPane>
@@ -70,8 +70,8 @@
                      <top>
                         <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" text="Nuevo" />
-                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Guardar">
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" onAction="#btnNuevo" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" onAction="#btnGuardar" prefHeight="80.0" prefWidth="100.0" text="Guardar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -81,7 +81,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Cancelar">
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelar" prefHeight="80.0" prefWidth="100.0" text="Cancelar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -107,11 +107,11 @@
                           </rowConstraints>
                            <children>
                               <Label text="Código" />
-                              <Label layoutX="20.0" layoutY="30.0" text="Nombre" GridPane.rowIndex="1" />
-                              <Label layoutX="20.0" layoutY="59.0" text="Porcentaje" GridPane.rowIndex="2" />
+                              <Label text="Nombre" GridPane.rowIndex="1" />
+                              <Label text="Porcentaje" GridPane.rowIndex="2" />
                               <TextField id="txtCodigo" fx:id="txtCodigo" promptText="Código de Tarifa IVA" GridPane.columnIndex="1" />
-                              <TextField id="txtNombre" fx:id="txtNombre" layoutX="125.0" layoutY="26.0" promptText="Nombre de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" layoutX="125.0" layoutY="55.0" promptText="Porcentaje de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

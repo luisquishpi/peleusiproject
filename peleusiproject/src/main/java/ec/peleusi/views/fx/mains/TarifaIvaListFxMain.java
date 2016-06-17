@@ -1,6 +1,7 @@
 package ec.peleusi.views.fx.mains;
 
 import java.io.IOException;
+
 import ec.peleusi.views.fx.controllers.TarifaIvaListFxController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +17,15 @@ public class TarifaIvaListFxMain extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/TarifaIvaListFx.fxml"));
 		loader.setController(new TarifaIvaListFxController());
 		parent = (Parent) loader.load();
-		stage.setTitle("Lista de Tarifa IVA");
-		stage.setScene(new Scene(parent));}
-	
-	//btnNuevo.setDefaultButton(true);
+		stage.setTitle("Lista de Tarifa IVa");
+		stage.setScene(new Scene(parent));
+		stage.show();
+		/*
+		 * FadeTransition ft = new FadeTransition(Duration.millis(900), parent);
+		 * ft.setFromValue(0.0); ft.setToValue(0.97); ft.play();
+		 */
+
+	}
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
