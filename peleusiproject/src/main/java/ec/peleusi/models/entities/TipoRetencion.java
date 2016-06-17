@@ -13,10 +13,10 @@ import javax.persistence.Column;
 
 public class TipoRetencion {
 
-	public TipoRetencion(String codigo, TipoRetencionEnum tipoRetencionEnum, Double porcentaje, String descripcion) {
+	public TipoRetencion(String codigo, TipoRetencionEnum tipo, Double porcentaje, String descripcion) {
 		this.id = null;
 		this.codigo = codigo;
-		this.tipoRetencionEnum = tipoRetencionEnum;
+		this.tipo = tipo;
 		this.porcentaje = porcentaje;
 		this.descripcion = descripcion;
 	}
@@ -34,7 +34,7 @@ public class TipoRetencion {
 	private String codigo;
 
 	@Column(name = "tipo", nullable = false, length = 30)
-	private TipoRetencionEnum tipoRetencionEnum;
+	private TipoRetencionEnum tipo;
 
 	@Column(name = "porcentaje", nullable = false, length = 15)
 	private Double porcentaje;
@@ -59,11 +59,11 @@ public class TipoRetencion {
 	}
 
 	public TipoRetencionEnum getTipoRetencionEnum() {
-		return tipoRetencionEnum;
+		return tipo;
 	}
 
 	public void setTipoRetencionEnum(TipoRetencionEnum tipoRetencionEnum) {
-		this.tipoRetencionEnum = tipoRetencionEnum;
+		this.tipo = tipoRetencionEnum;
 	}
 
 	public Double getPorcentaje() {
@@ -84,6 +84,8 @@ public class TipoRetencion {
 
 	@Override
 	public String toString() {
-		return "[id=" + id + ", descripcion=" + descripcion + ", porcentaje=" + porcentaje + ", tipo=" + tipoRetencionEnum + "]";
+		//return "[id=" + id + ", descripcion=" + descripcion + ", porcentaje=" + porcentaje + ", tipo=" + tipoRetencionEnum + "]";
+		return  codigo + "-"+descripcion;
+		//return  tipoRetencionEnum.toString();
 	}
 }

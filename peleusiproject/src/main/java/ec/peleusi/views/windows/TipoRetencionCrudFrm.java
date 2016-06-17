@@ -94,7 +94,7 @@ public class TipoRetencionCrudFrm extends javax.swing.JDialog {
 	private void actualizarTipoRetencion() {
 		llenarEntidadAntesDeGuardar();
 		TipoRetencionController tipoRetencionController = new TipoRetencionController();
-		String error = tipoRetencionController.updateTipoRetencion(tipoRetencion);
+		String error = tipoRetencionController.update(tipoRetencion);
 		if (error == null) {
 			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 			dispose();
