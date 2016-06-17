@@ -8,6 +8,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,7 +36,6 @@ import java.util.List;
 public class ProveedorCrudFrm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JButton btnEliminar;
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
@@ -64,7 +65,7 @@ public class ProveedorCrudFrm extends JDialog {
 	private Proveedor proveedor;
 	private JTextField txtIdProveedor;
 	private JScrollPane scrollPane;
-	private JTextField txtCiudad;	
+	private JTextField cmbCiudad;	
 	private CiudadListModalFrm ciudadListModalFrm = new CiudadListModalFrm();
 	private Ciudad ciudad;
 	
@@ -72,12 +73,105 @@ public class ProveedorCrudFrm extends JDialog {
 		setTitle("Creando Proveedor");
 		crearControles();
 		crearEventos();
-		crearTablaDireccionProveedor();
-		cargarCombos();
-		limpiarCamposDatos();
-		limpiarCamposDireccion();
+		cargarListaTipoIdentificacion();
 		tpnlProveedor.setEnabledAt(1, false);
+		crearTablaDireccionProveedor();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+				llenarCamposConEntidad();
+				txtIdentificacion.requestFocus();
+			}
+		});
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void cargarListaTipoIdentificacion() {
+		TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
+		List<TipoIdentificacion> listaTipoIdentificacion;
+		listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
+		cmbTipoIdentificacion.setModel(new DefaultComboBoxModel(listaTipoIdentificacion.toArray()));
+	}
 
+	private void llenarCamposConEntidad() {
+		if (proveedor != null && proveedor.getId() != null) {
+			this.setTitle("Actualizar Proveedor");
+			btnGuardar.setText("Actualizar");
+			limpiarCamposDatos();
+			cmbTipoIdentificacion.setSelectedItem(proveedor.getTipoIdentificacion());
+			txtIdentificacion.setText(proveedor.getIdentificacion());
+			txtRazonSocial.setText(proveedor.getRazonSocial());
+			txtDiasCredito.setText(Integer.toString(proveedor.getDiasCredito()));
+			txtPorcentajeDescuento.setText(Double.toString(proveedor.getPorcentajeDescuento()));
+			txtDescripcion.setText(proveedor.getDescripcion());
+		} else {
+			this.setTitle("Creando Tarifa IVA");
+			btnGuardar.setText("Guardar");
+			limpiarCamposDatos();
+		}
+	}
+
+	private void llenarEntidadAntesDeGuardar() {
+		proveedor.setTipoIdentificacion((TipoIdentificacion)cmbTipoIdentificacion.getSelectedItem());
+		proveedor.setIdentificacion(txtIdentificacion.getText());
+		proveedor.setRazonSocial(txtRazonSocial.getText());
+		proveedor.setDiasCredito(Integer.parseInt(txtDiasCredito.getText().toString()));
+		proveedor.setPorcentajeDescuento(Double.parseDouble(txtPorcentajeDescuento.getText().toString()));
+		proveedor.setDescripcion(txtDescripcion.getText());
+	}
+	
+	private void guardarNuevoProveedor() {
+		proveedor = new Proveedor();
+		llenarEntidadAntesDeGuardar();
+		ProveedorController proveedornController = new ProveedorController();
+		String error = proveedornController.createProveedor(proveedor);		 
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
+			txtIdProveedor.setText(proveedor.getId().toString());
+			tpnlProveedor.setEnabledAt(1, true);
+			tpnlProveedor.setSelectedIndex(1);
+			//dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
+
+	private void actualizarProveedor() {
+		llenarEntidadAntesDeGuardar();
+		ProveedorController proveedorController = new ProveedorController();
+		String error = proveedorController.updateProveedor(proveedor);
+		if (error == null) {
+			JOptionPane.showMessageDialog(null, "Actualizado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);		
+
+//			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public Proveedor getProveedor() {
+		return proveedor;
+	}
+	
+	public void setProveedor(Proveedor proveedor) {
+		this.proveedor = new Proveedor();
+		this.proveedor = proveedor;
+	}
+	
+	private void limpiarCamposDatos() {
+		txtIdentificacion.setText("");
+		txtRazonSocial.setText("");
+		txtDiasCredito.setText("0");
+		txtPorcentajeDescuento.setText("0");
+		txtDescripcion.setText("");
+	}
+
+	private boolean camposLlenosDatos() {
+		boolean llenos = true;
+		if (txtIdentificacion.getText().isEmpty() || txtRazonSocial.getText().isEmpty()
+				|| txtDiasCredito.getText().isEmpty() || txtPorcentajeDescuento.getText().isEmpty())
+			llenos = false;
+		return llenos;
 	}
 
 	private void crearTablaDireccionProveedor() {
@@ -85,7 +179,7 @@ public class ProveedorCrudFrm extends JDialog {
 				"CodigoPostal", "PorDefecto" };
 		modelo = new DefaultTableModel(null, cabecera) {
 			private static final long serialVersionUID = 1L;
-
+	
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3 || columnIndex == 4
@@ -102,7 +196,7 @@ public class ProveedorCrudFrm extends JDialog {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Class<?> getColumnClass(int column) {
+			public Class<?> getColumnClass(int column){
 				switch (column) {
 				case 0:
 					return String.class;
@@ -129,34 +223,7 @@ public class ProveedorCrudFrm extends JDialog {
 				}
 			}
 		};
-
-		/*
-		 * tblDireccionProveedor.addMouseListener(new MouseAdapter() {
-		 * 
-		 * @Override public void mouseClicked(MouseEvent e) { int
-		 * filaseleccionada;
-		 * 
-		 * try { filaseleccionada = tblDireccionProveedor.getSelectedRow();
-		 * 
-		 * if (filaseleccionada == -1) { JOptionPane.showMessageDialog(null,
-		 * "No se ha seleccionado ninguna fila"); } else { ProveedorController
-		 * personaController = new ProveedorController(); proveedor = new
-		 * Proveedor(); proveedor =
-		 * personaController.getProveedor(Integer.parseInt(txtNombre.getText()))
-		 * ;
-		 * 
-		 * DefaultTableModel modelotabla = (DefaultTableModel)
-		 * tblDireccionProveedor.getModel(); String nombres = (String)
-		 * modelotabla.getValueAt(filaseleccionada, 1); String direccion =
-		 * (String) modelotabla.getValueAt(filaseleccionada, 2); String ciudad =
-		 * (String) modelotabla.getValueAt(filaseleccionada, 3);
-		 * 
-		 * txtNombre.setText(nombres); txtDireccion.setText(direccion);
-		 * cmbCiudad.setSelectedItem(ciudad); } } catch (HeadlessException ex) {
-		 * JOptionPane.showMessageDialog(null, "Error: " + ex +
-		 * "\nInténtelo nuevamente", " .::Error En la Operacion::.",
-		 * JOptionPane.ERROR_MESSAGE); } } });
-		 */
+		
 		tblDireccionProveedor.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblDireccionProveedor.setPreferredScrollableViewportSize(tblDireccionProveedor.getPreferredSize());
 		tblDireccionProveedor.getTableHeader().setReorderingAllowed(true);
@@ -197,7 +264,7 @@ public class ProveedorCrudFrm extends JDialog {
 		filaDatosDireccionProveedor[8] = direccionProveedor.getCodigoPostal();
 		filaDatosDireccionProveedor[9] = direccionProveedor.getPorDefecto();
 		return filaDatosDireccionProveedor;
-	}
+	}	
 
 	private void cargarTablaDireccionProveedor() {
 		modelo.getDataVector().removeAllElements();
@@ -210,41 +277,9 @@ public class ProveedorCrudFrm extends JDialog {
 			modelo.addRow(agregarDatosAFila(direccionProveedor));
 		}
 	}
-
-	private void cargarCombos() {
-			cargarListaTipoIdentificacion();
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void cargarListaTipoIdentificacion() {
-		TipoIdentificacionController tipoIdentificacionController = new TipoIdentificacionController();
-		List<TipoIdentificacion> listaTipoIdentificacion;
-		listaTipoIdentificacion = tipoIdentificacionController.tipoIdentificacionList();
-		cmbTipoIdentificacion.setModel(new DefaultComboBoxModel(listaTipoIdentificacion.toArray()));
-	}
-
-	public Proveedor getProveedor() {
-		return proveedor;
-	}
-
-	private void limpiarCamposDatos() {
-		txtIdentificacion.setText("");
-		txtRazonSocial.setText("");
-		txtDiasCredito.setText("0");
-		txtPorcentajeDescuento.setText("0");
-		txtDescripcion.setText("");
-	}
-
-	private boolean camposLlenosDatos() {
-		boolean llenos = true;
-		if (txtIdentificacion.getText().isEmpty() || txtRazonSocial.getText().isEmpty()
-				|| txtDiasCredito.getText().isEmpty() || txtPorcentajeDescuento.getText().isEmpty())
-			llenos = false;
-		return llenos;
-	}
-
+	
 	private void limpiarCamposDireccion() {
-		txtCiudad.setText("");
+		cmbCiudad.setText("");
 		txtNombre.setText("");
 		txtDireccion.setText("");
 		txtTelefono.setText("");
@@ -256,7 +291,7 @@ public class ProveedorCrudFrm extends JDialog {
 
 	private boolean camposLlenosDireccion() {
 		boolean llenosDireccion = true;
-		if (txtCiudad.getText().isEmpty() || txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty())
+		if (cmbCiudad.getText().isEmpty() || txtNombre.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtTelefono.getText().isEmpty())
 			llenosDireccion = false;
 		return llenosDireccion;
 	}
@@ -264,9 +299,9 @@ public class ProveedorCrudFrm extends JDialog {
 	private void crearEventos() {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setTitle("Creando Proveedor");
-				limpiarCamposDatos();
-				limpiarCamposDireccion();
+				proveedor = new Proveedor();
+				llenarCamposConEntidad();
+							limpiarCamposDireccion();
 				tblDireccionProveedor.setModel(new DefaultTableModel());
 				crearTablaDireccionProveedor();
 				tpnlProveedor.setSelectedIndex(0);
@@ -274,20 +309,20 @@ public class ProveedorCrudFrm extends JDialog {
 		});		
 		
 		btnBuscarCiudad.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
 				if (!ciudadListModalFrm.isVisible()) {
-				ciudadListModalFrm.setModal(true);
-				ciudadListModalFrm.setVisible(true);
-				}	
-				ciudad = ciudadListModalFrm.getCiudad();
+					ciudadListModalFrm.setModal(true);
+					ciudadListModalFrm.setVisible(true);
+					}	
+					ciudad = ciudadListModalFrm.getCiudad();
 
-				if (ciudad != null) {
-					System.out.println("Categoría seleccionado: " + ciudad);
-					txtCiudad.setText(ciudad.getNombre());
-				}
-				
+					if (ciudad != null) {
+						System.out.println("Categoría seleccionado: " + ciudad);
+						cmbCiudad.setText(ciudad.getNombre());
+					}
 			}
-		});
+		});						
+		
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!camposLlenosDatos()) {
@@ -295,33 +330,19 @@ public class ProveedorCrudFrm extends JDialog {
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				TipoIdentificacion tipoIdentificacion = (TipoIdentificacion) cmbTipoIdentificacion.getSelectedItem();
-				Proveedor proveedor = new Proveedor();
-				proveedor.setTipoIdentificacion(tipoIdentificacion);
-				proveedor.setIdentificacion(txtIdentificacion.getText());
-				proveedor.setRazonSocial(txtRazonSocial.getText());
-				proveedor.setDiasCredito(Integer.parseInt(txtDiasCredito.getText()));
-				proveedor.setPorcentajeDescuento(Double.parseDouble(txtPorcentajeDescuento.getText()));
-				proveedor.setDescripcion(txtDescripcion.getText());
-				ProveedorController personaControllers = new ProveedorController();
-				String error = personaControllers.createPersona(proveedor);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-					txtIdProveedor.setText(proveedor.getId().toString());
+				if (proveedor != null && proveedor.getId() != null) {
+					actualizarProveedor();
+					/*txtIdProveedor.setText(proveedor.getId().toString());
 					tpnlProveedor.setEnabledAt(1, true);
-					tpnlProveedor.setSelectedIndex(1);
-
+					tpnlProveedor.setSelectedIndex(1);*/
 				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+					guardarNuevoProveedor();
 				}
-			}
-		});
-		btnEliminar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				proveedor = new Proveedor();
 				dispose();
 			}
 		});
@@ -370,22 +391,17 @@ public class ProveedorCrudFrm extends JDialog {
 
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/new.png")));
-		btnNuevo.setBounds(10, 11, 130, 39);
+		btnNuevo.setBounds(25, 14, 130, 39);
 		panelCabecera.add(btnNuevo);
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/save.png")));
-		btnGuardar.setBounds(150, 11, 130, 39);
+		btnGuardar.setBounds(230, 14, 130, 39);
 		panelCabecera.add(btnGuardar);
-
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/delete.png")));
-		btnEliminar.setBounds(290, 11, 130, 39);
-		panelCabecera.add(btnEliminar);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/cancel.png")));
-		btnCancelar.setBounds(430, 11, 130, 39);
+		btnCancelar.setBounds(430, 14, 130, 39);
 		panelCabecera.add(btnCancelar);
 
 		JPanel panelCuerpo = new JPanel();
@@ -542,11 +558,11 @@ public class ProveedorCrudFrm extends JDialog {
 		chkPorDefecto.setBounds(350, 100, 97, 23);
 		pnlDireccion.add(chkPorDefecto);
 		
-		txtCiudad = new JTextField();
-		txtCiudad.setEditable(false);
-		txtCiudad.setBounds(65, 7, 208, 20);
-		pnlDireccion.add(txtCiudad);
-		txtCiudad.setColumns(10);
+		cmbCiudad = new JTextField();
+		cmbCiudad.setEditable(false);
+		cmbCiudad.setBounds(65, 7, 208, 20);
+		pnlDireccion.add(cmbCiudad);
+		cmbCiudad.setColumns(10);
 		
 		btnBuscarCiudad = new JButton("");		
 		btnBuscarCiudad.setIcon(new ImageIcon(ProveedorCrudFrm.class.getResource("/ec/peleusi/utils/images/search_16.png")));
