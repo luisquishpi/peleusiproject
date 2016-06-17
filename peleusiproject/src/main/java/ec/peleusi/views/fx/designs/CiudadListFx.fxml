@@ -41,7 +41,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -68,18 +68,18 @@
                      <top>
                         <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button id="btnNuevo" mnemonicParsing="false" text="Nuevo" />
-                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Guardar">
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" onAction="#btnNuevoClick" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" onAction="#btnGuardarClick" prefHeight="80.0" prefWidth="100.0" text="Guardar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Eliminar">
+                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarClick" prefHeight="80.0" prefWidth="100.0" text="Eliminar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Cancelar">
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarClick" prefHeight="80.0" prefWidth="100.0" text="Cancelar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
