@@ -57,7 +57,8 @@ public class TipoRetencionListFrm extends JInternalFrame {
 	private void crearTabla() {
 		//Object[] cabecera = { "Id", "Código", "Tipo", "Descripcion", "Porcentaje" };
 		TipoRetencionController tipoRetencionController = new TipoRetencionController();
-		List<TipoRetencion> listaTipoRetencion = tipoRetencionController.getTipoRetencionList(txtBuscar.getText());
+		@SuppressWarnings("unchecked")
+		List<TipoRetencion> listaTipoRetencion = (List<TipoRetencion>) tipoRetencionController.getTipoRetencion(txtBuscar.getText());
 
 		if (totalItems == 0 && listaTipoRetencion != null)
 			totalItems = listaTipoRetencion.size();	
@@ -110,7 +111,7 @@ public class TipoRetencionListFrm extends JInternalFrame {
 					JOptionPane.YES_NO_OPTION);
 			if (confirmacion == 0) {
 				TipoRetencionController tipoRetencionController = new TipoRetencionController();
-				String error = tipoRetencionController.deleteTipoRetencion(tipoRetencion);
+				String error = tipoRetencionController.delete(tipoRetencion.getId());
 				if (error == null) {
 					totalItems--;
 					crearTabla();
