@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 public class TipoGastoDeducibleListFxMain extends Application{
 	private static Parent parent;
 	
-	 private ObservableList<TipoGastoDeducible> tipoGastoDeducible = FXCollections.observableArrayList();
 	 
 	@Override
 	
@@ -39,8 +38,5 @@ public class TipoGastoDeducibleListFxMain extends Application{
 		launch(args);
 	}
 	
-	public ObservableList<TipoGastoDeducible> getTipoGastoDeducible() {
-    	return tipoGastoDeducible ;
-    }
-
+	
 }
