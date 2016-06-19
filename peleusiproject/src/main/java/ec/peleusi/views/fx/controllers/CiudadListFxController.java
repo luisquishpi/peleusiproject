@@ -161,18 +161,22 @@ public class CiudadListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<Ciudad> ciudadList =ciudadController.ciudadList(txtBuscar.getText());
-		System.out.println(ciudadList.size());
-		ciudadesList = FXCollections.observableList(ciudadList);
-		
-		tblLista.setItems(ciudadesList);
+		List<Ciudad> ciudadList = ciudadController.ciudadList(txtBuscar.getText());
+		if (ciudadList != null) {
+			ciudadesList = FXCollections.observableList(ciudadList);
+			tblLista.setItems(ciudadesList);
+		}
+		else
+		{
+			ciudadesList.clear();
+		}
 		btnNuevoClick(null);
 	}
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
 		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-	    stage.close();
+		stage.close();
 	}
 
 	private boolean isCamposLlenos() {
