@@ -6,19 +6,28 @@ import java.util.Optional;
 import ec.peleusi.controllers.CiudadController;
 import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.utils.fx.AlertsUtil;
+import ec.peleusi.utils.fx.TableViewUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+
 
 public class CiudadListFxController extends AnchorPane {
 
@@ -54,17 +63,44 @@ public class CiudadListFxController extends AnchorPane {
 		ciudadesList = FXCollections.observableList(ciudadController.ciudadList());
 		tblLista.setItems(ciudadesList);
 
-		idCol.setMinWidth(0);
-		idCol.setMaxWidth(0);
-		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<Ciudad, Integer>("id"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<Ciudad, String>("nombre"));
 
 		final ObservableList<Ciudad> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
 
-		btnNuevoClick(null);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				btnNuevoClick(null);
+			}
+		});
+		
+		Pagination paginacion=new Pagination((ciudadesList.size()/ rowsPerPage() + 1),0);
+		paginacion.setPageFactory(new Callback<Integer, Node>() {
+            @Override
+            public Node call(Integer pageIndex) {
+                if (pageIndex > ciudadesList.size() / rowsPerPage() + 1) {
+                    return null;
+                } else {
+                    return createPage(pageIndex);
+                }
+            }
+        });
+		
+		
 	}
+	private Node createPage(int pageIndex) {
+
+	    int fromIndex = pageIndex * rowsPerPage();
+	    int toIndex = Math.min(fromIndex + rowsPerPage(), ciudadesList.size());
+	    tblLista.setItems(FXCollections.observableArrayList(ciudadesList.subList(fromIndex, toIndex)));
+
+	    return new BorderPane((Node) ciudadesList);
+	}
+
+	 public int rowsPerPage() {
+	        return 3;
+	    }
 
 	private final ListChangeListener<Ciudad> escuchaCambiosEnTabla = new ListChangeListener<Ciudad>() {
 		@Override
@@ -119,7 +155,6 @@ public class CiudadListFxController extends AnchorPane {
 		error = ciudadController.deleteCiudad(ciudad);
 		if (error == null) {
 			ciudadesList.remove(getObjetoSeleccionadoDeTabla());
-			AlertsUtil.alertExito("Eliminado correctamente");
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -133,6 +168,7 @@ public class CiudadListFxController extends AnchorPane {
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
+		txtNombre.requestFocus();
 	}
 
 	@FXML
@@ -165,12 +201,11 @@ public class CiudadListFxController extends AnchorPane {
 		if (ciudadList != null) {
 			ciudadesList = FXCollections.observableList(ciudadList);
 			tblLista.setItems(ciudadesList);
-		}
-		else
-		{
+		} else {
 			ciudadesList.clear();
 		}
 		btnNuevoClick(null);
+		tblLista.requestFocus();
 	}
 
 	@FXML
@@ -178,6 +213,19 @@ public class CiudadListFxController extends AnchorPane {
 		Stage stage = (Stage) btnCancelar.getScene().getWindow();
 		stage.close();
 	}
+
+	@FXML
+	private void txtBuscarReleased(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			btnBuscarClick(null);
+		}
+	}
+
+	@FXML
+	private void tblListaReleased(KeyEvent event) {
+		TableViewUtils.tblListaReleased(event,txtBuscar);
+	}
+	
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;

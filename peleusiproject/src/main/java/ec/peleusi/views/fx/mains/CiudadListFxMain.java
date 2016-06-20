@@ -11,20 +11,17 @@ import javafx.stage.Stage;
 
 public class CiudadListFxMain extends Application {
 	private static Parent parent;
-	private Stage primaryStage;
 	
 	@Override
 	public void start(Stage stage) throws IOException {
-		primaryStage=stage;
-		primaryStage.setTitle("Lista de Ciudades");
+		stage.setTitle("Lista de Ciudades");
 
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/CiudadListFx.fxml"));
 		loader.setController(new CiudadListFxController());
 		parent = (Parent) loader.load();
-
 		
-		primaryStage.setScene(new Scene(parent));
-		primaryStage.show();
+		stage.setScene(new Scene(parent));
+		stage.show();
 		/*
 		 * FadeTransition ft = new FadeTransition(Duration.millis(900), parent);
 		 * ft.setFromValue(0.0); ft.setToValue(0.97); ft.play();
