@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 public class TarifaIvaListFxMain extends Application {
 	private static Parent parent;
-
+	
 	@Override
 	public void start(Stage stage) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/TarifaIvaListFx.fxml"));
@@ -29,5 +29,5 @@ public class TarifaIvaListFxMain extends Application {
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
-	}
+	}	
 }
