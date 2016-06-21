@@ -109,9 +109,9 @@
                               <Label text="Código" />
                               <Label text="Nombre" GridPane.rowIndex="1" />
                               <Label text="Porcentaje" GridPane.rowIndex="2" />
-                              <TextField id="txtCodigo" fx:id="txtCodigo" promptText="Código de Tarifa IVA" GridPane.columnIndex="1" />
-                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField id="txtCodigo" fx:id="txtCodigo" promptText="Código de Tarifa ICE" GridPane.columnIndex="1" />
+                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tarifa ICE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de Tarifa ICE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

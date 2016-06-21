@@ -2,8 +2,8 @@ package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
 import java.util.Optional;
-import ec.peleusi.controllers.TarifaIvaController;
-import ec.peleusi.models.entities.TarifaIva;
+import ec.peleusi.controllers.TarifaIceController;
+import ec.peleusi.models.entities.TarifaIce;
 import ec.peleusi.utils.fx.AlertsUtil;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.application.Platform;
@@ -27,7 +27,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class TarifaIvaListFxController extends AnchorPane {
+public class TarifaIceListFxController extends AnchorPane {
 	@FXML
 	private TextField txtCodigo;
 	@FXML
@@ -37,15 +37,15 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private TextField txtBuscar;
 	@FXML
-	private TableView<TarifaIva> tblLista;
+	private TableView<TarifaIce> tblLista;
 	@FXML
-	TableColumn<TarifaIva, Integer> idCol;
+	TableColumn<TarifaIce, Integer> idCol;
 	@FXML
-	TableColumn<TarifaIva, String> codigoCol;
+	TableColumn<TarifaIce, String> codigoCol;
 	@FXML
-	TableColumn<TarifaIva, String> nombreCol;
+	TableColumn<TarifaIce, String> nombreCol;
 	@FXML
-	TableColumn<TarifaIva, Double> porcentajeCol;
+	TableColumn<TarifaIce, Double> porcentajeCol;
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -57,24 +57,24 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private Button btnBuscar;
 	
-	ObservableList<TarifaIva> tarifaIvasList;
+	ObservableList<TarifaIce> tarifaIcesList;
 	private Integer posicionObjetoEnTabla;
-	private TarifaIva tarifaIva;
-	private TarifaIvaController tarifaIvaController = new TarifaIvaController();
+	private TarifaIce tarifaIce;
+	private TarifaIceController tarifaIceController = new TarifaIceController();
 	private String error = null;
 
 	@FXML
 	private void initialize() {
-		tarifaIvasList = FXCollections.observableList(tarifaIvaController.tarifaIvaList());
-		tblLista.setItems(tarifaIvasList);		
+		tarifaIcesList = FXCollections.observableList(tarifaIceController.tarifaIceList());
+		tblLista.setItems(tarifaIcesList);		
 		idCol.setMinWidth(0);
 		idCol.setMaxWidth(0);
 		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Integer>("id"));
-		codigoCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("codigo"));
-		nombreCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("nombre"));
-		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Double>("porcentaje"));
-		final ObservableList<TarifaIva> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
+		idCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, Integer>("id"));
+		codigoCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, String>("codigo"));
+		nombreCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, String>("nombre"));
+		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, Double>("porcentaje"));
+		final ObservableList<TarifaIce> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
 		
 		Platform.runLater(new Runnable() {
@@ -84,11 +84,11 @@ public class TarifaIvaListFxController extends AnchorPane {
 			}
 		});
 		
-		Pagination paginacion=new Pagination((tarifaIvasList.size()/ rowsPerPage() + 1),0);
+		Pagination paginacion=new Pagination((tarifaIcesList.size()/ rowsPerPage() + 1),0);
 		paginacion.setPageFactory(new Callback<Integer, Node>() {
             @Override
             public Node call(Integer pageIndex) {
-                if (pageIndex > tarifaIvasList.size() / rowsPerPage() + 1) {
+                if (pageIndex > tarifaIcesList.size() / rowsPerPage() + 1) {
                     return null;
                 } else {
                     return createPage(pageIndex);
@@ -100,19 +100,19 @@ public class TarifaIvaListFxController extends AnchorPane {
 	private Node createPage(int pageIndex) {
 
 	    int fromIndex = pageIndex * rowsPerPage();
-	    int toIndex = Math.min(fromIndex + rowsPerPage(), tarifaIvasList.size());
-	    tblLista.setItems(FXCollections.observableArrayList(tarifaIvasList.subList(fromIndex, toIndex)));
+	    int toIndex = Math.min(fromIndex + rowsPerPage(), tarifaIcesList.size());
+	    tblLista.setItems(FXCollections.observableArrayList(tarifaIcesList.subList(fromIndex, toIndex)));
 
-	    return new BorderPane((Node) tarifaIvasList);
+	    return new BorderPane((Node) tarifaIcesList);
 	}
 	
 	public int rowsPerPage() {
         return 3;
     }
 	
-	private final ListChangeListener<TarifaIva> escuchaCambiosEnTabla = new ListChangeListener<TarifaIva>() {
+	private final ListChangeListener<TarifaIce> escuchaCambiosEnTabla = new ListChangeListener<TarifaIce>() {
 		@Override
-		public void onChanged(ListChangeListener.Change<? extends TarifaIva> c) {
+		public void onChanged(ListChangeListener.Change<? extends TarifaIce> c) {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
 	};	
@@ -127,12 +127,12 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void cargarObjetoSeleccionadaEnFormulario() {
-		tarifaIva = (TarifaIva) getObjetoSeleccionadoDeTabla();
-		if (tarifaIva != null) {
-			posicionObjetoEnTabla = tarifaIvasList.indexOf(tarifaIva);
-			txtCodigo.setText(tarifaIva.getCodigo());
-			txtNombre.setText(tarifaIva.getNombre());
-			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));			
+		tarifaIce = (TarifaIce) getObjetoSeleccionadoDeTabla();
+		if (tarifaIce != null) {
+			posicionObjetoEnTabla = tarifaIcesList.indexOf(tarifaIce);
+			txtCodigo.setText(tarifaIce.getCodigo());
+			txtNombre.setText(tarifaIce.getNombre());
+			txtPorcentaje.setText(Double.toString(tarifaIce.getPorcentaje()));			
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -140,9 +140,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void guardarNuevo() {
-		error = tarifaIvaController.createTarifaIva(tarifaIva);
+		error = tarifaIceController.createTarifaIce(tarifaIce);
 		if (error == null) {
-			tarifaIvasList.add(tarifaIva);
+			tarifaIcesList.add(tarifaIce);
 			AlertsUtil.alertExito("Guardado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -151,9 +151,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void actualizar() {
-		error = tarifaIvaController.updateTarifaIva(tarifaIva);
+		error = tarifaIceController.updateTarifaIce(tarifaIce);
 		if (error == null) {
-			tarifaIvasList.set(posicionObjetoEnTabla, tarifaIva);
+			tarifaIcesList.set(posicionObjetoEnTabla, tarifaIce);
 			AlertsUtil.alertExito("Actualizado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -162,9 +162,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void eliminar() {
-		error = tarifaIvaController.deleteTarifaIva(tarifaIva);
+		error = tarifaIceController.deleteTarifaIce(tarifaIce);
 		if (error == null) {
-			tarifaIvasList.remove(getObjetoSeleccionadoDeTabla());
+			tarifaIcesList.remove(getObjetoSeleccionadoDeTabla());
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -172,13 +172,13 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void llenarEntidadAntesDeGuardar() {
-		tarifaIva.setCodigo(txtCodigo.getText());
-		tarifaIva.setNombre(txtNombre.getText());
-		tarifaIva.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+		tarifaIce.setCodigo(txtCodigo.getText());
+		tarifaIce.setNombre(txtNombre.getText());
+		tarifaIce.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
 	}
 
 	private void limpiarCampos() {
-		tarifaIva = new TarifaIva();
+		tarifaIce = new TarifaIce();
 		txtCodigo.setText("");
 		txtNombre.setText("");
 		txtPorcentaje.setText("0");
@@ -188,7 +188,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 		txtCodigo.requestFocus();
 	}
 
-	private boolean camposLlenosTarifaIva() {
+	private boolean camposLlenosTarifaIce() {
 		boolean llenos = true;
 		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
 			llenos = false;
@@ -203,7 +203,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
 		llenarEntidadAntesDeGuardar();
-		if (camposLlenosTarifaIva()) {
+		if (camposLlenosTarifaIce()) {
 			if (btnGuardar.getText().toLowerCase().equals("actualizar")) {
 				actualizar();
 			} else {
@@ -217,7 +217,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void btnEliminarClick(ActionEvent event) {
 		Optional<ButtonType> result = AlertsUtil
-				.alertConfirmation("Está seguro que desea eliminar: \n" + tarifaIva.getNombre());
+				.alertConfirmation("Está seguro que desea eliminar: \n" + tarifaIce.getNombre());
 		if (result.get() == ButtonType.OK) {
 			eliminar();
 		}
@@ -231,12 +231,12 @@ public class TarifaIvaListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TarifaIva> tarifaIvaList = tarifaIvaController.getTarifaIvaList(txtBuscar.getText());
-		if (tarifaIvaList != null) {
-			tarifaIvasList = FXCollections.observableList(tarifaIvaList);
-			tblLista.setItems(tarifaIvasList);
+		List<TarifaIce> tarifaIceList = tarifaIceController.getTarifaIceList(txtBuscar.getText());
+		if (tarifaIceList != null) {
+			tarifaIcesList = FXCollections.observableList(tarifaIceList);
+			tblLista.setItems(tarifaIcesList);
 		} else {
-			tarifaIvasList.clear();
+			tarifaIcesList.clear();
 		}
 		btnNuevoClick(null);
 		tblLista.requestFocus();
