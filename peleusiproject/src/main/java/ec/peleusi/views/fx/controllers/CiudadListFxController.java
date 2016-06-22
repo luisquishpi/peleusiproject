@@ -13,7 +13,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Pagination;
@@ -24,10 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-
 
 public class CiudadListFxController extends AnchorPane {
 
@@ -36,12 +33,7 @@ public class CiudadListFxController extends AnchorPane {
 	@FXML
 	private TextField txtBuscar;
 	@FXML
-	private TableView<Ciudad> tblLista;
-	@FXML
-	TableColumn<Ciudad, Integer> idCol;
-	@FXML
-	TableColumn<Ciudad, String> nombreCol;
-
+	VBox vbParaTabla;
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -52,21 +44,16 @@ public class CiudadListFxController extends AnchorPane {
 	private Button btnCancelar;
 
 	ObservableList<Ciudad> ciudadesList;
+	private TableView<Ciudad> tblLista;
 	private Integer posicionObjetoEnTabla;
 	private CiudadController ciudadController = new CiudadController();
 	private String error = null;
 	private Ciudad ciudad;
+	Pagination pagination;
 
 	@FXML
 	private void initialize() {
-
-		ciudadesList = FXCollections.observableList(ciudadController.ciudadList());
-		tblLista.setItems(ciudadesList);
-
-		nombreCol.setCellValueFactory(new PropertyValueFactory<Ciudad, String>("nombre"));
-
-		final ObservableList<Ciudad> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
-		tblListaObs.addListener(escuchaCambiosEnTabla);
+		crearTabla();
 
 		Platform.runLater(new Runnable() {
 			@Override
@@ -74,33 +61,24 @@ public class CiudadListFxController extends AnchorPane {
 				btnNuevoClick(null);
 			}
 		});
-		
-		Pagination paginacion=new Pagination((ciudadesList.size()/ rowsPerPage() + 1),0);
-		paginacion.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer pageIndex) {
-                if (pageIndex > ciudadesList.size() / rowsPerPage() + 1) {
-                    return null;
-                } else {
-                    return createPage(pageIndex);
-                }
-            }
-        });
-		
-		
-	}
-	private Node createPage(int pageIndex) {
 
-	    int fromIndex = pageIndex * rowsPerPage();
-	    int toIndex = Math.min(fromIndex + rowsPerPage(), ciudadesList.size());
-	    tblLista.setItems(FXCollections.observableArrayList(ciudadesList.subList(fromIndex, toIndex)));
-
-	    return new BorderPane((Node) ciudadesList);
 	}
 
-	 public int rowsPerPage() {
-	        return 3;
-	    }
+	private void crearTabla() {
+		tblLista = new TableView<Ciudad>();
+		TableColumn<Ciudad, String> nombreCol = new TableColumn<Ciudad, String>("Nombre");
+		nombreCol.setCellValueFactory(new PropertyValueFactory<Ciudad, String>("nombre"));
+		nombreCol.setPrefWidth(350);
+		tblLista.getColumns().add(nombreCol);
+		ciudadesList = FXCollections.observableList(ciudadController.ciudadList());
+		tblLista.setItems(ciudadesList);
+		vbParaTabla.getChildren().add(tblLista);
+		final ObservableList<Ciudad> ciudadesListSelected = tblLista.getSelectionModel().getSelectedItems();
+		ciudadesListSelected.addListener(escuchaCambiosEnTabla);
+		tblLista.setOnKeyReleased(event -> {
+			TableViewUtils.tblListaReleased(event, txtBuscar);
+		});
+	}
 
 	private final ListChangeListener<Ciudad> escuchaCambiosEnTabla = new ListChangeListener<Ciudad>() {
 		@Override
@@ -108,15 +86,6 @@ public class CiudadListFxController extends AnchorPane {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
 	};
-
-	public Object getObjetoSeleccionadoDeTabla() {
-		if (tblLista != null) {
-			if (tblLista.getSelectionModel().getSelectedItems().size() >= 1) {
-				return tblLista.getSelectionModel().getSelectedItems().get(0);
-			}
-		}
-		return null;
-	}
 
 	private void cargarObjetoSeleccionadaEnFormulario() {
 		ciudad = (Ciudad) getObjetoSeleccionadoDeTabla();
@@ -127,6 +96,15 @@ public class CiudadListFxController extends AnchorPane {
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
 		}
+	}
+
+	public Object getObjetoSeleccionadoDeTabla() {
+		if (tblLista != null) {
+			if (tblLista.getSelectionModel().getSelectedItems().size() >= 1) {
+				return tblLista.getSelectionModel().getSelectedItems().get(0);
+			}
+		}
+		return null;
 	}
 
 	private void guardarNuevo() {
@@ -220,12 +198,6 @@ public class CiudadListFxController extends AnchorPane {
 			btnBuscarClick(null);
 		}
 	}
-
-	@FXML
-	private void tblListaReleased(KeyEvent event) {
-		TableViewUtils.tblListaReleased(event,txtBuscar);
-	}
-	
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;

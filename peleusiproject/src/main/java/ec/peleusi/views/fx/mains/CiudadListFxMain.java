@@ -19,7 +19,6 @@ public class CiudadListFxMain extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/CiudadListFx.fxml"));
 		loader.setController(new CiudadListFxController());
 		parent = (Parent) loader.load();
-		
 		stage.setScene(new Scene(parent));
 		stage.show();
 		/*

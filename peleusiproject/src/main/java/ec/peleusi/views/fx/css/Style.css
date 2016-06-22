@@ -28,6 +28,9 @@ GridPane {
 
 TableView {
 	-fx-background-color: #ffffff;
+	-fx-max-width:5000;
+	-fx-max-height:5000;
+	-fx-pref-height:5000;
 }
 #btnNuevo {
 	-fx-background-image: url('../images/fx-new.png');
