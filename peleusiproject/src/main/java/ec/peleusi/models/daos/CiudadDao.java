@@ -20,7 +20,7 @@ public class CiudadDao extends GenericDao<Ciudad, Integer> {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			session.beginTransaction();
-			Query query = session.createQuery("from Ciudad T WHERE CONCAT(T.id,T.nombre) LIKE CONCAT('%', :parametro, '%')");
+			Query query = session.createQuery("from Ciudad T WHERE T.nombre LIKE CONCAT('%', :parametro, '%')");
 			query.setParameter("parametro", parametro); 
 			if (!query.list().isEmpty()) {
 				return query.list();

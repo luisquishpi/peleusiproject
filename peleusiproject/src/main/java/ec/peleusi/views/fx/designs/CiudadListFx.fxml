@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -52,7 +53,11 @@
                         </GridPane>
                      </top>
                      <center>
-                        <VBox fx:id="vbParaTabla" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+                        <VBox fx:id="vbParaTabla" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Pagination fx:id="pagination" maxHeight="1.7976931348623157E308" prefHeight="5000.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
                      </center>
                   </BorderPane>
                </children>

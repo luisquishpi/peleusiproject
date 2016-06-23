@@ -13,6 +13,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Pagination;
@@ -25,6 +26,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class CiudadListFxController extends AnchorPane {
 
@@ -42,26 +44,53 @@ public class CiudadListFxController extends AnchorPane {
 	private Button btnEliminar;
 	@FXML
 	private Button btnCancelar;
+	@FXML
+	private TableView<Ciudad> tblLista;
+	@FXML
+	private Pagination pagination;
 
 	ObservableList<Ciudad> ciudadesList;
-	private TableView<Ciudad> tblLista;
 	private Integer posicionObjetoEnTabla;
 	private CiudadController ciudadController = new CiudadController();
 	private String error = null;
 	private Ciudad ciudad;
-	Pagination pagination;
+	final static int rowsPerPage = 100;
 
 	@FXML
 	private void initialize() {
 		crearTabla();
-
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				btnNuevoClick(null);
 			}
 		});
+		paginar();
+	}
 
+	private void paginar() {
+		int count = ciudadesList.size() / rowsPerPage;
+		if (count < ((double) (ciudadesList.size()) / rowsPerPage))
+			count++;
+		if (count == 0 && ciudadesList.size() > 0)
+			count++;
+		if (ciudadesList.size() > 0) {
+			pagination.setVisible(true);
+			pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
+			pagination.setPageCount(count);
+			// pagination.setPageFactory(this::createSubList);
+			pagination.setPageFactory(new Callback<Integer, Node>() {
+				public Node call(Integer pageIndex) {
+					int fromIndex = pageIndex * rowsPerPage;
+					int toIndex = Math.min(fromIndex + rowsPerPage, ciudadesList.size());
+					tblLista.setItems(FXCollections.observableArrayList(ciudadesList.subList(fromIndex, toIndex)));
+					return tblLista;
+				}
+			});
+
+		} else {
+			pagination.setVisible(false);
+		}
 	}
 
 	private void crearTabla() {
@@ -72,7 +101,6 @@ public class CiudadListFxController extends AnchorPane {
 		tblLista.getColumns().add(nombreCol);
 		ciudadesList = FXCollections.observableList(ciudadController.ciudadList());
 		tblLista.setItems(ciudadesList);
-		vbParaTabla.getChildren().add(tblLista);
 		final ObservableList<Ciudad> ciudadesListSelected = tblLista.getSelectionModel().getSelectedItems();
 		ciudadesListSelected.addListener(escuchaCambiosEnTabla);
 		tblLista.setOnKeyReleased(event -> {
@@ -112,6 +140,8 @@ public class CiudadListFxController extends AnchorPane {
 		if (error == null) {
 			ciudadesList.add(ciudad);
 			AlertsUtil.alertExito("Guardado correctamente");
+			txtBuscar.setText(txtNombre.getText());
+			btnBuscarClick(null);
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -123,6 +153,8 @@ public class CiudadListFxController extends AnchorPane {
 		if (error == null) {
 			ciudadesList.set(posicionObjetoEnTabla, ciudad);
 			AlertsUtil.alertExito("Actualizado correctamente");
+			txtBuscar.setText(txtNombre.getText());
+			btnBuscarClick(null);
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -182,6 +214,7 @@ public class CiudadListFxController extends AnchorPane {
 		} else {
 			ciudadesList.clear();
 		}
+		paginar();
 		btnNuevoClick(null);
 		tblLista.requestFocus();
 	}
