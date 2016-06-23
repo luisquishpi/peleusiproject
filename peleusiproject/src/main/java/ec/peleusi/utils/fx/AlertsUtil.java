@@ -19,7 +19,7 @@ public class AlertsUtil {
 		 */
 		TrayNotification tr = new TrayNotification("Éxito", mensaje, Notifications.SUCCESS);
 		tr.setAnimation(Animations.FADE);
-		tr.showAndDismiss(new Duration(900));
+		tr.showAndDismiss(new Duration(700));
 	}
 
 	public static void alertError(String mensaje) {
@@ -30,7 +30,7 @@ public class AlertsUtil {
 		 */
 		TrayNotification tr = new TrayNotification("Error", mensaje, Notifications.ERROR);
 		tr.setAnimation(Animations.FADE);
-		tr.showAndDismiss(new Duration(900));
+		tr.showAndDismiss(new Duration(700));
 	}
 
 	public static void alertInformation(String mensaje) {
@@ -41,15 +41,7 @@ public class AlertsUtil {
 		 */
 		TrayNotification tr = new TrayNotification("Información", mensaje, Notifications.INFORMATION);
 		tr.setAnimation(Animations.FADE);
-		tr.showAndDismiss(new Duration(900));
-	}
-
-	public static Optional<ButtonType> alertConfirmation(String mensaje) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Confirmación");
-		alert.setHeaderText(null);
-		alert.setContentText(mensaje);
-		return alert.showAndWait();
+		tr.showAndDismiss(new Duration(700));
 	}
 
 	public static void alertWarning(String mensaje) {
@@ -60,15 +52,23 @@ public class AlertsUtil {
 		 */
 		TrayNotification tr = new TrayNotification("Advertencia", mensaje, Notifications.WARNING);
 		tr.setAnimation(Animations.FADE);
-		tr.showAndDismiss(new Duration(900));
+		tr.showAndDismiss(new Duration(700));
 
 	}
 
 	public static void alertNotice(String mensaje) {
 		TrayNotification tr = new TrayNotification("Notificación", mensaje, Notifications.NOTICE);
 		tr.setAnimation(Animations.FADE);
-		tr.showAndDismiss(new Duration(900));
+		tr.showAndDismiss(new Duration(700));
 
+	}
+
+	public static Optional<ButtonType> alertConfirmation(String mensaje) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirmación");
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+		return alert.showAndWait();
 	}
 
 }

@@ -17,8 +17,11 @@ public class CustomStage extends Stage {
 		setSize(ap.getPrefWidth(), ap.getPrefHeight());
 
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-		double x = screenBounds.getMinX() + screenBounds.getWidth() - ap.getPrefWidth() - 2;
-		double y = screenBounds.getMinY() + screenBounds.getHeight() - ap.getPrefHeight() - 2;
+		//double x = screenBounds.getMinX() + screenBounds.getWidth() - ap.getPrefWidth() - 2;
+		//double y = screenBounds.getMinY() + screenBounds.getHeight() - ap.getPrefHeight() - 2;
+		double x = (screenBounds.getMinX() + screenBounds.getWidth() - ap.getPrefWidth() - 2)-10;
+		double y = (screenBounds.getMinY() + screenBounds.getHeight() - ap.getPrefHeight() - 2)-20;
+		//double y = 25;
 
 		bottomRight = Location.at(x, y);
 	}
