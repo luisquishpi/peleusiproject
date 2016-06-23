@@ -2,8 +2,9 @@ package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
 import java.util.Optional;
-import ec.peleusi.controllers.TarifaIceController;
-import ec.peleusi.models.entities.TarifaIce;
+
+import ec.peleusi.controllers.TipoPagoController;
+import ec.peleusi.models.entities.TipoPago;
 import ec.peleusi.utils.fx.AlertsUtil;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.application.Platform;
@@ -23,25 +24,17 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class TarifaIceListFxController extends AnchorPane {
-	@FXML
-	private TextField txtCodigo;
+public class TipoPagoListFxController extends AnchorPane {
 	@FXML
 	private TextField txtNombre;
 	@FXML
-	private TextField txtPorcentaje;
-	@FXML
 	private TextField txtBuscar;
 	@FXML
-	private TableView<TarifaIce> tblLista;
+	private TableView<TipoPago> tblLista;
 	@FXML
-	TableColumn<TarifaIce, Integer> idCol;
+	TableColumn<TipoPago, Integer> idCol;
 	@FXML
-	TableColumn<TarifaIce, String> codigoCol;
-	@FXML
-	TableColumn<TarifaIce, String> nombreCol;
-	@FXML
-	TableColumn<TarifaIce, Double> porcentajeCol;
+	TableColumn<TipoPago, String> nombreCol;
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -52,25 +45,22 @@ public class TarifaIceListFxController extends AnchorPane {
 	private Button btnCancelar;
 	@FXML
 	private Button btnBuscar;
-
-	ObservableList<TarifaIce> tarifaIcesList;
+	ObservableList<TipoPago> tipoPagosList;
 	private Integer posicionObjetoEnTabla;
-	private TarifaIce tarifaIce;
-	private TarifaIceController tarifaIceController = new TarifaIceController();
+	private TipoPago tipoPago;
+	private TipoPagoController tipoPagoController = new TipoPagoController();
 	private String error = null;
 
 	@FXML
 	private void initialize() {
-		tarifaIcesList = FXCollections.observableList(tarifaIceController.tarifaIceList());
-		tblLista.setItems(tarifaIcesList);
+		tipoPagosList = FXCollections.observableList(tipoPagoController.tipoPagoList());
+		tblLista.setItems(tipoPagosList);
 		idCol.setMinWidth(0);
 		idCol.setMaxWidth(0);
 		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, Integer>("id"));
-		codigoCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, String>("codigo"));
-		nombreCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, String>("nombre"));
-		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIce, Double>("porcentaje"));
-		final ObservableList<TarifaIce> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
+		idCol.setCellValueFactory(new PropertyValueFactory<TipoPago, Integer>("id"));
+		nombreCol.setCellValueFactory(new PropertyValueFactory<TipoPago, String>("nombre"));
+		final ObservableList<TipoPago> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
 
 		Platform.runLater(new Runnable() {
@@ -81,9 +71,9 @@ public class TarifaIceListFxController extends AnchorPane {
 		});
 	}
 
-	private final ListChangeListener<TarifaIce> escuchaCambiosEnTabla = new ListChangeListener<TarifaIce>() {
+	private final ListChangeListener<TipoPago> escuchaCambiosEnTabla = new ListChangeListener<TipoPago>() {
 		@Override
-		public void onChanged(ListChangeListener.Change<? extends TarifaIce> c) {
+		public void onChanged(ListChangeListener.Change<? extends TipoPago> c) {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
 	};
@@ -98,12 +88,10 @@ public class TarifaIceListFxController extends AnchorPane {
 	}
 
 	private void cargarObjetoSeleccionadaEnFormulario() {
-		tarifaIce = (TarifaIce) getObjetoSeleccionadoDeTabla();
-		if (tarifaIce != null) {
-			posicionObjetoEnTabla = tarifaIcesList.indexOf(tarifaIce);
-			txtCodigo.setText(tarifaIce.getCodigo());
-			txtNombre.setText(tarifaIce.getNombre());
-			txtPorcentaje.setText(Double.toString(tarifaIce.getPorcentaje()));
+		tipoPago = (TipoPago) getObjetoSeleccionadoDeTabla();
+		if (tipoPago != null) {
+			posicionObjetoEnTabla = tipoPagosList.indexOf(tipoPago);
+			txtNombre.setText(tipoPago.getNombre());
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -111,9 +99,9 @@ public class TarifaIceListFxController extends AnchorPane {
 	}
 
 	private void guardarNuevo() {
-		error = tarifaIceController.createTarifaIce(tarifaIce);
+		error = tipoPagoController.createTipoPago(tipoPago);
 		if (error == null) {
-			tarifaIcesList.add(tarifaIce);
+			tipoPagosList.add(tipoPago);
 			AlertsUtil.alertExito("Guardado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -122,9 +110,9 @@ public class TarifaIceListFxController extends AnchorPane {
 	}
 
 	private void actualizar() {
-		error = tarifaIceController.updateTarifaIce(tarifaIce);
+		error = tipoPagoController.updateTipoPago(tipoPago);
 		if (error == null) {
-			tarifaIcesList.set(posicionObjetoEnTabla, tarifaIce);
+			tipoPagosList.set(posicionObjetoEnTabla, tipoPago);
 			AlertsUtil.alertExito("Actualizado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -133,9 +121,9 @@ public class TarifaIceListFxController extends AnchorPane {
 	}
 
 	private void eliminar() {
-		error = tarifaIceController.deleteTarifaIce(tarifaIce);
+		error = tipoPagoController.deleteTipoPago(tipoPago);
 		if (error == null) {
-			tarifaIcesList.remove(getObjetoSeleccionadoDeTabla());
+			tipoPagosList.remove(getObjetoSeleccionadoDeTabla());
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -143,25 +131,21 @@ public class TarifaIceListFxController extends AnchorPane {
 	}
 
 	private void llenarEntidadAntesDeGuardar() {
-		tarifaIce.setCodigo(txtCodigo.getText());
-		tarifaIce.setNombre(txtNombre.getText());
-		tarifaIce.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+		tipoPago.setNombre(txtNombre.getText());
 	}
 
 	private void limpiarCampos() {
-		tarifaIce = new TarifaIce();
-		txtCodigo.setText("");
+		tipoPago = new TipoPago();
 		txtNombre.setText("");
-		txtPorcentaje.setText("0");
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
-		txtCodigo.requestFocus();
+		txtNombre.requestFocus();
 	}
 
-	private boolean camposLlenosTarifaIce() {
+	private boolean camposLlenosTipoPago() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+		if (txtNombre.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
@@ -174,7 +158,7 @@ public class TarifaIceListFxController extends AnchorPane {
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
 		llenarEntidadAntesDeGuardar();
-		if (camposLlenosTarifaIce()) {
+		if (camposLlenosTipoPago()) {
 			if (btnGuardar.getText().toLowerCase().equals("actualizar")) {
 				actualizar();
 			} else {
@@ -188,7 +172,7 @@ public class TarifaIceListFxController extends AnchorPane {
 	@FXML
 	private void btnEliminarClick(ActionEvent event) {
 		Optional<ButtonType> result = AlertsUtil
-				.alertConfirmation("Está seguro que desea eliminar: \n" + tarifaIce.getNombre());
+				.alertConfirmation("Está seguro que desea eliminar: \n" + tipoPago.getNombre());
 		if (result.get() == ButtonType.OK) {
 			eliminar();
 		}
@@ -202,12 +186,12 @@ public class TarifaIceListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TarifaIce> tarifaIceList = tarifaIceController.getTarifaIceList(txtBuscar.getText());
+		List<TipoPago> tarifaIceList = tipoPagoController.getTipoPagoList(txtBuscar.getText());
 		if (tarifaIceList != null) {
-			tarifaIcesList = FXCollections.observableList(tarifaIceList);
-			tblLista.setItems(tarifaIcesList);
+			tipoPagosList = FXCollections.observableList(tarifaIceList);
+			tblLista.setItems(tipoPagosList);
 		} else {
-			tarifaIcesList.clear();
+			tipoPagosList.clear();
 		}
 		btnNuevoClick(null);
 		tblLista.requestFocus();
@@ -224,4 +208,5 @@ public class TarifaIceListFxController extends AnchorPane {
 	private void tblListaReleased(KeyEvent event) {
 		TableViewUtils.tblListaReleased(event, txtBuscar);
 	}
+
 }

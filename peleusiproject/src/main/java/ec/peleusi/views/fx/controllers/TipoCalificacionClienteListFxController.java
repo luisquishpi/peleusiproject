@@ -13,10 +13,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,9 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class TipoCalificacionClienteListFxController extends AnchorPane {
 	@FXML
@@ -57,7 +53,8 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 
 	@FXML
 	private void initialize() {
-		tipoCalificacionClientesList = FXCollections.observableList(tipoCalificacionClienteController.tipoCalificacionClienteList());
+		tipoCalificacionClientesList = FXCollections
+				.observableList(tipoCalificacionClienteController.tipoCalificacionClienteList());
 		tblLista.setItems(tipoCalificacionClientesList);
 		idCol.setMinWidth(0);
 		idCol.setMaxWidth(0);
@@ -66,39 +63,15 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 		nombreCol.setCellValueFactory(new PropertyValueFactory<TipoCalificacionCliente, String>("nombre"));
 		final ObservableList<TipoCalificacionCliente> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
-		
+
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				btnNuevoClick(null);
 			}
 		});
-	
-		Pagination paginacion=new Pagination((tipoCalificacionClientesList.size()/ rowsPerPage() + 1),0);
-		paginacion.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer pageIndex) {
-                if (pageIndex > tipoCalificacionClientesList.size() / rowsPerPage() + 1) {
-                    return null;
-                } else {
-                    return createPage(pageIndex);
-                }
-            }
-        });
 	}
 
-	private Node createPage(int pageIndex) {
-
-	    int fromIndex = pageIndex * rowsPerPage();
-	    int toIndex = Math.min(fromIndex + rowsPerPage(), tipoCalificacionClientesList.size());
-	    tblLista.setItems(FXCollections.observableArrayList(tipoCalificacionClientesList.subList(fromIndex, toIndex)));
-
-	    return new BorderPane((Node) tipoCalificacionClientesList);
-	}
-	
-	public int rowsPerPage() {
-        return 3;
-    }
 	private final ListChangeListener<TipoCalificacionCliente> escuchaCambiosEnTabla = new ListChangeListener<TipoCalificacionCliente>() {
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends TipoCalificacionCliente> c) {
@@ -160,7 +133,7 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 
 	private void llenarEntidadAntesDeGuardar() {
 		tipoCalificacionCliente.setNombre(txtNombre.getText());
-		}
+	}
 
 	private void limpiarCampos() {
 		tipoCalificacionCliente = new TipoCalificacionCliente();
@@ -171,7 +144,7 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 		txtNombre.requestFocus();
 	}
 
-	private boolean camposLlenosTarifaIce() {
+	private boolean camposLlenosTipoCalificacionCliente() {
 		boolean llenos = true;
 		if (txtNombre.getText().isEmpty())
 			llenos = false;
@@ -186,7 +159,7 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
 		llenarEntidadAntesDeGuardar();
-		if (camposLlenosTarifaIce()) {
+		if (camposLlenosTipoCalificacionCliente()) {
 			if (btnGuardar.getText().toLowerCase().equals("actualizar")) {
 				actualizar();
 			} else {
@@ -214,7 +187,8 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TipoCalificacionCliente> tarifaIceList = tipoCalificacionClienteController.getTipoCalificacionClienteList(txtBuscar.getText());
+		List<TipoCalificacionCliente> tarifaIceList = tipoCalificacionClienteController
+				.getTipoCalificacionClienteList(txtBuscar.getText());
 		if (tarifaIceList != null) {
 			tipoCalificacionClientesList = FXCollections.observableList(tarifaIceList);
 			tblLista.setItems(tipoCalificacionClientesList);
@@ -228,13 +202,13 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 	@FXML
 	private void txtBuscarReleased(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
-			btnBuscarClick(null);			
+			btnBuscarClick(null);
 		}
 	}
 
 	@FXML
 	private void tblListaReleased(KeyEvent event) {
-		TableViewUtils.tblListaReleased(event,txtBuscar);
+		TableViewUtils.tblListaReleased(event, txtBuscar);
 	}
 
 }
