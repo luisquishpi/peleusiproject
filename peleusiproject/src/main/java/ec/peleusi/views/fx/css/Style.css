@@ -20,6 +20,21 @@
 	-fx-alignment: bottom_center;
     /*-fx-border-color: #000;*/
 }
+.ButtonImageOnly {
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center 8;
+	-fx-padding: 5 5 5 5;
+	/*-fx-text-fill: #336699;*/
+	-fx-border-radius: 5;
+	-fx-background-radius: 5;
+	-fx-max-height: 50px;
+	-fx-pref-height: 50px;
+	-fx-max-width: 60px;
+	-fx-pref-width: 60px;
+	-fx-font-size: 14;
+	-fx-alignment: bottom_center;
+    /*-fx-border-color: #000;*/
+}
 GridPane {
 	-fx-padding: 15 10 15 10;
 	-fx-hgap: 5;
@@ -58,6 +73,12 @@ TableView {
 
 #btnSalir {
 	-fx-background-image: url('../images/fx-exit.png');
+}
+#btnCargarImagen {
+	-fx-background-image: url('../images/fx-load-image.png');
+}
+#btnEliminarImagen {
+	-fx-background-image: url('../images/fx-delete-image.png');
 }
 #txtBuscar {
 	-fx-max-height: 40px;
