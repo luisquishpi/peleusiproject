@@ -139,10 +139,10 @@ public class CiudadListFxController extends AnchorPane {
 		error = ciudadController.createCiudad(ciudad);
 		if (error == null) {
 			ciudadesList.add(ciudad);
-			AlertsUtil.alertExito("Guardado correctamente");
 			txtBuscar.setText(txtNombre.getText());
 			btnBuscarClick(null);
 			btnNuevoClick(null);
+			AlertsUtil.alertExito("Guardado correctamente");
 		} else {
 			AlertsUtil.alertError(error);
 		}
@@ -152,10 +152,10 @@ public class CiudadListFxController extends AnchorPane {
 		error = ciudadController.updateCiudad(ciudad);
 		if (error == null) {
 			ciudadesList.set(posicionObjetoEnTabla, ciudad);
-			AlertsUtil.alertExito("Actualizado correctamente");
 			txtBuscar.setText(txtNombre.getText());
 			btnBuscarClick(null);
 			btnNuevoClick(null);
+			AlertsUtil.alertExito("Actualizado correctamente");
 		} else {
 			AlertsUtil.alertError(error);
 		}
@@ -165,6 +165,7 @@ public class CiudadListFxController extends AnchorPane {
 		error = ciudadController.deleteCiudad(ciudad);
 		if (error == null) {
 			ciudadesList.remove(getObjetoSeleccionadoDeTabla());
+			btnBuscarClick(null);
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
