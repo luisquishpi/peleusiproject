@@ -2,8 +2,8 @@ package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
 import java.util.Optional;
-import ec.peleusi.controllers.TarifaIvaController;
-import ec.peleusi.models.entities.TarifaIva;
+import ec.peleusi.controllers.TipoPrecioController;
+import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.utils.fx.AlertsUtil;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.application.Platform;
@@ -23,9 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class TarifaIvaListFxController extends AnchorPane {
-	@FXML
-	private TextField txtCodigo;
+public class TipoPrecioListFxController extends AnchorPane {
 	@FXML
 	private TextField txtNombre;
 	@FXML
@@ -33,15 +31,13 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private TextField txtBuscar;
 	@FXML
-	private TableView<TarifaIva> tblLista;
+	private TableView<TipoPrecio> tblLista;
 	@FXML
-	TableColumn<TarifaIva, Integer> idCol;
+	TableColumn<TipoPrecio, String> idCol;
 	@FXML
-	TableColumn<TarifaIva, String> codigoCol;
+	TableColumn<TipoPrecio, String> nombreCol;
 	@FXML
-	TableColumn<TarifaIva, String> nombreCol;
-	@FXML
-	TableColumn<TarifaIva, Double> porcentajeCol;
+	TableColumn<TipoPrecio, Double> porcentajeCol;
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -53,24 +49,22 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private Button btnBuscar;
 
-	ObservableList<TarifaIva> tarifaIvasList;
+	ObservableList<TipoPrecio> tipoPreciosList;
 	private Integer posicionObjetoEnTabla;
-	private TarifaIva tarifaIva;
-	private TarifaIvaController tarifaIvaController = new TarifaIvaController();
+	private TipoPrecio tipoPrecio;
+	private TipoPrecioController tipoPrecioController = new TipoPrecioController();
 	private String error = null;
 
 	@FXML
 	private void initialize() {
-		tarifaIvasList = FXCollections.observableList(tarifaIvaController.tarifaIvaList());
-		tblLista.setItems(tarifaIvasList);
+		tipoPreciosList = FXCollections.observableList(tipoPrecioController.tipoPrecioList());
+		tblLista.setItems(tipoPreciosList);
 		idCol.setMinWidth(0);
 		idCol.setMaxWidth(0);
 		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Integer>("id"));
-		codigoCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("codigo"));
-		nombreCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("nombre"));
-		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Double>("porcentaje"));
-		final ObservableList<TarifaIva> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
+		nombreCol.setCellValueFactory(new PropertyValueFactory<TipoPrecio, String>("nombre"));
+		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TipoPrecio, Double>("porcentaje"));
+		final ObservableList<TipoPrecio> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
 
 		Platform.runLater(new Runnable() {
@@ -81,9 +75,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 		});
 	}
 
-	private final ListChangeListener<TarifaIva> escuchaCambiosEnTabla = new ListChangeListener<TarifaIva>() {
+	private final ListChangeListener<TipoPrecio> escuchaCambiosEnTabla = new ListChangeListener<TipoPrecio>() {
 		@Override
-		public void onChanged(ListChangeListener.Change<? extends TarifaIva> c) {
+		public void onChanged(ListChangeListener.Change<? extends TipoPrecio> c) {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
 	};
@@ -98,12 +92,11 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void cargarObjetoSeleccionadaEnFormulario() {
-		tarifaIva = (TarifaIva) getObjetoSeleccionadoDeTabla();
-		if (tarifaIva != null) {
-			posicionObjetoEnTabla = tarifaIvasList.indexOf(tarifaIva);
-			txtCodigo.setText(tarifaIva.getCodigo());
-			txtNombre.setText(tarifaIva.getNombre());
-			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));
+		tipoPrecio = (TipoPrecio) getObjetoSeleccionadoDeTabla();
+		if (tipoPrecio != null) {
+			posicionObjetoEnTabla = tipoPreciosList.indexOf(tipoPrecio);
+			txtNombre.setText(tipoPrecio.getNombre());
+			txtPorcentaje.setText(Double.toString(tipoPrecio.getPorcentaje()));
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -111,9 +104,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void guardarNuevo() {
-		error = tarifaIvaController.createTarifaIva(tarifaIva);
+		error = tipoPrecioController.createTipoPrecio(tipoPrecio);
 		if (error == null) {
-			tarifaIvasList.add(tarifaIva);
+			tipoPreciosList.add(tipoPrecio);
 			AlertsUtil.alertExito("Guardado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -122,9 +115,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void actualizar() {
-		error = tarifaIvaController.updateTarifaIva(tarifaIva);
+		error = tipoPrecioController.updateTipoPrecio(tipoPrecio);
 		if (error == null) {
-			tarifaIvasList.set(posicionObjetoEnTabla, tarifaIva);
+			tipoPreciosList.set(posicionObjetoEnTabla, tipoPrecio);
 			AlertsUtil.alertExito("Actualizado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -133,9 +126,9 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void eliminar() {
-		error = tarifaIvaController.deleteTarifaIva(tarifaIva);
+		error = tipoPrecioController.deleteTipoPrecio(tipoPrecio);
 		if (error == null) {
-			tarifaIvasList.remove(getObjetoSeleccionadoDeTabla());
+			tipoPreciosList.remove(getObjetoSeleccionadoDeTabla());
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -143,25 +136,23 @@ public class TarifaIvaListFxController extends AnchorPane {
 	}
 
 	private void llenarEntidadAntesDeGuardar() {
-		tarifaIva.setCodigo(txtCodigo.getText());
-		tarifaIva.setNombre(txtNombre.getText());
-		tarifaIva.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+		tipoPrecio.setNombre(txtNombre.getText());
+		tipoPrecio.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
 	}
 
 	private void limpiarCampos() {
-		tarifaIva = new TarifaIva();
-		txtCodigo.setText("");
+		tipoPrecio = new TipoPrecio();
 		txtNombre.setText("");
 		txtPorcentaje.setText("0");
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
-		txtCodigo.requestFocus();
+		txtNombre.requestFocus();
 	}
 
-	private boolean camposLlenosTarifaIva() {
+	private boolean camposLlenosTipoPrecio() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+		if (txtNombre.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
@@ -174,7 +165,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
 		llenarEntidadAntesDeGuardar();
-		if (camposLlenosTarifaIva()) {
+		if (camposLlenosTipoPrecio()) {
 			if (btnGuardar.getText().toLowerCase().equals("actualizar")) {
 				actualizar();
 			} else {
@@ -188,7 +179,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void btnEliminarClick(ActionEvent event) {
 		Optional<ButtonType> result = AlertsUtil
-				.alertConfirmation("Está seguro que desea eliminar: \n" + tarifaIva.getNombre());
+				.alertConfirmation("Está seguro que desea eliminar: \n" + tipoPrecio.getNombre());
 		if (result.get() == ButtonType.OK) {
 			eliminar();
 		}
@@ -202,12 +193,12 @@ public class TarifaIvaListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TarifaIva> tarifaIvaList = tarifaIvaController.getTarifaIvaList(txtBuscar.getText());
-		if (tarifaIvaList != null) {
-			tarifaIvasList = FXCollections.observableList(tarifaIvaList);
-			tblLista.setItems(tarifaIvasList);
+		List<TipoPrecio> tipoPrecioList = tipoPrecioController.getTipoPrecioList(txtBuscar.getText());
+		if (tipoPrecioList != null) {
+			tipoPreciosList = FXCollections.observableList(tipoPrecioList);
+			tblLista.setItems(tipoPreciosList);
 		} else {
-			tarifaIvasList.clear();
+			tipoPreciosList.clear();
 		}
 		btnNuevoClick(null);
 		tblLista.requestFocus();

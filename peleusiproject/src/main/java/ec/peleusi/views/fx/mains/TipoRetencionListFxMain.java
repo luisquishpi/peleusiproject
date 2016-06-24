@@ -1,23 +1,22 @@
 package ec.peleusi.views.fx.mains;
 
 import java.io.IOException;
-
-import ec.peleusi.views.fx.controllers.TarifaIvaListFxController;
+import ec.peleusi.views.fx.controllers.TipoRetencionListFxController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class TarifaIvaListFxMain extends Application {
+public class TipoRetencionListFxMain extends Application {
 	private static Parent parent;
 	
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/TarifaIvaListFx.fxml"));
-		loader.setController(new TarifaIvaListFxController());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/TipoRetencionListFx.fxml"));
+		loader.setController(new TipoRetencionListFxController());
 		parent = (Parent) loader.load();
-		stage.setTitle("Lista de Tarifa IVA");
+		stage.setTitle("Lista de Tipo Retención");
 		stage.setScene(new Scene(parent));
 		stage.show();
 		/*

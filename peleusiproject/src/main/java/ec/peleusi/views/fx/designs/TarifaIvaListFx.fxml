@@ -33,7 +33,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextField id="txtBuscar" fx:id="txtBuscar" promptText="Buscar">
+                              <TextField id="txtBuscar" fx:id="txtBuscar" onKeyReleased="#txtBuscarReleased" promptText="Escriba código o nombre">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -41,7 +41,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -53,12 +53,12 @@
                         </GridPane>
                      </top>
                      <center>
-                        <TableView fx:id="tblLista" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+                        <TableView fx:id="tblLista" editable="true" onKeyReleased="#tblListaReleased" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                            <columns>
                               <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
-                              <TableColumn fx:id="codigoCol" prefWidth="63.0" text="Código" />
-                              <TableColumn fx:id="nombreCol" prefWidth="209.0" text="Nombre" />
-                              <TableColumn fx:id="porcentajeCol" minWidth="0.0" prefWidth="67.0" text="Porcentaje" />
+                              <TableColumn fx:id="codigoCol" prefWidth="55.0" text="Código" />
+                              <TableColumn fx:id="nombreCol" prefWidth="194.0" text="Nombre" />
+                              <TableColumn fx:id="porcentajeCol" prefWidth="90.0" text="Porcentaje" />
                            </columns></TableView>
                      </center>
                   </BorderPane>
@@ -68,20 +68,20 @@
                <children>
                   <BorderPane layoutX="128.0" layoutY="55.0" prefHeight="398.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <top>
-                        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" BorderPane.alignment="CENTER">
+                        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" styleClass="HBoxBotones" BorderPane.alignment="CENTER">
                            <children>
-                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" text="Nuevo" />
-                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Guardar">
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" onAction="#btnNuevoClick" styleClass="ButtonCRUD" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" onAction="#btnGuardarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Guardar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Eliminar">
+                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Eliminar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" text="Cancelar">
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Cancelar">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -107,11 +107,11 @@
                           </rowConstraints>
                            <children>
                               <Label text="Código" />
-                              <Label layoutX="20.0" layoutY="30.0" text="Nombre" GridPane.rowIndex="1" />
-                              <Label layoutX="20.0" layoutY="59.0" text="Porcentaje" GridPane.rowIndex="2" />
+                              <Label text="Nombre" GridPane.rowIndex="1" />
+                              <Label text="Porcentaje" GridPane.rowIndex="2" />
                               <TextField id="txtCodigo" fx:id="txtCodigo" promptText="Código de Tarifa IVA" GridPane.columnIndex="1" />
-                              <TextField id="txtNombre" fx:id="txtNombre" layoutX="125.0" layoutY="26.0" promptText="Nombre de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" layoutX="125.0" layoutY="55.0" promptText="Porcentaje de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de Tarifa IVA" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

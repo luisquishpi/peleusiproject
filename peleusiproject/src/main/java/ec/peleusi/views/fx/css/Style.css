@@ -5,7 +5,7 @@
     -fx-background: rgb(225, 228, 203);
 }
 */
-Button {
+.ButtonCRUD {
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center 10;
 	-fx-padding: 5 5 3 5;
@@ -28,6 +28,9 @@ GridPane {
 
 TableView {
 	-fx-background-color: #ffffff;
+	-fx-max-width:5000;
+	-fx-max-height:5000;
+	-fx-pref-height:5000;
 }
 #btnNuevo {
 	-fx-background-image: url('../images/fx-new.png');
