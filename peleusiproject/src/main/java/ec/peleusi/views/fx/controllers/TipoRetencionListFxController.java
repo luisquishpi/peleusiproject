@@ -70,8 +70,7 @@ public class TipoRetencionListFxController extends AnchorPane {
 		tipoRetencionsList = FXCollections.observableList(tipoRetencionController.tipoRetencionList());
 		tblLista.setItems(tipoRetencionsList);			
 		codigoCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, String>("codigo"));
-		tipoRetencionCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, TipoRetencionEnum>("tipo"));
-		System.out.println("----" + tipoRetencionCol);
+		tipoRetencionCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, TipoRetencionEnum>("tipoRetencionEnum"));
 		descripcionCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, String>("descripcion"));
 		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, Double>("porcentaje"));
 		final ObservableList<TipoRetencion> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
