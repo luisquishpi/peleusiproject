@@ -32,7 +32,6 @@ public class CiudadListFxController extends AnchorPane {
 	TableColumn<Ciudad, Integer> idCol;
 	@FXML
 	TableColumn<Ciudad, String> nombreCol;
-
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -149,7 +148,6 @@ public class CiudadListFxController extends AnchorPane {
 		}
 
 	}
-
 	@FXML
 	private void btnEliminarClick(ActionEvent event) {
 		Optional<ButtonType> result = AlertsUtil
@@ -158,7 +156,6 @@ public class CiudadListFxController extends AnchorPane {
 			eliminar();
 		}
 	}
-
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
 		List<Ciudad> ciudadList = ciudadController.ciudadList(txtBuscar.getText());
@@ -172,7 +169,6 @@ public class CiudadListFxController extends AnchorPane {
 		}
 		btnNuevoClick(null);
 	}
-
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
 		Stage stage = (Stage) btnCancelar.getScene().getWindow();
