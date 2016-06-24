@@ -33,7 +33,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextField id="txtBuscar" fx:id="txtBuscar" onKeyReleased="#txtBuscarReleased" promptText="Escriba código o nombre">
+                              <TextField id="txtBuscar" fx:id="txtBuscar" onKeyReleased="#txtBuscarReleased" promptText="Escriba nombre o porcentaje">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -56,9 +56,8 @@
                         <TableView fx:id="tblLista" editable="true" onKeyReleased="#tblListaReleased" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                            <columns>
                               <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
-                              <TableColumn fx:id="codigoCol" prefWidth="55.0" text="Código" />
-                              <TableColumn fx:id="nombreCol" prefWidth="194.0" text="Nombre" />
-                              <TableColumn fx:id="porcentajeCol" prefWidth="90.0" text="Porcentaje" />
+                              <TableColumn fx:id="nombreCol" prefWidth="246.0" text="Nombre" />
+                              <TableColumn fx:id="porcentajeCol" prefWidth="86.0" text="Porcentaje" />
                            </columns></TableView>
                      </center>
                   </BorderPane>
@@ -106,12 +105,10 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Código" />
-                              <Label text="Nombre" GridPane.rowIndex="1" />
-                              <Label text="Porcentaje" GridPane.rowIndex="2" />
-                              <TextField id="txtCodigo" fx:id="txtCodigo" promptText="Código de Tarifa ICE" GridPane.columnIndex="1" />
-                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tarifa ICE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de Tarifa ICE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Nombre" />
+                              <Label text="Porcentaje" GridPane.rowIndex="1" />
+                              <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Tipo Precio" GridPane.columnIndex="1" />
+                              <TextField id="txtPorcentaje" fx:id="txtPorcentaje" promptText="Porcentaje de  Tipo Precio" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

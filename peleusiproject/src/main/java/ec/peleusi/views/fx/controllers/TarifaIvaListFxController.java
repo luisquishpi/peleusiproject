@@ -12,10 +12,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,9 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
@@ -56,7 +52,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	private Button btnCancelar;
 	@FXML
 	private Button btnBuscar;
-	
+
 	ObservableList<TarifaIva> tarifaIvasList;
 	private Integer posicionObjetoEnTabla;
 	private TarifaIva tarifaIva;
@@ -66,7 +62,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void initialize() {
 		tarifaIvasList = FXCollections.observableList(tarifaIvaController.tarifaIvaList());
-		tblLista.setItems(tarifaIvasList);		
+		tblLista.setItems(tarifaIvasList);
 		idCol.setMinWidth(0);
 		idCol.setMaxWidth(0);
 		idCol.setPrefWidth(0);
@@ -76,46 +72,21 @@ public class TarifaIvaListFxController extends AnchorPane {
 		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Double>("porcentaje"));
 		final ObservableList<TarifaIva> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
-		
+
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				btnNuevoClick(null);
 			}
 		});
-		
-		Pagination paginacion=new Pagination((tarifaIvasList.size()/ rowsPerPage() + 1),0);
-		paginacion.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer pageIndex) {
-                if (pageIndex > tarifaIvasList.size() / rowsPerPage() + 1) {
-                    return null;
-                } else {
-                    return createPage(pageIndex);
-                }
-            }
-        });
 	}
-	
-	private Node createPage(int pageIndex) {
 
-	    int fromIndex = pageIndex * rowsPerPage();
-	    int toIndex = Math.min(fromIndex + rowsPerPage(), tarifaIvasList.size());
-	    tblLista.setItems(FXCollections.observableArrayList(tarifaIvasList.subList(fromIndex, toIndex)));
-
-	    return new BorderPane((Node) tarifaIvasList);
-	}
-	
-	public int rowsPerPage() {
-        return 3;
-    }
-	
 	private final ListChangeListener<TarifaIva> escuchaCambiosEnTabla = new ListChangeListener<TarifaIva>() {
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends TarifaIva> c) {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
-	};	
+	};
 
 	public Object getObjetoSeleccionadoDeTabla() {
 		if (tblLista != null) {
@@ -132,7 +103,7 @@ public class TarifaIvaListFxController extends AnchorPane {
 			posicionObjetoEnTabla = tarifaIvasList.indexOf(tarifaIva);
 			txtCodigo.setText(tarifaIva.getCodigo());
 			txtNombre.setText(tarifaIva.getNombre());
-			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));			
+			txtPorcentaje.setText(Double.toString(tarifaIva.getPorcentaje()));
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -245,12 +216,12 @@ public class TarifaIvaListFxController extends AnchorPane {
 	@FXML
 	private void txtBuscarReleased(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
-			btnBuscarClick(null);			
+			btnBuscarClick(null);
 		}
 	}
-	
+
 	@FXML
 	private void tblListaReleased(KeyEvent event) {
-		TableViewUtils.tblListaReleased(event,txtBuscar);
+		TableViewUtils.tblListaReleased(event, txtBuscar);
 	}
 }
