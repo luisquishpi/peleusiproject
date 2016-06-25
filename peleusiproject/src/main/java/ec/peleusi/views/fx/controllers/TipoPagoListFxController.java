@@ -186,9 +186,9 @@ public class TipoPagoListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TipoPago> tarifaIceList = tipoPagoController.getTipoPagoList(txtBuscar.getText());
-		if (tarifaIceList != null) {
-			tipoPagosList = FXCollections.observableList(tarifaIceList);
+		List<TipoPago> tipoPagoList = tipoPagoController.getTipoPagoList(txtBuscar.getText());
+		if (tipoPagoList != null) {
+			tipoPagosList = FXCollections.observableList(tipoPagoList);
 			tblLista.setItems(tipoPagosList);
 		} else {
 			tipoPagosList.clear();
