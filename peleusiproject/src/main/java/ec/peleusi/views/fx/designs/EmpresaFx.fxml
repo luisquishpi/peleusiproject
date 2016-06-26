@@ -86,7 +86,7 @@
                                           <TextField fx:id="txtFax" promptText="071234567" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                           <TextField fx:id="txtEmail" promptText="info@laempresa.com" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                           <TextField fx:id="txtUrl" promptText="http://www.empresa.com" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                          <ComboBox fx:id="cmbCiudad" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="270.0" promptText="Selecciones una ciudad" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ComboBox fx:id="cmbCiudad" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="270.0" promptText="Seleccione una ciudad" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -98,16 +98,17 @@
                                           <ImageView fx:id="imgEmpresa" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" />
                                        </children>
                                        <padding>
-                                          <Insets left="5.0" top="5.0" />
+                                          <Insets left="15.0" top="20.0" />
                                        </padding>
                                     </HBox>
                                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                        <children>
-                                          <Button fx:id="btnCargarImagen" mnemonicParsing="false" styleClass="ButtonImageOnly" />
-                                          <Button fx:id="btnEliminarImagen" mnemonicParsing="false" styleClass="ButtonImageOnly" />
+                                          <Button fx:id="btnCargarImagen" mnemonicParsing="false" onAction="#btnCargarImagenClick" styleClass="ButtonImageOnly" />
+                                          <Button fx:id="btnEliminarImagen" mnemonicParsing="false" onAction="#btnEliminarImagenClick" styleClass="ButtonImageOnly" />
+                                          <Button fx:id="btnUndoImagen" mnemonicParsing="false" onAction="#btnUndoImagenClick" styleClass="ButtonImageOnly" />
                                        </children>
                                        <padding>
-                                          <Insets left="30.0" />
+                                          <Insets left="10.0" />
                                        </padding>
                                     </HBox>
                                  </children>
