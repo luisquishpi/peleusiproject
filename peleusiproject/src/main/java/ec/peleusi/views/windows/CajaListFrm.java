@@ -97,7 +97,7 @@ public class CajaListFrm extends JInternalFrame {
 					jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 1).toString());
 			caja.setSaldoInicial(Double.parseDouble(jPanelWithTable.getJTable()
 					.getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 2).toString()));
-			caja.setSucrusal((Sucursal)jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3));
+			caja.setSucursal((Sucursal)jPanelWithTable.getJTable().getValueAt(jPanelWithTable.getJTable().getSelectedRow(), 3));
 			cajaCrudFrm.setCaja(caja);
 			return true;
 		}
