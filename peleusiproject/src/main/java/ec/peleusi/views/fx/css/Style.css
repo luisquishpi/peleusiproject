@@ -80,6 +80,9 @@ TableView {
 #btnEliminarImagen {
 	-fx-background-image: url('../images/fx-delete-image.png');
 }
+#btnUndoImagen {
+	-fx-background-image: url('../images/fx-undo.png');
+}
 #txtBuscar {
 	-fx-max-height: 40px;
 	-fx-pref-height: 40px;
