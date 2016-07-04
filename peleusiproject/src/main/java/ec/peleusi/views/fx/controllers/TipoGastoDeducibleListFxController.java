@@ -3,13 +3,11 @@ package ec.peleusi.views.fx.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.JOptionPane;
+
 
 import ec.peleusi.controllers.TipoGastoDeducibleController;
-import ec.peleusi.models.entities.Ciudad;
 import ec.peleusi.models.entities.TipoGastoDeducible;
 import ec.peleusi.utils.fx.AlertsUtil;
-import ec.peleusi.views.fx.mains.TipoGastoDeducibleListFxMain;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
