@@ -2,9 +2,9 @@ package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
 import java.util.Optional;
-import ec.peleusi.controllers.TipoRetencionController;
-import ec.peleusi.models.entities.TipoRetencion;
-import ec.peleusi.utils.TipoRetencionEnum;
+import ec.peleusi.controllers.UsuarioController;
+import ec.peleusi.models.entities.Usuario;
+import ec.peleusi.utils.TipoUsuarioEnum;
 import ec.peleusi.utils.fx.AlertsUtil;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.application.Platform;
@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -25,29 +26,31 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class TipoRetencionListFxController extends AnchorPane {
+public class UsuarioListFxController extends AnchorPane {
 	@FXML
-	private TextField txtCodigo;
+	private TextField txtNombres;
 	@FXML
-	private ComboBox<TipoRetencionEnum> cmbTipoRetencion;		
+	private TextField txtApellidos;
 	@FXML
-	private TextField txtDescripcion;
+	private TextField txtUsuario;
 	@FXML
-	private TextField txtPorcentaje;
+	private PasswordField txtContrasenia;
 	@FXML
+	private ComboBox<TipoUsuarioEnum> cmbTipoUsuario;		
+	@FXML	
 	private TextField txtBuscar;
 	@FXML
-	private TableView<TipoRetencion> tblLista;
+	private TableView<Usuario> tblLista;
 	@FXML
-	TableColumn<TipoRetencion, Integer> idCol;
+	TableColumn<Usuario, Integer> idCol;
 	@FXML
-	TableColumn<TipoRetencion, String> codigoCol;
+	TableColumn<Usuario, String> nombresCol;
 	@FXML
-	TableColumn<TipoRetencion, TipoRetencionEnum> tipoRetencionCol;
+	TableColumn<Usuario, String> apellidosCol;
 	@FXML
-	TableColumn<TipoRetencion, String> descripcionCol;
+	TableColumn<Usuario, String> usuarioCol;
 	@FXML
-	TableColumn<TipoRetencion, Double> porcentajeCol;
+	TableColumn<Usuario, TipoUsuarioEnum> tipoUsuarioCol;
 	@FXML
 	private Button btnNuevo;
 	@FXML
@@ -59,21 +62,21 @@ public class TipoRetencionListFxController extends AnchorPane {
 	@FXML
 	private Button btnBuscar;
 	
-	ObservableList<TipoRetencion> tipoRetencionsList;	
+	ObservableList<Usuario> usuariosList;	
 	private Integer posicionObjetoEnTabla;
-	private TipoRetencion tipoRetencion;
-	private TipoRetencionController tipoRetencionController = new TipoRetencionController();
+	private Usuario usuario;
+	private UsuarioController usuarioController = new UsuarioController();
 	private String error = null;
 	
 	@FXML
 	private void initialize() {
-		tipoRetencionsList = FXCollections.observableList(tipoRetencionController.tipoRetencionList());
-		tblLista.setItems(tipoRetencionsList);			
-		codigoCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, String>("codigo"));
-		tipoRetencionCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, TipoRetencionEnum>("tipoRetencionEnum"));
-		descripcionCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, String>("descripcion"));
-		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TipoRetencion, Double>("porcentaje"));
-		final ObservableList<TipoRetencion> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
+		usuariosList = FXCollections.observableList(usuarioController.usuarioList());
+		tblLista.setItems(usuariosList);			
+		nombresCol.setCellValueFactory(new PropertyValueFactory<Usuario, String>("nombres"));
+		apellidosCol.setCellValueFactory(new PropertyValueFactory<Usuario, String>("apellidos"));
+		usuarioCol.setCellValueFactory(new PropertyValueFactory<Usuario, String>("usuario"));
+		tipoUsuarioCol.setCellValueFactory(new PropertyValueFactory<Usuario, TipoUsuarioEnum>("tipoUsuario"));
+		final ObservableList<Usuario> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);			
 		Platform.runLater(new Runnable() {
 			@Override
@@ -81,12 +84,12 @@ public class TipoRetencionListFxController extends AnchorPane {
 				btnNuevoClick(null);
 			}
 		});		
-		cargarComboTipoRetencion();
+		cargarComboUsuario();
 	}
 		
-	private final ListChangeListener<TipoRetencion> escuchaCambiosEnTabla = new ListChangeListener<TipoRetencion>() {
+	private final ListChangeListener<Usuario> escuchaCambiosEnTabla = new ListChangeListener<Usuario>() {
 		@Override
-		public void onChanged(ListChangeListener.Change<? extends TipoRetencion> c) {
+		public void onChanged(ListChangeListener.Change<? extends Usuario> c) {
 			cargarObjetoSeleccionadaEnFormulario();
 		}
 	};	
@@ -100,21 +103,21 @@ public class TipoRetencionListFxController extends AnchorPane {
 		return null;
 	}
 	
-	private void cargarComboTipoRetencion() {
-		cmbTipoRetencion.setItems( FXCollections.observableArrayList(TipoRetencionEnum.values()));
-	//	cmbTipoRetencion.getItems().setAll(TipoRetencionEnum.values()); 		
+	private void cargarComboUsuario() {
+		cmbTipoUsuario.setItems(FXCollections.observableArrayList(TipoUsuarioEnum.values()));
+		//cmbTipoUsuario.getItems().setAll(TipoUsuarioEnum.values()); 		
 	}
 
 	
 	private void cargarObjetoSeleccionadaEnFormulario() {
-		tipoRetencion = (TipoRetencion) getObjetoSeleccionadoDeTabla();
-		if (tipoRetencion != null) {
-			posicionObjetoEnTabla = tipoRetencionsList.indexOf(tipoRetencion);
-			txtCodigo.setText(tipoRetencion.getCodigo());				
-			cmbTipoRetencion.getSelectionModel().select(tipoRetencion.getTipoRetencionEnum());
-			//cmbTipoRetencion.setSelectedItem(tipoRetencion.getTipoRetencionEnum());		
-			txtDescripcion.setText(tipoRetencion.getDescripcion());
-			txtPorcentaje.setText(Double.toString(tipoRetencion.getPorcentaje()));			
+		usuario = (Usuario) getObjetoSeleccionadoDeTabla();
+		if (usuario != null) {
+			posicionObjetoEnTabla = usuariosList.indexOf(usuario);
+			txtNombres.setText(usuario.getNombres());
+			txtApellidos.setText(usuario.getApellidos());
+			txtUsuario.setText(usuario.getUsuario());
+			txtContrasenia.setText(usuario.getContrasenia());
+			cmbTipoUsuario.getSelectionModel().select(usuario.getTipoUsuario());								
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -122,9 +125,9 @@ public class TipoRetencionListFxController extends AnchorPane {
 	}
 
 	private void guardarNuevo() {
-		error = tipoRetencionController.createTipoRetencion(tipoRetencion);
+		error = usuarioController.createUsuario(usuario);
 		if (error == null) {
-			tipoRetencionsList.add(tipoRetencion);
+			usuariosList.add(usuario);
 			AlertsUtil.alertExito("Guardado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -133,9 +136,9 @@ public class TipoRetencionListFxController extends AnchorPane {
 	}
 
 	private void actualizar() {
-		error = tipoRetencionController.update(tipoRetencion);
+		error = usuarioController.updateUsuario(usuario);
 		if (error == null) {
-			tipoRetencionsList.set(posicionObjetoEnTabla, tipoRetencion);
+			usuariosList.set(posicionObjetoEnTabla, usuario);
 			AlertsUtil.alertExito("Actualizado correctamente");
 			btnNuevoClick(null);
 		} else {
@@ -144,9 +147,9 @@ public class TipoRetencionListFxController extends AnchorPane {
 	}
 
 	private void eliminar() {
-		error = tipoRetencionController.delete(tipoRetencion);
+		error = usuarioController.deleteUsuario(usuario);
 		if (error == null){
-			tipoRetencionsList.remove(getObjetoSeleccionadoDeTabla());
+			usuariosList.remove(getObjetoSeleccionadoDeTabla());
 			btnNuevoClick(null);
 		} else {
 			AlertsUtil.alertError(error);
@@ -154,29 +157,28 @@ public class TipoRetencionListFxController extends AnchorPane {
 	}
 
 	private void llenarEntidadAntesDeGuardar() {
-		tipoRetencion.setCodigo(txtCodigo.getText());		
-		tipoRetencion.setTipoRetencionEnum((TipoRetencionEnum) cmbTipoRetencion.getValue());	
-		//tipoRetencion.setTipoRetencionEnum((TipoRetencionEnum) cmbTipoRetencion.getSelectedItem());
-		tipoRetencion.setDescripcion(txtDescripcion.getText());
-		tipoRetencion.setPorcentaje(Double.parseDouble(txtPorcentaje.getText().toString()));
+		usuario.setNombres(txtNombres.getText());
+		usuario.setApellidos(txtApellidos.getText());
+		usuario.setUsuario(txtUsuario.getText());
+		usuario.setContrasenia(txtContrasenia.getText());
+		usuario.setTipoUsuario((TipoUsuarioEnum) cmbTipoUsuario.getValue());			
 	}
 
 	private void limpiarCampos() {
-		tipoRetencion = new TipoRetencion();
-		txtCodigo.setText("");
-		
-		
-		txtDescripcion.setText("");
-		txtPorcentaje.setText("0");
+		usuario = new Usuario();
+		txtNombres.setText("");		
+		txtApellidos.setText("");
+		txtUsuario.setText("");
+		txtContrasenia.setText("");
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
-		txtCodigo.requestFocus();
+		txtNombres.requestFocus();
 	}
 
 	private boolean camposLlenosTarifaIva() {
 		boolean llenos = true;
-		if (txtCodigo.getText().isEmpty() || txtDescripcion.getText().isEmpty() || txtPorcentaje.getText().isEmpty())
+		if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtUsuario.getText().isEmpty() || txtContrasenia.getText().isEmpty())
 			llenos = false;
 		return llenos;
 	}
@@ -203,7 +205,7 @@ public class TipoRetencionListFxController extends AnchorPane {
 	@FXML
 	private void btnEliminarClick(ActionEvent event) {
 		Optional<ButtonType> result = AlertsUtil
-				.alertConfirmation("Está seguro que desea eliminar: \n" + tipoRetencion.getDescripcion());
+				.alertConfirmation("Está seguro que desea eliminar: \n" + usuario.getNombres());
 		if (result.get() == ButtonType.OK) {
 			eliminar();
 		}
@@ -217,12 +219,12 @@ public class TipoRetencionListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TipoRetencion> tipoRetencionList = tipoRetencionController.getTipoRetencionList(txtBuscar.getText());
-		if (tipoRetencionList != null) {
-			tipoRetencionsList = FXCollections.observableList(tipoRetencionList);
-			tblLista.setItems(tipoRetencionsList);
+		List<Usuario> usuarioList = usuarioController.getUsuarioList(txtBuscar.getText());
+		if (usuarioList != null) {
+			usuariosList = FXCollections.observableList(usuarioList);
+			tblLista.setItems(usuariosList);
 		} else {
-			tipoRetencionsList.clear();
+			usuariosList.clear();
 		}
 		btnNuevoClick(null);
 		tblLista.requestFocus();

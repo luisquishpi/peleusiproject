@@ -65,11 +65,11 @@ public class Caja {
 		this.saldoInicial = saldoInicial;
 	}
 
-	public Sucursal getSucrusal() {
+	public Sucursal getSucursal() {
 		return sucursal;
 	}
 
-	public void setSucrusal(Sucursal sucursal) {
+	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
 	}
 

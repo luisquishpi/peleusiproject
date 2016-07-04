@@ -187,10 +187,10 @@ public class TipoCalificacionClienteListFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
-		List<TipoCalificacionCliente> tarifaIceList = tipoCalificacionClienteController
+		List<TipoCalificacionCliente> tipoCalificacionClienteList = tipoCalificacionClienteController
 				.getTipoCalificacionClienteList(txtBuscar.getText());
-		if (tarifaIceList != null) {
-			tipoCalificacionClientesList = FXCollections.observableList(tarifaIceList);
+		if (tipoCalificacionClientesList != null) {
+			tipoCalificacionClientesList = FXCollections.observableList(tipoCalificacionClienteList);
 			tblLista.setItems(tipoCalificacionClientesList);
 		} else {
 			tipoCalificacionClientesList.clear();

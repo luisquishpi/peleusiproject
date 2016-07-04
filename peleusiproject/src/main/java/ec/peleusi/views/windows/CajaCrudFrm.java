@@ -64,7 +64,7 @@ public class CajaCrudFrm extends JDialog {
 			limpiarCampos();
 			txtNombre.setText(caja.getNombre());		
 			txtSaldoInicial.setText(Double.toString(caja.getSaldoInicial()));
-			cmbSucursal.setSelectedItem(caja.getSucrusal());
+			cmbSucursal.setSelectedItem(caja.getSucursal());
 		}else{
 			this.setTitle("Creando Caja");
 			btnGuardar.setText("Guardar");
@@ -75,7 +75,7 @@ public class CajaCrudFrm extends JDialog {
 	private void llenarEntidadAntesDeGuardar() {
 		caja.setNombre(txtNombre.getText());
 		caja.setSaldoInicial(Double.parseDouble(txtSaldoInicial.getText().toString()));
-		caja.setSucrusal((Sucursal) cmbSucursal.getSelectedItem());
+		caja.setSucursal((Sucursal) cmbSucursal.getSelectedItem());
 	}
 	
 	private void guardarNuevaCaja() {
