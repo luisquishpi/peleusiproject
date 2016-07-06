@@ -44,11 +44,11 @@ public class CategoriaProductoListFxController extends AnchorPane {
 
 	{
 		cargarArbolCategoriaProductos();
-		System.out.println("Cargando nuevo "+categoriaProducto);
-		//btnNuevoClick();
-		
-	   tvwProducto.getSelectionModel().select(0);
-	   btnNuevoClick();
+		System.out.println("Cargando nuevo " + categoriaProducto);
+		// btnNuevoClick();
+
+		tvwProducto.getSelectionModel().select(0);
+		btnNuevoClick();
 		tvwProducto.getSelectionModel().selectedItemProperty().addListener((v, oldValue, getObjetoSeleccionado) -> {
 			if (getObjetoSeleccionado != null)
 				cargarDatos(getObjetoSeleccionado.getValue());
@@ -66,8 +66,7 @@ public class CategoriaProductoListFxController extends AnchorPane {
 	}
 
 	private void cargarDatos(CategoriaProducto categoriaProductoCargar) {
-		
-		
+
 		if (categoriaProductoCargar != null) {
 
 			if (tvwProducto.getSelectionModel().getSelectedItem().getValue().getId() != 0) {
@@ -84,9 +83,10 @@ public class CategoriaProductoListFxController extends AnchorPane {
 				btnGuardar.setText("Actualizar");
 				chkContieneProductosClick();
 				btnEliminar.setDisable(false);
-				if(contieneSubcategorias()==0) chkContieneProductos.setDisable(false);
-				else chkContieneProductos.setDisable(true);
-				 
+				if (contieneSubcategorias() == 0)
+					chkContieneProductos.setDisable(false);
+				else
+					chkContieneProductos.setDisable(true);
 
 			} else {
 				btnNuevoClick();
@@ -133,60 +133,57 @@ public class CategoriaProductoListFxController extends AnchorPane {
 		}
 
 		if (categoriaProducto == null) {
-			
-			CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
-			if(categoriaProductoController.existCategoriaProducto(0,txtNombre.getText(),tvwProducto.getSelectionModel().getSelectedItem().getValue().getId() )==false)
-			{
 
-			categoriaProducto = new CategoriaProducto();
-			categoriaProducto.setNombre(txtNombre.getText());
-			categoriaProducto.setDependencia(tvwProducto.getSelectionModel().getSelectedItem().getValue().getId());
-			categoriaProducto.setContieneProductos(chkContieneProductos.isSelected());			
-			err = categoriaProductoController.saveCategoriaProducto(categoriaProducto);
-			if (err == null) {
-				AgregarCategoria(categoriaProducto);
-				limpiarcampos();
-				AlertsUtil.alertExito("Guardado correctamente");
-				chkContieneProductosClick();
-				
+			CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
+			if (categoriaProductoController.existCategoriaProducto(0, txtNombre.getText(),
+					tvwProducto.getSelectionModel().getSelectedItem().getValue().getId()) == false) {
+
+				categoriaProducto = new CategoriaProducto();
+				categoriaProducto.setNombre(txtNombre.getText());
+				categoriaProducto.setDependencia(tvwProducto.getSelectionModel().getSelectedItem().getValue().getId());
+				categoriaProducto.setContieneProductos(chkContieneProductos.isSelected());
+				err = categoriaProductoController.saveCategoriaProducto(categoriaProducto);
+				if (err == null) {
+					AgregarCategoria(categoriaProducto);
+					limpiarcampos();
+					AlertsUtil.alertExito("Guardado correctamente");
+					chkContieneProductosClick();
+
+				} else {
+					AlertsUtil.alertError(err);
+				}
 			} else {
-				AlertsUtil.alertError(err);
-			}
-			}
-			else
-			{
 				AlertsUtil.alertError("Ya existe una categoría con este mismo nombre");
 			}
 		} else {
-			
+
 			CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
-			if(categoriaProductoController.existCategoriaProducto(tvwProducto.getSelectionModel().getSelectedItem().getValue().getId(),txtNombre.getText(),tvwProducto.getSelectionModel().getSelectedItem().getValue().getDependencia() )==false)
-			{
-				
-				System.out.println(tvwProducto.getSelectionModel().getSelectedItem().getValue().getId()+""+txtNombre.getText()+""+tvwProducto.getSelectionModel().getSelectedItem().getValue().getId());
+			if (categoriaProductoController.existCategoriaProducto(
+					tvwProducto.getSelectionModel().getSelectedItem().getValue().getId(), txtNombre.getText(),
+					tvwProducto.getSelectionModel().getSelectedItem().getValue().getDependencia()) == false) {
 
-			categoriaProducto.setNombre(txtNombre.getText());
-			categoriaProducto
-					.setDependencia(tvwProducto.getSelectionModel().getSelectedItem().getValue().getDependencia());
-			categoriaProducto.setContieneProductos(chkContieneProductos.isSelected());
-			
-			err = categoriaProductoController.updateCategoriaProducto(categoriaProducto);
-			if (err == null) {
-				ActualizatCategoria(categoriaProducto);
-				AlertsUtil.alertExito("Actualizado correctamente");
-				chkContieneProductosClick();				
+				System.out.println(
+						tvwProducto.getSelectionModel().getSelectedItem().getValue().getId() + "" + txtNombre.getText()
+								+ "" + tvwProducto.getSelectionModel().getSelectedItem().getValue().getId());
 
+				categoriaProducto.setNombre(txtNombre.getText());
+				categoriaProducto
+						.setDependencia(tvwProducto.getSelectionModel().getSelectedItem().getValue().getDependencia());
+				categoriaProducto.setContieneProductos(chkContieneProductos.isSelected());
+
+				err = categoriaProductoController.updateCategoriaProducto(categoriaProducto);
+				if (err == null) {
+					ActualizatCategoria(categoriaProducto);
+					AlertsUtil.alertExito("Actualizado correctamente");
+					chkContieneProductosClick();
+
+				} else {
+					AlertsUtil.alertError(err);
+				}
 			} else {
-				AlertsUtil.alertError(err);
-			}
-			}
-			else
-			{
 				AlertsUtil.alertError("Ya existe una categoría con este mismo nombre");
 			}
-			
-			
-			
+
 		}
 	}
 
@@ -270,8 +267,8 @@ public class CategoriaProductoListFxController extends AnchorPane {
 	}
 
 	@FXML
-	private void chkContieneProductosClick() {	
-		
+	private void chkContieneProductosClick() {
+
 		if (categoriaProducto == null) {
 			btnNuevo.setDisable(false);
 		} else {
@@ -283,11 +280,11 @@ public class CategoriaProductoListFxController extends AnchorPane {
 			}
 		}
 	}
-	private Integer contieneSubcategorias()
-	{
-		TreeItem<CategoriaProducto> paren = tvwProducto.getSelectionModel().getSelectedItem();		
-		Integer nSubcatgorias= paren.getChildren().size();
-		return nSubcatgorias;	
+
+	private Integer contieneSubcategorias() {
+		TreeItem<CategoriaProducto> paren = tvwProducto.getSelectionModel().getSelectedItem();
+		Integer nSubcatgorias = paren.getChildren().size();
+		return nSubcatgorias;
 	}
 
 }
