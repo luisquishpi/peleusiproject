@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1286.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane layoutX="123.0" layoutY="64.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="128.0" layoutY="55.0" prefHeight="398.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="80.0" prefWidth="435.0" spacing="5.0" styleClass="HBoxBotones" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" styleClass="ButtonCRUD" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Guardar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Eliminar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Cancelar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </top>
+                     <center>
+                        <AnchorPane prefHeight="376.0" prefWidth="443.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="25.0" prefHeight="160.0" prefWidth="421.0" text="Datos Proveedor" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="10.0">
+                                <content>
+                                  <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="162.0" prefWidth="419.0">
+                                       <children>
+                                          <Label layoutX="6.0" layoutY="3.0" prefHeight="17.0" prefWidth="56.0" text="RUC/CI" />
+                                          <TextField layoutX="6.0" layoutY="18.0" prefHeight="0.0" prefWidth="149.0" />
+                                          <Button layoutX="156.0" layoutY="21.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="35.0" text="..." />
+                                          <Label layoutX="6.0" layoutY="43.0" prefHeight="17.0" prefWidth="100.0" text="Razón Social" />
+                                          <TextField layoutX="6.0" layoutY="59.0" prefHeight="25.0" prefWidth="408.0" />
+                                          <Label layoutX="253.0" layoutY="83.0" prefHeight="17.0" prefWidth="56.0" text="Teléfono" />
+                                          <Label layoutX="7.0" layoutY="83.0" prefHeight="17.0" prefWidth="56.0" text="Dirección" />
+                                          <TextField layoutX="244.0" layoutY="99.0" prefHeight="25.0" prefWidth="168.0" />
+                                          <TextField layoutX="6.0" layoutY="99.0" prefHeight="25.0" prefWidth="231.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                              <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="176.0" prefHeight="180.0" prefWidth="422.0" text="Datos Factura">
+                                <content>
+                                  <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="420.0">
+                                       <children>
+                                          <Label layoutX="6.0" layoutY="5.0" prefHeight="17.0" prefWidth="87.0" text="Establecimiento" />
+                                          <TextField layoutX="6.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="112.0" layoutY="6.0" prefHeight="17.0" prefWidth="87.0" text="Punto Emisión" />
+                                          <TextField layoutX="112.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="225.0" layoutY="5.0" prefHeight="17.0" prefWidth="135.0" text="Secuencial" />
+                                          <TextField layoutX="218.0" layoutY="23.0" prefHeight="25.0" prefWidth="195.0" />
+                                          <Label layoutX="6.0" layoutY="50.0" prefHeight="17.0" prefWidth="87.0" text="Fecha Emisión" />
+                                          <DatePicker layoutX="6.0" layoutY="65.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="112.0" layoutY="50.0" prefHeight="17.0" prefWidth="117.0" text="Fecha Autorización" />
+                                          <DatePicker layoutX="113.0" layoutY="65.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="225.0" layoutY="50.0" prefHeight="17.0" prefWidth="135.0" text="Autorización" />
+                                          <TextField layoutX="218.0" layoutY="65.0" prefHeight="25.0" prefWidth="195.0" />
+                                          <Label layoutX="112.0" layoutY="92.0" prefHeight="17.0" prefWidth="87.0" text="Fecha Registro" />
+                                          <DatePicker layoutX="113.0" layoutY="108.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="6.0" layoutY="92.0" prefHeight="17.0" prefWidth="116.0" text="Fecha Vencimiento" />
+                                          <DatePicker layoutX="6.0" layoutY="108.0" prefHeight="25.0" prefWidth="100.0" />
+                                          <Label layoutX="218.0" layoutY="92.0" prefHeight="17.0" prefWidth="135.0" text="Días de crédito" />
+                                          <TextField layoutX="218.0" layoutY="108.0" prefHeight="25.0" prefWidth="105.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                              <TextField fx:id="txtProducto" layoutX="452.0" layoutY="19.0" prefHeight="25.0" prefWidth="471.0" />
+                              <Label layoutX="452.0" layoutY="2.0" prefHeight="17.0" prefWidth="64.0" text="Producto" />
+                              <Button fx:id="btnBuscarProducto" layoutX="930.0" layoutY="19.0" mnemonicParsing="false" text="Buscar" />
+                              <GridPane layoutX="816.0" layoutY="370.0" prefHeight="125.0" prefWidth="452.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="10.0" prefWidth="152.0" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="464.0" minWidth="0.0" prefWidth="143.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="524.0" minWidth="6.0" prefWidth="140.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="23.0" minHeight="7.0" prefHeight="22.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="16.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Base Imponible 0%" textAlignment="CENTER" />
+                                    <TextField fx:id="txtBaseImponible0" GridPane.rowIndex="1" />
+                                    <TextField fx:id="baseImponibleDiferente0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtDescuento" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <Label text="Base Imp. Diferente 0%" GridPane.columnIndex="1" />
+                                    <Label text="Descuento" GridPane.columnIndex="2" />
+                                    <Label text="Monto IVA" GridPane.rowIndex="2" />
+                                    <Label text="Monto ICE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label text="TOTAL" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txtMontoIva" GridPane.rowIndex="3" />
+                                    <TextField fx:id="txtMontoIce" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <TextField fx:id="txtTotal" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                 </children>
+                              </GridPane>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="452.0" layoutY="48.0" prefHeight="310.0" prefWidth="816.0">
+                                <content>
+                                    <VBox>
+                                       <children>
+                                          <TableView fx:id="tvwProductos" accessibleRole="SCROLL_BAR" prefHeight="393.0" prefWidth="816.0">
+                                             <columns>
+                                                <TableColumn fx:id="idCol" prefWidth="75.0" text="Id" visible="false" />
+                                                <TableColumn fx:id="idProductoCol" prefWidth="75.0" text="IdProducto" visible="false" />
+                                                <TableColumn fx:id="codigoCol" editable="false" prefWidth="75.0" text="Código" />
+                                                <TableColumn fx:id="nombreCol" prefWidth="190.0" text="Nombre" />
+                                                <TableColumn fx:id="cantidadCol" minWidth="8.0" prefWidth="60.0" text="Cantidad" />
+                                                <TableColumn fx:id="costoCol" prefWidth="60.0" text="Costo" />
+                                                <TableColumn fx:id="descuentoCol" prefWidth="40.0" text="Descuento">
+                                                   <columns>
+                                                      <TableColumn fx:id="porcentajeDescuentoCol" prefWidth="40.0" text="\%" />
+                                                      <TableColumn fx:id="valorDescuentoCol" prefWidth="60.0" text="Valor" />
+                                                   </columns>
+                                                </TableColumn>
+                                                <TableColumn fx:id="precioNetoCol" prefWidth="75.0" text="Precio Neto" />
+                                                <TableColumn fx:id="subtotalCol" prefWidth="60.0" text="Subtotal" />
+                                                <TableColumn prefWidth="60.0" text="IVA">
+                                                   <columns>
+                                                      <TableColumn fx:id="porcentajeIvaCol" prefWidth="40.0" text="\%" />
+                                                      <TableColumn fx:id="porentajeValorCol" prefWidth="60.0" text="Valor" />
+                                                   </columns>
+                                                </TableColumn>
+                                                <TableColumn fx:id="stockCol" prefWidth="60.0" text="Stock" />
+                                                <TableColumn prefWidth="100.0" text="ICE">
+                                                   <columns>
+                                                      <TableColumn fx:id="porcentajeIceCol" prefWidth="40.0" text="\%" />
+                                                      <TableColumn fx:id="valorIceCol" prefWidth="60.0" text="Valor" />
+                                                   </columns>
+                                                </TableColumn>
+                                                <TableColumn fx:id="totalCol" prefWidth="60.0" text="Total" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                </content>
+                              </ScrollPane>
+                              <Label layoutX="458.0" layoutY="377.0" text="Observaciones" />
+                              <TextArea fx:id="txtObservacion" layoutX="452.0" layoutY="393.0" prefHeight="80.0" prefWidth="372.0" />
+                           </children>
+                        </AnchorPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/ListStyle.css" />
+      <URL value="@../css/Style.css" />
+   </stylesheets>
+</AnchorPane>
