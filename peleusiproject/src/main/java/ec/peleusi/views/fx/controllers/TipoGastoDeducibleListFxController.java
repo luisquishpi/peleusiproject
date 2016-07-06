@@ -1,15 +1,19 @@
 package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
-import javax.swing.JOptionPane;
+
 
 import ec.peleusi.controllers.TipoGastoDeducibleController;
 import ec.peleusi.models.entities.TipoGastoDeducible;
-import ec.peleusi.views.fx.mains.TipoGastoDeducibleListFxMain;
+import ec.peleusi.utils.fx.AlertsUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -31,6 +35,18 @@ public class TipoGastoDeducibleListFxController extends AnchorPane {
 	TableColumn<TipoGastoDeducible, String> nombreCol;
 	Integer posicionTipoGastoSeleccionado;
 	Boolean actualizar;
+	TipoGastoDeducible tipoGastoDeducible = new TipoGastoDeducible();
+
+	@FXML
+	private Button btnNuevo;
+	@FXML
+	private Button btnGuardar;
+	@FXML
+	private Button btnEliminar;
+	@FXML
+	private Button btnCancelar;
+	@FXML
+	private Button btnBuscar;
 
 	private ObservableList<TipoGastoDeducible> tipoGastoDeducibleObs = FXCollections.observableArrayList();
 
@@ -59,6 +75,8 @@ public class TipoGastoDeducibleListFxController extends AnchorPane {
 
 			txtNombre.setText(tipoGastoDeducible.getNombre());
 			actualizar = true;
+			btnGuardar.setText("Actualizar");
+			btnEliminar.setDisable(false);
 
 		} else {
 			txtNombre.setText("");
@@ -70,72 +88,93 @@ public class TipoGastoDeducibleListFxController extends AnchorPane {
 		actualizar = false;
 		txtNombre.setText("");
 		txtNombre.requestFocus();
-		// tblLista.setSelectionModel(null);
+		btnGuardar.setText("Guardar");
+		btnEliminar.setDisable(true);
 	}
 
 	@FXML
-	private void handlebtnGuardar() {
+	private void btnGuardarClick() {
 
 		if (isCamposLlenos()) {
-
-			TipoGastoDeducible tipoGastoDeducible = new TipoGastoDeducible();
 			TipoGastoDeducibleController tipoGastoDeducibleController = new TipoGastoDeducibleController();
 			String error = "";
-			TipoGastoDeducible tipoGastoDeducibleSeleccionado = tblLista.getSelectionModel().getSelectedItem();
-
-			if (tipoGastoDeducibleSeleccionado != null && actualizar == true) {
+			tipoGastoDeducible = tblLista.getSelectionModel().getSelectedItem();
+			if (tipoGastoDeducible != null && actualizar == true) {
 				tipoGastoDeducible.setNombre(txtNombre.getText());
 				error = tipoGastoDeducibleController.updateTipoGastoDeducible(tipoGastoDeducible);
-				tipoGastoDeducibleObs.set(posicionTipoGastoSeleccionado, tipoGastoDeducible);
+				if (error == null)
+					tipoGastoDeducibleObs.set(posicionTipoGastoSeleccionado, tipoGastoDeducible);
+
 			} else {
+				tipoGastoDeducible = new TipoGastoDeducible();
 				tipoGastoDeducible.setNombre(txtNombre.getText());
 				error = tipoGastoDeducibleController.createTipoGastoDeducible(tipoGastoDeducible);
-				tipoGastoDeducibleObs.add(tipoGastoDeducible);
-				if (error == null) {
-					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
-
-				} else {
-					JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+				if (error == null)
+				{
+					tipoGastoDeducibleObs.add(tipoGastoDeducible);
+					btnNuevoClick();
 				}
 			}
+			if (error == null) {
+
+				AlertsUtil.alertExito("Guardado correctamente");
+
+			} else {
+				AlertsUtil.alertError(error);
+			}
+
+		} else {
+			AlertsUtil.alertWarning("Datos incompletos, no es posible guardar");
 		}
 
 	}
 
 	@FXML
-	private void handlebtnNuevo() {
+	private void btnNuevoClick() {
 		limpiarCampos();
 	}
 
 	@FXML
-	private void handlebtnEliminar() {
+	private void btnEliminarClick() {
 
-		int selectedIndex = tblLista.getSelectionModel().getSelectedIndex();
-		System.out.println("Fila " + selectedIndex);
+		if (tblLista.getSelectionModel().getSelectedIndex() >= 0) {
 
-		if (selectedIndex >= 0) {
-
-			TipoGastoDeducible tipoGastoDeducible = new TipoGastoDeducible();
+			tipoGastoDeducible = new TipoGastoDeducible();
 			tipoGastoDeducible = (TipoGastoDeducible) tipoGastoDeducibleObs.get(posicionTipoGastoSeleccionado);
-			TipoGastoDeducibleController tipoGastoDeducibleController = new TipoGastoDeducibleController();
-			tipoGastoDeducibleController.deleteTipoGastoDeducible(tipoGastoDeducible);
-			tblLista.getItems().remove(selectedIndex);
-		} else {
-			// Nothing selected.
+			Optional<ButtonType> result = AlertsUtil
+					.alertConfirmation("Está seguro que desea eliminar: \n" + tipoGastoDeducible.getNombre());
+			if (result.get() == ButtonType.OK) {
+				TipoGastoDeducibleController tipoGastoDeducibleController = new TipoGastoDeducibleController();
+				String error = tipoGastoDeducibleController.deleteTipoGastoDeducible(tipoGastoDeducible);
+				if (error == null) {
+					tblLista.getItems().remove(tblLista.getSelectionModel().getSelectedIndex());
+				} else {
+					AlertsUtil.alertError(error);
+				}
+			} else {
 
-			// Dialogs.create()
-			// .title("No Selection")
-			// .masthead("No Person Selected")
-			// .message("Please select a person in the table.")
-			// .showWarning();
-
+			}
 		}
+	}
+	@FXML
+	private void btnBuscarClick(ActionEvent event) {
+		TipoGastoDeducibleController  tipoGastoDeducibleController = new TipoGastoDeducibleController();
+		List<TipoGastoDeducible> tipoGastoDeducibleList = tipoGastoDeducibleController.getTipoGastoDeducibleList(txtBuscar.getText());
+		if (tipoGastoDeducibleList != null) {
+			tipoGastoDeducibleObs = FXCollections.observableList(tipoGastoDeducibleList);
+			tblLista.setItems(tipoGastoDeducibleObs);
+		}
+		else
+		{
+			tipoGastoDeducibleObs.clear();
+		}
+		
 	}
 
 	@FXML
-	private void handleCancelar() {
-		//Stage stage = (Stage) btnCancelar.getScene().getWindow();       
-        //stage.close();
+	private void btnCancelarClick() {
+		Stage stage = (Stage) btnCancelar.getScene().getWindow();
+		stage.close();
 	}
 
 	private boolean isCamposLlenos() {

@@ -69,17 +69,23 @@ public class CategoriaProductoCrudFrm extends JInternalFrame {
 	public void cargarArbolCategoriaProductos() {
 		DefaultMutableTreeNode raiz = new DefaultMutableTreeNode("Categorias");
 		modelo = new DefaultTreeModel(raiz);
+		System.out.println("modelo"+modelo);  
 		getHojas(raiz, "0");
 		tree.setModel(modelo);
 	}
 
 	public void getHojas(DefaultMutableTreeNode raiz, String id) {
+		
+		System.out.println("raiz"+raiz); 
 		CategoriaProductoController categoriaProductoController = new CategoriaProductoController();
 		List<CategoriaProducto> lista;
 		lista = categoriaProductoController.CategoriaProductoList(Integer.parseInt(id));
+		System.out.println("lista1"+lista);
 		for (int i = 0; i < lista.size(); i++) {
+			System.out.println("lista2"+lista);
 			DefaultMutableTreeNode hoja = new DefaultMutableTreeNode();
 			hoja.setUserObject(lista.get(i));
+			System.out.println("hoja"+hoja); 
 			getHojas(hoja, lista.get(i).getId().toString());
 			raiz.add(hoja);
 		}

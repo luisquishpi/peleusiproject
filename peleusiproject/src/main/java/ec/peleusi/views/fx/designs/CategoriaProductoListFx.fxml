@@ -3,11 +3,11 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -23,41 +23,8 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <BorderPane layoutX="-78.0" layoutY="38.0" prefHeight="398.0" prefWidth="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <top>
-                        <GridPane maxHeight="146.0" prefHeight="80.0" prefWidth="357.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <TextField id="txtBuscar" fx:id="txtBuscar" promptText="Buscar">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </GridPane.margin>
-                              </TextField>
-                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </GridPane.margin>
-                              </Button>
-                           </children>
-                        </GridPane>
-                     </top>
                      <center>
-                        <TableView fx:id="tblLista" editable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <columns>
-                              <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
-                              <TableColumn fx:id="nombreCol" prefWidth="336.0" text="Nombre" />
-                           </columns></TableView>
+                        <TreeView fx:id="tvwProducto" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
                </children>
@@ -106,6 +73,9 @@
                            <children>
                               <Label text="Nombre" />
                               <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de la ciudad" GridPane.columnIndex="1" />
+                              <Label text="Dependencia" GridPane.rowIndex="1" />
+                              <TextField id="txtDependencia" fx:id="txtDependencia" editable="false" promptText="Dependencia" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <CheckBox id="chkContieneProductos" fx:id="chkContieneProductos" mnemonicParsing="false" onAction="#chkContieneProductosClick" text="Contiene produtos" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

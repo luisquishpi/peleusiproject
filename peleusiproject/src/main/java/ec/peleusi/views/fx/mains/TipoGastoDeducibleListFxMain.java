@@ -3,11 +3,9 @@ package ec.peleusi.views.fx.mains;
 import java.io.IOException;
 
 
-import ec.peleusi.models.entities.TipoGastoDeducible;
+
 import ec.peleusi.views.fx.controllers.TipoGastoDeducibleListFxController;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

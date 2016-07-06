@@ -17,8 +17,8 @@ public class CategoriaProductoController {
 		categoriaProductoDao = new DaoFactory().getCategoriaProductoDao();
 	}
 
-	public void saveCategoriaProducto(CategoriaProducto categoriaProducto) {
-		categoriaProductoDao.create(categoriaProducto);
+	public String saveCategoriaProducto(CategoriaProducto categoriaProducto) {
+		return categoriaProductoDao.create(categoriaProducto);
 	}
 
 	public boolean existCategoriaProducto(CategoriaProducto categoriaProducto) {
@@ -65,26 +65,7 @@ public class CategoriaProductoController {
 		return lista;
 	}
 
-	public boolean existCategoriaProducto(String nombre) {
-		boolean existe = false;
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		try {
-			session.beginTransaction();
-			Query query = session
-					.createQuery("from CategoriaProducto T WHERE T.nombre = :nombre and T.dependencia=:dependencia ");
-			query.setParameter("nombre", nombre);
-			if (!query.list().isEmpty()) {
-				existe = true;
-			}
-			session.getTransaction().commit();
-		} catch (HibernateException e) {
-			if (session.getTransaction() != null)
-				e.printStackTrace();
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
-		return existe;
+	public boolean existCategoriaProducto(Integer id, String nombre, Integer dependencia) {
+		return categoriaProductoDao.existCategoriaProducto(id,nombre, dependencia);
 	}
 }
