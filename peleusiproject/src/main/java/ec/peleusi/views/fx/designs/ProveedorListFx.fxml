@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.45112781954887216" layoutX="123.0" layoutY="64.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="-78.0" layoutY="38.0" prefHeight="398.0" prefWidth="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <GridPane maxHeight="146.0" prefHeight="80.0" prefWidth="357.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <TextField id="txtBuscar" fx:id="txtBuscar" />
+                           </children>
+                        </GridPane>
+                     </top>
+                     <center>
+                        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Pagination id="pagination" fx:id="pagination" prefHeight="518.0" prefWidth="358.0" />
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="128.0" layoutY="55.0" prefHeight="398.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" styleClass="HBoxBotones" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" onAction="#btnNuevoClick" styleClass="ButtonCRUD" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" onAction="#btnGuardarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Guardar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Eliminar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Cancelar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </top>
+                     <center>
+                        <TabPane id="tpnlProveedor" fx:id="tpnlProveedor" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                          <tabs>
+                            <Tab fx:id="pnlDatos" text="Datos">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane maxHeight="-Infinity" prefHeight="217.0" prefWidth="435.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints maxWidth="131.0" minWidth="10.0" prefWidth="119.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="291.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label text="Tipo Identificación" />
+                                                <Label text="Identificación" GridPane.rowIndex="1" />
+                                                <Label text="Razón Social" GridPane.rowIndex="2" />
+                                                <Label text="Días Crédito" GridPane.rowIndex="3" />
+                                                <Label text="Porcentaje Descuento" GridPane.rowIndex="4" />
+                                                <Label text="Descripción" GridPane.rowIndex="5" />
+                                                <ComboBox id="cmbTipoIdentificacion" fx:id="cmbTipoIdentificacion" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
+                                                <TextField id="txtIdentificacion" fx:id="txtIdentificacion" promptText="Identificación de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField id="txtRazonSocial" fx:id="txtRazonSocial" promptText="Razón Social de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField id="txtDiasCredito" fx:id="txtDiasCredito" promptText="Días Crédito de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField id="txtPorcentajeDescuento" fx:id="txtPorcentajeDescuento" promptText="Porcentaje Descuento de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <TextArea id="txtDescripcion" fx:id="txtDescripcion" prefHeight="200.0" prefWidth="200.0" promptText="Descrpción de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab fx:id="pnlDirección" text="Dirección">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane maxHeight="-Infinity" prefHeight="215.0" prefWidth="435.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints maxWidth="100.0" minWidth="10.0" prefWidth="79.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="321.0" minWidth="10.0" prefWidth="321.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label text="Ciudad" />
+                                                <Label text="Nombre" GridPane.rowIndex="1" />
+                                                <Label text="Dirección" GridPane.rowIndex="2" />
+                                                <Label text="Teléfono" GridPane.rowIndex="3" />
+                                                <Label text="Celular" GridPane.rowIndex="4" />
+                                                <Label text="Email" GridPane.rowIndex="5" />
+                                                <Label text="Código Postal" GridPane.rowIndex="6" />
+                                                <TextField id="txtNombre" fx:id="txtNombre" promptText="Nombre de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField id="txtDireccion" fx:id="txtDireccion" promptText="Dirección de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField id="txtTelefono" fx:id="txtTelefono" promptText="Teléfono de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField id="txtCelular" fx:id="txtCelular" promptText="Celular de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <TextField id="txtEmail" fx:id="txtEmail" promptText="Email del Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <TextField id="txtCodigoPostal" fx:id="txtCodigoPostal" promptText="Codigo Postal del Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                                   <children>
+                                                      <TextField id="txtCiudad" fx:id="txtCiudad" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
+                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarCiudad" mnemonicParsing="false" onAction="#btnBuscarCiudadClick" prefHeight="25.0" prefWidth="72.0" text="Button">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                          <HBox layoutX="1.0" layoutY="234.0" prefHeight="258.0" prefWidth="435.0">
+                                             <children>
+                                                <TableView id="tblDireccionProveedor" fx:id="tblDireccionProveedor" prefHeight="258.0" prefWidth="435.0">
+                                                  <columns>
+                                                    <TableColumn fx:id="ciudadCol" prefWidth="81.0" text="Ciudad" />
+                                                    <TableColumn fx:id="nombreCol" prefWidth="146.0" text="Nombre" />
+                                                      <TableColumn fx:id="direccionCol" prefWidth="147.0" text="Dirección" />
+                                                      <TableColumn fx:id="telefonoCol" prefWidth="60.0" text="Teléfono" />
+                                                  </columns>
+                                                </TableView>
+                                             </children>
+                                          </HBox>
+                                          <Button id="btnAgregar" fx:id="btnAgregar" layoutX="335.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnAgregarClick" text="Agregar" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/ListStyle.css" />
+      <URL value="@../css/Style.css" />
+   </stylesheets>
+</AnchorPane>
