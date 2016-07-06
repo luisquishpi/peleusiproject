@@ -17,8 +17,10 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -27,9 +29,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 
-public class EmpresaFxController extends AnchorPane {
+public class EmpresaFxController extends GenericController {
 
 	@FXML
 	private TextField txtNombre;
@@ -58,6 +59,8 @@ public class EmpresaFxController extends AnchorPane {
 	private Button btnEliminarImagen;
 	@FXML
 	private Button btnCargarImagen;
+	@FXML
+	private AnchorPane anchorPanePrincipal;
 
 	private EmpresaController empresaController = new EmpresaController();
 	private Empresa empresa = new Empresa();
@@ -67,6 +70,7 @@ public class EmpresaFxController extends AnchorPane {
 
 	@FXML
 	private void initialize() {
+		anchorPanePrincipal.getStyleClass().add("anchorPanePrincipal");
 		llenarComboCiudad();
 		recuperarEmpresa();
 		Platform.runLater(new Runnable() {
@@ -162,8 +166,12 @@ public class EmpresaFxController extends AnchorPane {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		// Stage stage = (Stage) btnCancelar.getScene().getWindow();
+		// stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
 	@FXML

@@ -20,10 +20,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class TarifaIceListFxController extends AnchorPane {
+public class TarifaIceListFxController extends GenericController {
 	@FXML
 	private TextField txtCodigo;
 	@FXML
