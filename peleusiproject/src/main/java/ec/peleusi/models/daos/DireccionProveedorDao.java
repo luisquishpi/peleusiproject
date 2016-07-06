@@ -58,7 +58,6 @@ public class DireccionProveedorDao extends GenericDao<DireccionProveedor, Intege
 			}
 		}
 		return null;
-	}	
-	
+	}		
 }
 
