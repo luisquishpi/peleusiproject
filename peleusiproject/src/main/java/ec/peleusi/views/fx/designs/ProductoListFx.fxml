@@ -138,7 +138,7 @@
                                           <ComboBox fx:id="cmbTipoGastoDeducible" layoutX="397.0" layoutY="216.0" prefWidth="150.0" />
                                           <CheckBox fx:id="chkSePuedeFraccionar" layoutX="397.0" layoutY="129.0" mnemonicParsing="false" text="Se puede fraccionar" />
                                           <CheckBox fx:id="chkManejaInventario" layoutX="397.0" layoutY="158.0" mnemonicParsing="false" text="Maneja inventario" />
-                                          <CheckBox fx:id="chkEsDeducible" layoutX="397.0" layoutY="189.0" mnemonicParsing="false" text="Es deducible" />
+                                          <CheckBox fx:id="chkEsDeducible" layoutX="397.0" layoutY="189.0" mnemonicParsing="false" onAction="#chkEsDeducibleClick" text="Es deducible" />
                                        </children>
                                     </AnchorPane>
                               </content>
@@ -148,9 +148,9 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
                                           <Label layoutX="14.0" layoutY="50.0" text="ICE*" />
-                                          <ComboBox fx:id="cmbIva" layoutX="96.0" layoutY="14.0" prefWidth="150.0" />
-                                          <CheckBox fx:id="chkTieneIva" layoutX="14.0" layoutY="18.0" mnemonicParsing="false" text="Tiene IVA" />
-                                          <ComboBox fx:id="cmbIce" layoutX="97.0" layoutY="46.0" prefWidth="150.0" />
+                                          <ComboBox fx:id="cmbIva" disable="true" layoutX="96.0" layoutY="14.0" prefWidth="150.0" />
+                                          <CheckBox fx:id="chkTieneIva" layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#chkTieneIvaClick" text="Tiene IVA" />
+                                          <ComboBox fx:id="cmbIce" layoutX="97.0" layoutY="46.0" onAction="#cmbIceClick" prefWidth="150.0" />
                                           <Label layoutX="14.0" layoutY="82.0" text="Costo Unitario" />
                                           <TextField fx:id="txtCostoUnitario" disable="true" layoutX="97.0" layoutY="78.0" prefHeight="25.0" prefWidth="80.0" />
                                           <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="112.0" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="650.0" text="Precios unitarios">
@@ -174,19 +174,19 @@
                                           </TitledPane>
                                           <Label layoutX="16.0" layoutY="280.0" text="Costo por Lote" />
                                           <TextField fx:id="txtCostoLote" disable="true" layoutX="99.0" layoutY="276.0" prefHeight="25.0" prefWidth="80.0" />
-                                          <TitledPane animated="false" collapsible="false" layoutX="16.0" layoutY="308.0" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="650.0" text="Precios unitarios">
+                                          <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="308.0" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="650.0" text="Precios por Lote">
                                              <content>
                                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                                    <children>
                                                       <TableView fx:id="tblPreciosLote" editable="true" prefHeight="200.0" prefWidth="628.0">
                                                          <columns>
-                                                            <TableColumn fx:id="tipoPrecioCol1" prefWidth="150.0" text="Tipo Precio" />
-                                                            <TableColumn fx:id="porcentajeUtilidadCol1" prefWidth="70.0" text="\% Util" />
-                                                            <TableColumn fx:id="subtotalCol1" prefWidth="100.0" text="Subtotal" />
-                                                            <TableColumn fx:id="iceCol1" prefWidth="68.0" text="ICE" />
-                                                            <TableColumn fx:id="ivaCol1" prefWidth="48.0" text="IVA" />
-                                                            <TableColumn fx:id="totalCol1" minWidth="0.0" prefWidth="100.0" text="Total" />
-                                                            <TableColumn fx:id="utilidadCol1" prefWidth="84.0" text="Utilidad" />
+                                                            <TableColumn fx:id="tipoPrecioLoteCol" prefWidth="150.0" text="Tipo Precio" />
+                                                            <TableColumn fx:id="porcentajeUtilidadLoteCol" prefWidth="70.0" text="\% Util" />
+                                                            <TableColumn fx:id="subtotalLoteCol" prefWidth="100.0" text="Subtotal" />
+                                                            <TableColumn fx:id="iceLoteCol" prefWidth="68.0" text="ICE" />
+                                                            <TableColumn fx:id="ivaLoteCol" prefWidth="48.0" text="IVA" />
+                                                            <TableColumn fx:id="totalLoteCol" minWidth="0.0" prefWidth="100.0" text="Total" />
+                                                            <TableColumn fx:id="utilidadLoteCol" prefWidth="84.0" text="Utilidad" />
                                                          </columns>
                                                       </TableView>
                                                    </children>

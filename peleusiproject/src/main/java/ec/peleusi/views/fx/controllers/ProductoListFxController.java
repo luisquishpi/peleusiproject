@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
+
 import ec.peleusi.controllers.ProductoController;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIceController;
@@ -107,6 +108,8 @@ public class ProductoListFxController extends AnchorPane {
 	@FXML
 	private TableView<TablaPreciosProducto> tblPreciosUnitario;
 	@FXML
+	private TableView<TablaPreciosProducto> tblPreciosLote;
+	@FXML
 	private Pagination pagination;
 	@FXML
 	private ImageView imgProducto;
@@ -114,7 +117,8 @@ public class ProductoListFxController extends AnchorPane {
 	VBox vbParaTabla;
 
 	ObservableList<Producto> productosList;
-	ObservableList<TablaPreciosProducto> PreciosUnitarioList;
+	ObservableList<TablaPreciosProducto> preciosUnitarioList;
+	ObservableList<TablaPreciosProducto> preciosLoteList;
 
 	private Integer posicionObjetoEnTabla;
 	private ProductoController productoController = new ProductoController();
@@ -150,6 +154,21 @@ public class ProductoListFxController extends AnchorPane {
 	private TableColumn<TablaPreciosProducto, Double> utilidadCol;
 
 	@FXML
+	private TableColumn<TablaPreciosProducto, String> tipoPrecioLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> porcentajeUtilidadLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> subtotalLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> iceLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> ivaLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> totalLoteCol;
+	@FXML
+	private TableColumn<TablaPreciosProducto, Double> utilidadLoteCol;
+
+	@FXML
 	CheckBox chkTieneIva;
 	@FXML
 	CheckBox chkSePuedeFraccionar;
@@ -160,26 +179,32 @@ public class ProductoListFxController extends AnchorPane {
 
 	@FXML
 	private void initialize() {
-		crearTabla();
+		crearTablaListaProductos();
 		paginar();
 		cargarCombosUnidaMedida();
 		cargarComboTarifaIva();
 		cargarComboTarifaIce();
 		cargarComboTipoGastoDeducible();
 		limpiarCampos();
-		crearColumnasTablaPreciosUnitario();
 
 		tarifaIva = cmbIva.getValue();
 		tarifaIce = cmbIce.getValue();
-		Double costoProducto = Double.parseDouble(txtCostoUnitario.getText());
-		cargarTablaConValores(costoProducto, tarifaIva, tarifaIce);
-		tblPreciosUnitario.setItems(PreciosUnitarioList);
+		crearTablaPreciosUnitario();
+		crearTablaPreciosLote();
 
 		txtCostoCompra.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
 				if (!newValue) {
-					txtCostoCompraFocusLost();
+					txtCantidadCostoCompraFocusLost();
+				}
+			}
+		});
+		txtCantidadCompra.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
+				if (!newValue) {
+					txtCantidadCostoCompraFocusLost();
 				}
 			}
 		});
@@ -193,16 +218,17 @@ public class ProductoListFxController extends AnchorPane {
 
 	}
 
-	private void txtCostoCompraFocusLost() {
+	private void txtCantidadCostoCompraFocusLost() {
 		txtCostoLote.setText(txtCostoCompra.getText());
 		Double costoUnitario = (Double.parseDouble(txtCostoCompra.getText())
 				* Double.parseDouble(txtCantidadVenta.getText())) / Double.parseDouble(txtCantidadCompra.getText());
 		txtCostoUnitario.setText(costoUnitario.toString());
-		// actualizaConValoresTodasLasTablas();
+		actualizaConValoresTodasLasTablas();
 	}
 
-	private void crearColumnasTablaPreciosUnitario() {
-		PreciosUnitarioList = tblPreciosUnitario.getItems();
+	private void crearTablaPreciosUnitario() {
+
+		preciosUnitarioList = tblPreciosUnitario.getItems();
 		tipoPrecioCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, String>("nombre"));
 		porcentajeUtilidadCol
 				.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("porcentajeUtilidad"));
@@ -211,6 +237,29 @@ public class ProductoListFxController extends AnchorPane {
 		ivaCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("iva"));
 		totalCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("total"));
 		utilidadCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("utilidad"));
+
+		Double costoProducto = 0.0;//
+		Double.parseDouble(txtCostoUnitario.getText());
+		cargarTablaConValores(preciosUnitarioList, costoProducto, tarifaIva, tarifaIce);
+		tblPreciosUnitario.setItems(preciosUnitarioList);
+
+	}
+
+	private void crearTablaPreciosLote() {
+		preciosLoteList = tblPreciosLote.getItems();
+		tipoPrecioLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, String>("nombre"));
+		porcentajeUtilidadLoteCol
+				.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("porcentajeUtilidad"));
+		subtotalLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("subtotal"));
+		iceLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("ice"));
+		ivaLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("iva"));
+		totalLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("total"));
+		utilidadLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("utilidad"));
+
+		Double costoProducto = 0.0;//
+		Double.parseDouble(txtCostoLote.getText());
+		cargarTablaConValores(preciosLoteList, costoProducto, tarifaIva, tarifaIce);
+		tblPreciosLote.setItems(preciosLoteList);
 	}
 
 	private void paginar() {
@@ -238,7 +287,7 @@ public class ProductoListFxController extends AnchorPane {
 		}
 	}
 
-	private void crearTabla() {
+	private void crearTablaListaProductos() {
 		tblLista = new TableView<Producto>();
 		TableColumn<Producto, String> codigoCol = new TableColumn<Producto, String>("Código");
 		codigoCol.setCellValueFactory(new PropertyValueFactory<Producto, String>("codigo"));
@@ -317,6 +366,17 @@ public class ProductoListFxController extends AnchorPane {
 			cmbIva.getSelectionModel().select(0);
 	}
 
+	private void cargarComboTarifaIvaCero() {
+		tarifaIva = new TarifaIva();
+		tarifaIva.setNombre("IVA 0%");
+		tarifaIva.setPorcentaje(0.0);
+		List<TarifaIva> listaTarifaIva = new ArrayList<TarifaIva>();
+		listaTarifaIva.add(tarifaIva);
+		cmbIva.setItems(FXCollections.observableArrayList(listaTarifaIva));
+		if (cmbIva != null)
+			cmbIva.getSelectionModel().select(0);
+	}
+
 	private void cargarComboTarifaIce() {
 		TarifaIceController tarifaIceController = new TarifaIceController();
 		List<TarifaIce> listaTarifaIce = tarifaIceController.tarifaIceList();
@@ -335,7 +395,8 @@ public class ProductoListFxController extends AnchorPane {
 			cmbTipoGastoDeducible.getSelectionModel().select(0);
 	}
 
-	private void cargarTablaConValores(Double costoProducto, TarifaIva tarifaIva, TarifaIce tarifaIce) {
+	private void cargarTablaConValores(ObservableList<TablaPreciosProducto> modelo, Double costoProducto,
+			TarifaIva tarifaIva, TarifaIce tarifaIce) {
 		TipoPrecioController tipoPrecioController = new TipoPrecioController();
 		listaTipoPrecio = tipoPrecioController.tipoPrecioList();
 		for (TipoPrecio tipoPrecio : listaTipoPrecio) {
@@ -349,7 +410,7 @@ public class ProductoListFxController extends AnchorPane {
 			tablaPreciosProducto.setIce(ice);
 			tablaPreciosProducto.setTotal(total);
 			tablaPreciosProducto.setUtilidad(utilidad);
-			PreciosUnitarioList.add(tablaPreciosProducto);
+			modelo.add(tablaPreciosProducto);
 		}
 
 	}
@@ -364,6 +425,43 @@ public class ProductoListFxController extends AnchorPane {
 		utilidad = subtotal - costoProducto;
 	}
 
+	private void actualizaConValoresTodasLasTablas() {
+		if (preciosUnitarioList != null) {
+			actualizarValoresEnTabla(preciosUnitarioList, tblPreciosUnitario,
+					Double.parseDouble(txtCostoUnitario.getText()), -1);
+		}
+		if (preciosLoteList != null) {
+			actualizarValoresEnTabla(preciosLoteList, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()), -1);
+		}
+	}
+
+	private void actualizarValoresEnTabla(ObservableList<TablaPreciosProducto> modelo,
+			TableView<TablaPreciosProducto> table, Double costo, int filaPosition) {
+		int inicio = 0;
+		if (filaPosition == -1) {
+			filaPosition = modelo.size() - 1;
+		} else {
+			inicio = filaPosition;
+		}
+		System.out.println("Fila. " + filaPosition + " inicio:" + inicio);
+		System.out.println("modelo: " + modelo);
+		for (int i = inicio; i <= filaPosition; i++) {
+			porcentaje = Double.parseDouble(modelo.get(i).getPorcentajeUtilidad().toString());
+			tarifaIva = (TarifaIva) cmbIva.getValue();
+			tarifaIce = (TarifaIce) cmbIce.getValue();
+			calcularFila(costo, tarifaIva, tarifaIce);
+
+			modelo.get(i).setSubtotal(subtotal);
+			modelo.get(i).setIce(ice);
+			modelo.get(i).setIva(iva);
+			modelo.get(i).setTotal(total);
+			modelo.get(i).setUtilidad(utilidad);
+
+		}
+		table.refresh();
+
+	}
+
 	private void limpiarCampos() {
 		txtCodigo.setText("");
 		txtNombre.setText("");
@@ -376,14 +474,15 @@ public class ProductoListFxController extends AnchorPane {
 		chkSePuedeFraccionar.setSelected(false);
 		chkManejaInventario.setSelected(false);
 		chkEsDeducible.setSelected(false);
-		chkTieneIva.setSelected(true);
 		cmbTipoGastoDeducible.setVisible(false);
+		chkTieneIva.setSelected(true);
+		cmbIva.setVisible(true);
 		imgProducto.setImage(new Image(getClass().getResourceAsStream("../images/foto.jpg")));
 		txtCostoUnitario.setText("0");
 		txtCostoLote.setText("0");
 		txtCostoCompra.setText("0");
 		txtCodigo.requestFocus();
-		// actualizaConValoresTodasLasTablas();
+		actualizaConValoresTodasLasTablas();
 	}
 
 	private void guardarNuevo() {
@@ -489,6 +588,33 @@ public class ProductoListFxController extends AnchorPane {
 	@FXML
 	private void btnUndoImagenClick(ActionEvent event) {
 		imgProducto.setImage(imgOriginal);
+	}
+
+	@FXML
+	private void chkTieneIvaClick(ActionEvent event) {
+		if (chkTieneIva.isSelected()) {
+			cmbIva.setVisible(true);
+			cargarComboTarifaIva();
+			actualizaConValoresTodasLasTablas();
+		} else {
+			cmbIva.setVisible(false);
+			cargarComboTarifaIvaCero();
+			actualizaConValoresTodasLasTablas();
+		}
+	}
+
+	@FXML
+	private void chkEsDeducibleClick(ActionEvent event) {
+		if (chkEsDeducible.isSelected()) {
+			cmbTipoGastoDeducible.setVisible(true);
+		} else {
+			cmbTipoGastoDeducible.setVisible(false);
+		}
+	}
+
+	@FXML
+	private void cmbIceClick(ActionEvent event) {
+		actualizaConValoresTodasLasTablas();
 	}
 
 	private boolean isCamposLlenos() {
