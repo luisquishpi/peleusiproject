@@ -18,6 +18,10 @@ public class DireccionProveedorController {
 		return direccionProveedorDao.create(direccionProveedor);
 	}
 	
+	public String updateDireccionProveedor(DireccionProveedor direccionProveedor) {
+		return direccionProveedorDao.update(direccionProveedor);
+	}	
+	
 	public List<DireccionProveedor> direccionProveedorList() {
 		return direccionProveedorDao.findAll();
 	}
