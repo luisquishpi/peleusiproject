@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -129,48 +128,44 @@
                                     <TextField fx:id="txtTotal" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="452.0" layoutY="48.0" prefHeight="310.0" prefWidth="816.0">
-                                <content>
-                                    <VBox>
-                                       <children>
-                                          <TableView fx:id="tblDetalleCompra" accessibleRole="SCROLL_BAR" prefHeight="393.0" prefWidth="816.0">
-                                             <columns>
-                                                <TableColumn fx:id="idCol" prefWidth="75.0" text="Id" visible="false" />
-                                                <TableColumn fx:id="idProductoCol" prefWidth="75.0" text="IdProducto" visible="false" />
-                                                <TableColumn fx:id="codigoCol" editable="false" prefWidth="75.0" text="Código" />
-                                                <TableColumn fx:id="nombreCol" prefWidth="190.0" text="Nombre" />
-                                                <TableColumn fx:id="cantidadCol" editable="false" minWidth="8.0" prefWidth="60.0" text="Cantidad" />
-                                                <TableColumn fx:id="costoCol" prefWidth="60.0" text="Costo" />
-                                                <TableColumn fx:id="descuentoCol" prefWidth="40.0" text="Descuento">
-                                                   <columns>
-                                                      <TableColumn fx:id="porcentajeDescuentoCol" editable="false" prefWidth="40.0" text="\%" />
-                                                      <TableColumn fx:id="valorDescuentoCol" prefWidth="60.0" text="Valor" />
-                                                   </columns>
-                                                </TableColumn>
-                                                <TableColumn fx:id="precioNetoCol" prefWidth="75.0" text="Precio Neto" />
-                                                <TableColumn fx:id="subtotalCol" prefWidth="60.0" text="Subtotal" />
-                                                <TableColumn prefWidth="60.0" text="IVA">
-                                                   <columns>
-                                                      <TableColumn fx:id="porcentaIvaCol" prefWidth="40.0" text="\%" />
-                                                      <TableColumn fx:id="valorIvaCol" prefWidth="60.0" text="Valor" />
-                                                   </columns>
-                                                </TableColumn>
-                                                <TableColumn fx:id="stockCol" prefWidth="60.0" text="Stock" />
-                                                <TableColumn prefWidth="100.0" text="ICE">
-                                                   <columns>
-                                                      <TableColumn fx:id="porcentajeIceCol" prefWidth="40.0" text="\%" />
-                                                      <TableColumn fx:id="valorIceCol" prefWidth="60.0" text="Valor" />
-                                                   </columns>
-                                                </TableColumn>
-                                                <TableColumn fx:id="totalCol" prefWidth="60.0" text="Total" />
-                                             </columns>
-                                          </TableView>
-                                       </children>
-                                    </VBox>
-                                </content>
-                              </ScrollPane>
                               <Label layoutX="458.0" layoutY="377.0" text="Observaciones" />
                               <TextArea fx:id="txtObservacion" layoutX="452.0" layoutY="393.0" prefHeight="80.0" prefWidth="372.0" />
+                              <VBox layoutX="458.0" layoutY="66.0" prefHeight="298.0" prefWidth="804.0">
+                                 <children>
+                                    <TableView fx:id="tblDetalleCompra" accessibleRole="SCROLL_BAR" editable="true" prefHeight="317.0" prefWidth="703.0">
+                                       <columns>
+                                          <TableColumn fx:id="idCol" prefWidth="75.0" text="Id" visible="false" />
+                                          <TableColumn fx:id="idProductoCol" prefWidth="75.0" text="IdProducto" visible="false" />
+                                          <TableColumn fx:id="codigoCol" editable="false" prefWidth="75.0" text="Código" />
+                                          <TableColumn fx:id="nombreCol" prefWidth="190.0" text="Nombre" />
+                                          <TableColumn fx:id="cantidadCol" editable="false" minWidth="8.0" prefWidth="60.0" text="Cantidad" />
+                                          <TableColumn fx:id="costoCol" prefWidth="60.0" text="Costo" />
+                                          <TableColumn fx:id="descuentoCol" prefWidth="40.0" text="Descuento">
+                                             <columns>
+                                                <TableColumn fx:id="porcentajeDescuentoCol" editable="false" prefWidth="40.0" text="\%" />
+                                                <TableColumn fx:id="valorDescuentoCol" prefWidth="60.0" text="Valor" />
+                                             </columns>
+                                          </TableColumn>
+                                          <TableColumn fx:id="precioNetoCol" prefWidth="75.0" text="Precio Neto" />
+                                          <TableColumn fx:id="subtotalCol" prefWidth="60.0" text="Subtotal" />
+                                          <TableColumn prefWidth="60.0" text="IVA">
+                                             <columns>
+                                                <TableColumn fx:id="porcentaIvaCol" prefWidth="40.0" text="\%" />
+                                                <TableColumn fx:id="valorIvaCol" prefWidth="60.0" text="Valor" />
+                                             </columns>
+                                          </TableColumn>
+                                          <TableColumn fx:id="stockCol" prefWidth="60.0" text="Stock" />
+                                          <TableColumn prefWidth="100.0" text="ICE">
+                                             <columns>
+                                                <TableColumn fx:id="porcentajeIceCol" prefWidth="40.0" text="\%" />
+                                                <TableColumn fx:id="valorIceCol" prefWidth="60.0" text="Valor" />
+                                             </columns>
+                                          </TableColumn>
+                                          <TableColumn fx:id="totalCol" prefWidth="60.0" text="Total" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
                            </children>
                         </AnchorPane>
                      </center>

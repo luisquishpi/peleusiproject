@@ -8,14 +8,20 @@ import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.models.entities.Producto;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.general.CompraDetalle;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Callback;
+
 
 public class CompraProductoFxController extends AnchorPane {
 
@@ -24,7 +30,7 @@ public class CompraProductoFxController extends AnchorPane {
 	@FXML
 	private TableColumn<CompraDetalle, Integer> idCol;
 	@FXML
-	private TableColumn<Producto, Integer> idProductoCol;
+	private TableColumn<CompraDetalle, Producto> idProductoCol;
 	@FXML
 	private TableColumn<CompraDetalle, Double> stockCol;
 	@FXML
@@ -97,12 +103,18 @@ public class CompraProductoFxController extends AnchorPane {
 	private Double totalIva = 0.0;
 	private Double total = 0.0;
 
+	
+
+	
+	//@Override
 	@FXML
 	private void initialize() {
-		
-		// Callback<TableColumn<CompraDetalle, String>, TableCell<CompraDetalle, String>> cellFactory = (
-			//        TableColumn<CompraDetalle, String> p) -> new EditingCell();
 
+		Callback<TableColumn<CompraDetalle, String>, TableCell<CompraDetalle, String>> cellFactory = (
+				TableColumn<CompraDetalle, String> p) -> new EditingCell();
+
+		idCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Integer>("id"));
+		idProductoCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Producto>("idProducto"));
 		codigoCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, String>("codigo"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, String>("nombre"));
 		cantidadCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("cantidad"));
@@ -117,9 +129,21 @@ public class CompraProductoFxController extends AnchorPane {
 		stockCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("stock"));
 		porcentajeIceCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("porcentajeIce"));
 		valorIceCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("valorIce"));
-		totalCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("total"));
+		totalCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("total"));			
+		nombreCol.setEditable(true);
+		
+		nombreCol.setCellFactory(cellFactory);
+		
+		nombreCol.setOnEditCommit((CellEditEvent<CompraDetalle, String> t) -> {
+		      ((CompraDetalle) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+		          .setNombre(t.getNewValue());
+		    });
+		
 		tblDetalleCompra.setItems(oblCompraDetalleList);
-		tblDetalleCompra.setEditable(true);
+	//	tblDetalleCompra.getColumns().addAll(idCol,idProductoCol,codigoCol,nombreCol,cantidadCol,costoCol,porcentajeDescuentoCol,valorDescuentoCol,precioNetoCol,subtotalCol,porcentaIvaCol,valorIvaCol,stockCol,porcentajeIceCol,valorIceCol,totalCol);
+		
+	//	table.getColumns().addAll(firstNameCol, lastNameCol);
+		
 		limpiarControles();
 
 	}
@@ -199,6 +223,81 @@ public class CompraProductoFxController extends AnchorPane {
 		producto = productoController.getProductoCodigo(txtProducto.getText());
 		cargarDetalleProducto(producto);
 
+	}
+
+	class EditingCell extends TableCell<CompraDetalle, String> {
+
+		private TextField textField;
+
+		public EditingCell() {
+		}
+
+		@Override
+		public void startEdit() {
+			if (!isEmpty()) {
+				super.startEdit();
+				createTextField();
+				setText(null);
+				setGraphic(textField);
+				textField.selectAll();
+			}
+		}
+
+		@Override
+		public void cancelEdit() {
+			super.cancelEdit();
+
+			setText((String) getItem());
+			setGraphic(null);
+		}
+
+		@Override
+		public void updateItem(String item, boolean empty) {
+			super.updateItem(item, empty);
+
+			if (empty) {
+				setText(null);
+				setGraphic(null);
+			} else {
+				if (isEditing()) {
+					if (textField != null) {
+						textField.setText(getString());
+					}
+					setText(null);
+					setGraphic(textField);
+				} else {
+					setText(getString());
+					setGraphic(null);
+				}
+			}
+		}
+
+		/*private void createTextField() {
+			textField = new TextField(getString());
+			textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+			textField.focusedProperty()
+					.addListener((ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) -> {
+						if (!arg2) {
+							commitEdit(textField.getText());
+						}
+					});
+		}*/
+		
+		private void createTextField() {
+	        textField = new TextField(getString());
+	        textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+	        textField.setOnKeyPressed(t -> {
+	            if (t.getCode() == KeyCode.ENTER) {
+	                commitEdit(textField.getText());
+	            } else if (t.getCode() == KeyCode.ESCAPE) {
+	                cancelEdit();
+	            }
+	        });
+	    }
+
+		private String getString() {
+			return getItem() == null ? "" : getItem().toString();
+		}
 	}
 
 }

@@ -1,14 +1,13 @@
 package ec.peleusi.models.entities.general;
 
 import ec.peleusi.models.entities.Producto;
-
 public class CompraDetalle {
 
 	private Integer id;
 	private Producto idProducto;	
 	private String codigo;
 	private String nombre;
-	private Double cantidad;
+	private Double  cantidad;
 	private Double costo;
 	private Double porcentajeDescuento;
 	private Double valorDescuento;
