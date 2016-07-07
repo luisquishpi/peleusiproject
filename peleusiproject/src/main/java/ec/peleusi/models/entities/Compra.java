@@ -48,6 +48,7 @@ public class Compra {
 		this.usuario = usuario;
 		this.estado = estado;
 		this.sucursal = sucursal;
+
 	}
 
 	@Id

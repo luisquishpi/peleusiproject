@@ -101,7 +101,7 @@
                               </TitledPane>
                               <TextField fx:id="txtProducto" layoutX="452.0" layoutY="19.0" prefHeight="25.0" prefWidth="471.0" />
                               <Label layoutX="452.0" layoutY="2.0" prefHeight="17.0" prefWidth="64.0" text="Producto" />
-                              <Button fx:id="btnBuscarProducto" layoutX="930.0" layoutY="19.0" mnemonicParsing="false" text="Buscar" />
+                              <Button fx:id="btnBuscarProducto" layoutX="930.0" layoutY="19.0" mnemonicParsing="false" onAction="#bntBuscarProductoClick" text="Buscar" />
                               <GridPane layoutX="816.0" layoutY="370.0" prefHeight="125.0" prefWidth="452.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="10.0" prefWidth="152.0" />
@@ -117,7 +117,7 @@
                                  <children>
                                     <Label text="Base Imponible 0%" textAlignment="CENTER" />
                                     <TextField fx:id="txtBaseImponible0" GridPane.rowIndex="1" />
-                                    <TextField fx:id="baseImponibleDiferente0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtBaseImponibleDiferente0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="txtDescuento" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     <Label text="Base Imp. Diferente 0%" GridPane.columnIndex="1" />
                                     <Label text="Descuento" GridPane.columnIndex="2" />
@@ -133,17 +133,17 @@
                                 <content>
                                     <VBox>
                                        <children>
-                                          <TableView fx:id="tvwProductos" accessibleRole="SCROLL_BAR" prefHeight="393.0" prefWidth="816.0">
+                                          <TableView fx:id="tblDetalleCompra" accessibleRole="SCROLL_BAR" prefHeight="393.0" prefWidth="816.0">
                                              <columns>
                                                 <TableColumn fx:id="idCol" prefWidth="75.0" text="Id" visible="false" />
                                                 <TableColumn fx:id="idProductoCol" prefWidth="75.0" text="IdProducto" visible="false" />
                                                 <TableColumn fx:id="codigoCol" editable="false" prefWidth="75.0" text="Código" />
                                                 <TableColumn fx:id="nombreCol" prefWidth="190.0" text="Nombre" />
-                                                <TableColumn fx:id="cantidadCol" minWidth="8.0" prefWidth="60.0" text="Cantidad" />
+                                                <TableColumn fx:id="cantidadCol" editable="false" minWidth="8.0" prefWidth="60.0" text="Cantidad" />
                                                 <TableColumn fx:id="costoCol" prefWidth="60.0" text="Costo" />
                                                 <TableColumn fx:id="descuentoCol" prefWidth="40.0" text="Descuento">
                                                    <columns>
-                                                      <TableColumn fx:id="porcentajeDescuentoCol" prefWidth="40.0" text="\%" />
+                                                      <TableColumn fx:id="porcentajeDescuentoCol" editable="false" prefWidth="40.0" text="\%" />
                                                       <TableColumn fx:id="valorDescuentoCol" prefWidth="60.0" text="Valor" />
                                                    </columns>
                                                 </TableColumn>
@@ -151,8 +151,8 @@
                                                 <TableColumn fx:id="subtotalCol" prefWidth="60.0" text="Subtotal" />
                                                 <TableColumn prefWidth="60.0" text="IVA">
                                                    <columns>
-                                                      <TableColumn fx:id="porcentajeIvaCol" prefWidth="40.0" text="\%" />
-                                                      <TableColumn fx:id="porentajeValorCol" prefWidth="60.0" text="Valor" />
+                                                      <TableColumn fx:id="porcentaIvaCol" prefWidth="40.0" text="\%" />
+                                                      <TableColumn fx:id="valorIvaCol" prefWidth="60.0" text="Valor" />
                                                    </columns>
                                                 </TableColumn>
                                                 <TableColumn fx:id="stockCol" prefWidth="60.0" text="Stock" />
