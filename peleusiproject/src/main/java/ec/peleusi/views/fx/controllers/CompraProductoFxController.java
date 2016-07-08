@@ -3,25 +3,31 @@ package ec.peleusi.views.fx.controllers;
 import java.awt.Button;
 import java.util.List;
 
+import ec.peleusi.controllers.DireccionProveedorController;
 import ec.peleusi.controllers.ProductoController;
+import ec.peleusi.controllers.ProveedorController;
 import ec.peleusi.controllers.SeteoController;
+import ec.peleusi.models.entities.DireccionProveedor;
 import ec.peleusi.models.entities.Producto;
+import ec.peleusi.models.entities.Proveedor;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.general.CompraDetalle;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
-
+import javafx.util.converter.DoubleStringConverter;
 
 public class CompraProductoFxController extends AnchorPane {
 
@@ -75,7 +81,37 @@ public class CompraProductoFxController extends AnchorPane {
 	public TextField txtMontoIce;
 	@FXML
 	public TextField txtTotal;
+	@FXML
+	public TextField txtRuc;
+	@FXML
+	public TextField txtContribuyente;
+	@FXML
+	public TextField txtDireccion;
+	@FXML
+	public TextField txtTelefono;
+	@FXML
+	public TextField txtEstablecimiento;
+	@FXML
+	public TextField txtPuntoEmision;
+	@FXML
+	public TextField txtSecuencial;
+	@FXML
+	public TextField txtAutorizacion;
+	@FXML
+	public TextField txtDiasCredito;
+	@FXML
+	public DatePicker dtpFechaEmision;
+	@FXML
+	public DatePicker dtpFechaAutorizacion;
+	@FXML
+	public DatePicker dtpFechaVencimiento;
+	@FXML
+	public DatePicker dtpFechaRegistro;
+	@FXML
+	public javafx.scene.control.Button btnBuscarProveedor;
+
 	ObservableList<CompraDetalle> oblCompraDetalleList = FXCollections.observableArrayList();
+	Proveedor proveedor;
 
 	// @FXML
 	// private Button btnNuevo;
@@ -102,16 +138,10 @@ public class CompraProductoFxController extends AnchorPane {
 	private Double totalDescuento = 0.0;
 	private Double totalIva = 0.0;
 	private Double total = 0.0;
+	private Double totalIce = 0.0;
 
-	
-
-	
-	//@Override
 	@FXML
 	private void initialize() {
-
-		Callback<TableColumn<CompraDetalle, String>, TableCell<CompraDetalle, String>> cellFactory = (
-				TableColumn<CompraDetalle, String> p) -> new EditingCell();
 
 		idCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Integer>("id"));
 		idProductoCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Producto>("idProducto"));
@@ -129,21 +159,35 @@ public class CompraProductoFxController extends AnchorPane {
 		stockCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("stock"));
 		porcentajeIceCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("porcentajeIce"));
 		valorIceCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("valorIce"));
-		totalCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("total"));			
-		nombreCol.setEditable(true);
-		
-		nombreCol.setCellFactory(cellFactory);
-		
-		nombreCol.setOnEditCommit((CellEditEvent<CompraDetalle, String> t) -> {
-		      ((CompraDetalle) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-		          .setNombre(t.getNewValue());
-		    });
-		
+		totalCol.setCellValueFactory(new PropertyValueFactory<CompraDetalle, Double>("total"));
+		cantidadCol.setEditable(true);
+		porcentajeDescuentoCol.setEditable(true);
+		costoCol.setEditable(true);
+
+		cantidadCol
+				.setCellFactory(TextFieldTableCell.<CompraDetalle, Double> forTableColumn(new DoubleStringConverter()));
+		porcentajeDescuentoCol
+				.setCellFactory(TextFieldTableCell.<CompraDetalle, Double> forTableColumn(new DoubleStringConverter()));
+		costoCol.setCellFactory(TextFieldTableCell.<CompraDetalle, Double> forTableColumn(new DoubleStringConverter()));
+
+		cantidadCol.setOnEditCommit((CellEditEvent<CompraDetalle, Double> t) -> {
+			((CompraDetalle) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+					.setCantidad(t.getNewValue());
+			actualizarValores(oblCompraDetalleList, tblDetalleCompra, t.getTablePosition().getRow());
+
+		});
+		porcentajeDescuentoCol.setOnEditCommit((CellEditEvent<CompraDetalle, Double> t) -> {
+			((CompraDetalle) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+					.setPorcentajeDescuento(t.getNewValue());
+			actualizarValores(oblCompraDetalleList, tblDetalleCompra, t.getTablePosition().getRow());
+		});
+		costoCol.setOnEditCommit((CellEditEvent<CompraDetalle, Double> t) -> {
+			((CompraDetalle) t.getTableView().getItems().get(t.getTablePosition().getRow())).setCosto(t.getNewValue());
+
+			actualizarValores(oblCompraDetalleList, tblDetalleCompra, t.getTablePosition().getRow());
+		});
+
 		tblDetalleCompra.setItems(oblCompraDetalleList);
-	//	tblDetalleCompra.getColumns().addAll(idCol,idProductoCol,codigoCol,nombreCol,cantidadCol,costoCol,porcentajeDescuentoCol,valorDescuentoCol,precioNetoCol,subtotalCol,porcentaIvaCol,valorIvaCol,stockCol,porcentajeIceCol,valorIceCol,totalCol);
-		
-	//	table.getColumns().addAll(firstNameCol, lastNameCol);
-		
 		limpiarControles();
 
 	}
@@ -194,6 +238,7 @@ public class CompraProductoFxController extends AnchorPane {
 		subtotalIvaDiferente0 = 0.0;
 		subtotalIva0 = 0.0;
 		totalIva = 0.0;
+		totalIce = 0.0;
 		totalDescuento = 0.0;
 		total = 0.0;
 		System.out.println("Numero de datos....>" + oblCompraDetalleList.size());
@@ -207,13 +252,40 @@ public class CompraProductoFxController extends AnchorPane {
 			totalIva = totalIva + compraDetalle.getValorIva();
 			totalDescuento = totalDescuento + compraDetalle.getValorDescuento();
 			total = total + compraDetalle.getTotal();
+			totalIce = totalIce + compraDetalle.getValorIce();
 		}
 		txtBaseImponible0.setText(subtotalIva0.toString());
 		txtBaseImponibleDiferente0.setText(subtotalIvaDiferente0.toString());
 		txtDescuento.setText(totalDescuento.toString());
 		txtMontoIva.setText(totalIva.toString());
 		txtTotal.setText(total.toString());
+		txtMontoIce.setText(totalIce.toString());
+	}
 
+	public void actualizarValores(ObservableList<CompraDetalle> modelo, TableView<CompraDetalle> table,
+			int filaPosition) {
+		try {
+
+			precioBrutoFila = modelo.get(filaPosition).getCosto();
+			porcentajeDescuentoFila = modelo.get(filaPosition).getPorcentajeDescuento();
+			valorDescuentoFila = precioBrutoFila * ((porcentajeDescuentoFila) / 100);
+			precioNetoFila = precioBrutoFila - valorDescuentoFila;
+			cantidadFila = modelo.get(filaPosition).getCantidad();
+			subtotalFila = precioNetoFila * cantidadFila;
+			valorIvaFila = subtotalFila * (modelo.get(filaPosition).getPorcentaIva() / 100);
+			valorIceFila = subtotalFila * (modelo.get(filaPosition).getPorcentajeIce() / 100);
+			totalFila = valorIvaFila + subtotalFila + valorIceFila;
+			modelo.get(filaPosition).setPrecioNeto(precioNetoFila);
+			modelo.get(filaPosition).setValorDescuento(valorDescuentoFila);
+			modelo.get(filaPosition).setSubtotal(subtotalFila);
+			modelo.get(filaPosition).setValorIva(valorIvaFila);
+			modelo.get(filaPosition).setValorIce(valorIceFila);
+			modelo.get(filaPosition).setTotal(totalFila);
+			table.refresh();
+			calcularTotales();
+
+		} catch (Exception e) {
+		}
 	}
 
 	@FXML
@@ -222,81 +294,73 @@ public class CompraProductoFxController extends AnchorPane {
 		Producto producto = new Producto();
 		producto = productoController.getProductoCodigo(txtProducto.getText());
 		cargarDetalleProducto(producto);
+	}
+
+	@FXML
+	private void txtProductorReleased(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			bntBuscarProductoClick();
+		}
+	}
+
+	@FXML
+	private void btnBuscarProveedorClick() {
+		buscarProveedoridentificacion(txtRuc.getText());
 
 	}
 
-	class EditingCell extends TableCell<CompraDetalle, String> {
+	@FXML
+	private void txtRucReleased(KeyEvent event) {
 
-		private TextField textField;
+		System.out.println("hhhhhhhhhhhhh");
+		if (event.getCode() == KeyCode.ENTER) {
+			System.out.println(txtRuc.getText());
+			buscarProveedoridentificacion(txtRuc.getText());
+		}
+	}
 
-		public EditingCell() {
+	public void calcularFechaVencimiento() {
+
+		/*
+		 * Calendar cal = Calendar.getInstance();
+		 * cal.setTime(dtpFechaEmision.getValue().);
+		 * cal.add(Calendar.DAY_OF_YEAR,
+		 * Integer.parseInt(txtDiasCredito.getText()));
+		 * dtcFechaVencimiento.setDate(cal.getTime());
+		 */
+	}
+
+	private void buscarProveedoridentificacion(String identificacion) {
+		ProveedorController proveedoersonaController = new ProveedorController();
+
+		proveedor = new Proveedor();
+		proveedor = proveedoersonaController.getProveedorIdentificacion(identificacion);
+		if (proveedor != null) {
+			System.out.println("Categoría seleccionado: " + proveedor);
+			txtRuc.setText(proveedor.getIdentificacion());
+			txtContribuyente.setText(proveedor.getRazonSocial());
+			// cargarDireccionProveedorPorDefecto(proveedor);
+		} else {
+
+			txtContribuyente.setText("");
+			txtDireccion.setText("");
+			txtTelefono.setText("");
+			// llamarVentanaProveedor();
+
 		}
 
-		@Override
-		public void startEdit() {
-			if (!isEmpty()) {
-				super.startEdit();
-				createTextField();
-				setText(null);
-				setGraphic(textField);
-				textField.selectAll();
-			}
-		}
+	}
 
-		@Override
-		public void cancelEdit() {
-			super.cancelEdit();
-
-			setText((String) getItem());
-			setGraphic(null);
-		}
-
-		@Override
-		public void updateItem(String item, boolean empty) {
-			super.updateItem(item, empty);
-
-			if (empty) {
-				setText(null);
-				setGraphic(null);
-			} else {
-				if (isEditing()) {
-					if (textField != null) {
-						textField.setText(getString());
-					}
-					setText(null);
-					setGraphic(textField);
-				} else {
-					setText(getString());
-					setGraphic(null);
-				}
-			}
-		}
-
-		/*private void createTextField() {
-			textField = new TextField(getString());
-			textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-			textField.focusedProperty()
-					.addListener((ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) -> {
-						if (!arg2) {
-							commitEdit(textField.getText());
-						}
-					});
-		}*/
-		
-		private void createTextField() {
-	        textField = new TextField(getString());
-	        textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-	        textField.setOnKeyPressed(t -> {
-	            if (t.getCode() == KeyCode.ENTER) {
-	                commitEdit(textField.getText());
-	            } else if (t.getCode() == KeyCode.ESCAPE) {
-	                cancelEdit();
-	            }
-	        });
-	    }
-
-		private String getString() {
-			return getItem() == null ? "" : getItem().toString();
+	private void cargarDireccionProveedorPorDefecto(Proveedor proveedor) {
+		DireccionProveedorController direccionProvedorController = new DireccionProveedorController();
+		DireccionProveedor direccionProveedor = new DireccionProveedor();
+		direccionProveedor = direccionProvedorController.getDireccionProveedorPorDefecto(proveedor);
+		if (direccionProveedor != null) {
+			txtDireccion.setText(direccionProveedor.getNombre());
+			txtTelefono.setText(direccionProveedor.getTelefono());
+		} else {
+			txtDireccion.setText("");
+			txtTelefono.setText("");
 		}
 	}
 
