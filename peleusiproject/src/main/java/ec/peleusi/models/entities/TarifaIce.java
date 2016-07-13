@@ -71,7 +71,7 @@ public class TarifaIce {
 
 	@Override
 	public String toString() {
-		return nombre;
+		return nombre + " (" + porcentaje + "%)";
 	}
 
 }
