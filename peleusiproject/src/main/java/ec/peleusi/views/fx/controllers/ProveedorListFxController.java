@@ -18,8 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.Tab;
@@ -28,12 +30,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class ProveedorListFxController extends AnchorPane {
+public class ProveedorListFxController extends GenericController {
 	@FXML
 	private TabPane tpnlProveedor;
 	@FXML
@@ -73,6 +74,8 @@ public class ProveedorListFxController extends AnchorPane {
 	@FXML
 	private TextField txtCodigoPostal;
 	@FXML
+	private CheckBox chkPorDefecto;
+	@FXML
 	private TableView<DireccionProveedor> tblDireccionProveedor;
 	@FXML
 	TableColumn<DireccionProveedor, String> ciudadCol;
@@ -83,7 +86,13 @@ public class ProveedorListFxController extends AnchorPane {
 	@FXML
 	TableColumn<DireccionProveedor, String> telefonoCol;
 	@FXML
+	TableColumn<DireccionProveedor, Boolean> porDefectoCol;
+	@FXML
+	private Button btnNuevoDireccion;
+	@FXML
 	private Button btnAgregar;
+	@FXML
+	private Button btnEliminarDireccion;
 	
 	@FXML
 	private Button btnNuevo;
@@ -104,7 +113,8 @@ public class ProveedorListFxController extends AnchorPane {
 	private Proveedor proveedor;
 	private ProveedorController proveedorController = new ProveedorController();
 	private String error = null;
-	final static int rowsPerPage = 20;
+	final static int rowsPerPage = 15;
+	Boolean actualizarDireccion=false;
 	
 	ObservableList<DireccionProveedor> direccionProveedorsList;
 	private DireccionProveedor direccionProveedor;
@@ -133,8 +143,7 @@ public class ProveedorListFxController extends AnchorPane {
 		if (proveedorsList.size() > 0) {
 			pagination.setVisible(true);
 			pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
-			pagination.setPageCount(count);
-			// pagination.setPageFactory(this::createSubList);
+			pagination.setPageCount(count);			
 			pagination.setPageFactory(new Callback<Integer, Node>() {
 				public Node call(Integer pageIndex) {
 					int fromIndex = pageIndex * rowsPerPage;
@@ -156,11 +165,11 @@ public class ProveedorListFxController extends AnchorPane {
 		tblLista.getColumns().add(tipoIdentificacionCol);
 		TableColumn<Proveedor, String> identificacionCol = new TableColumn<Proveedor, String>("Identificacion");
 		identificacionCol.setCellValueFactory(new PropertyValueFactory<Proveedor, String>("identificacion"));
-		identificacionCol.setPrefWidth(80);
+		identificacionCol.setPrefWidth(110);
 		tblLista.getColumns().add(identificacionCol);	
 		TableColumn<Proveedor, String> razonSocialCol = new TableColumn<Proveedor, String>("RazónSocial");
 		razonSocialCol.setCellValueFactory(new PropertyValueFactory<Proveedor, String>("razonSocial"));
-		razonSocialCol.setPrefWidth(180);
+		razonSocialCol.setPrefWidth(200);
 		tblLista.getColumns().add(razonSocialCol);
 		proveedorsList = FXCollections.observableList(proveedorController.proveedorList());
 		tblLista.setItems(proveedorsList);		
@@ -202,10 +211,11 @@ public class ProveedorListFxController extends AnchorPane {
 			txtRazonSocial.setText(proveedor.getRazonSocial());			
 			txtDiasCredito.setText(Integer.toString(proveedor.getDiasCredito()));
 			txtPorcentajeDescuento.setText(Double.toString(proveedor.getPorcentajeDescuento()));
-			txtDescripcion.setText(proveedor.getDescripcion());			
+			txtDescripcion.setText(proveedor.getDescripcion());	
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
-			btnEliminar.setDisable(false);
+			btnEliminar.setDisable(false);			
+			crearTablaDireccion(proveedor);
 		}
 	}
 
@@ -213,25 +223,21 @@ public class ProveedorListFxController extends AnchorPane {
 		error = proveedorController.createProveedor(proveedor);
 		if (error == null) {
 			proveedorsList.add(proveedor);	
-			System.out.println("provList agregar " + proveedorsList);
-			System.out.println("prov agregar " + proveedor);
 			txtBuscar.setText(txtRazonSocial.getText());			
 			btnBuscarClick(null);
-			AlertsUtil.alertExito("Guardado correctamente");
-		//	btnNuevoClick(null);
+			AlertsUtil.alertExito("Guardado correctamente");		
 		} else {
 			AlertsUtil.alertError(error);
 		}
 	}
 
 	private void actualizar() {
-		error = proveedorController.updateProveedor(proveedor);
+		error = proveedorController.updateProveedor(proveedor);	
 		if (error == null) {
 			proveedorsList.set(posicionObjetoEnTabla, proveedor);
 			txtBuscar.setText(txtRazonSocial.getText());
 			btnBuscarClick(null);
-			AlertsUtil.alertExito("Actualizado correctamente");
-			//btnNuevoClick(null);
+			AlertsUtil.alertExito("Actualizado correctamente");			
 		} else {
 			AlertsUtil.alertError(error);
 		}
@@ -240,8 +246,8 @@ public class ProveedorListFxController extends AnchorPane {
 	private void eliminar() {
 		error = proveedorController.deleteProveedor(proveedor);
 		if (error == null){
-			proveedorsList.remove(getObjetoSeleccionadoDeTabla());
-			//btnNuevoClick(null);
+			proveedorsList.remove(getObjetoSeleccionadoDeTabla());	
+			tblLista.getItems().remove(tblLista.getSelectionModel().getSelectedIndex());
 		} else {
 			AlertsUtil.alertError(error);
 		}
@@ -255,6 +261,7 @@ public class ProveedorListFxController extends AnchorPane {
 		proveedor.setDiasCredito(Integer.parseInt(txtDiasCredito.getText().toString()));
 		proveedor.setPorcentajeDescuento(Double.parseDouble(txtPorcentajeDescuento.getText().toString()));
 		proveedor.setDescripcion(txtDescripcion.getText());	
+	
 	}
 
 	private void limpiarCampos() {
@@ -267,7 +274,9 @@ public class ProveedorListFxController extends AnchorPane {
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
-		txtIdentificacion.requestFocus();
+		cmbTipoIdentificacion.requestFocus();
+		actualizarDireccion=false;
+		crearTablaDireccion(null);
 	}
 
 	private boolean camposLlenos() {
@@ -281,8 +290,8 @@ public class ProveedorListFxController extends AnchorPane {
 	@FXML
 	private void btnNuevoClick(ActionEvent event) {
 		limpiarCampos();
-		limpiarCamposDireccion();
-	}
+		limpiarCamposDireccion();		
+		}
 
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
@@ -304,14 +313,19 @@ public class ProveedorListFxController extends AnchorPane {
 				.alertConfirmation("Está seguro que desea eliminar: \n" + proveedor.getRazonSocial());
 		if (result.get() == ButtonType.OK) {
 			eliminar();
+			tblLista.refresh();		
+			limpiarCampos();
 		}
 	}
 
 	@FXML
-	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
-	}
+		private void btnCancelarClick(ActionEvent event) {
+			Button btnCloseTab = (Button) event.getSource();
+			Scene btnScene = btnCloseTab.getScene();
+			TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+			thisTabPane.getTabs().remove(tabIndex);
+		}
+	
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
@@ -322,28 +336,31 @@ public class ProveedorListFxController extends AnchorPane {
 		} else {
 			proveedorsList.clear();
 		}
+		proveedor=proveedorList.get(0);
 	//	btnNuevoClick(null);		
 		tblLista.requestFocus();
 	}
 	
 	
-	@FXML
-	private void crearTablaDireccion(Proveedor proveedor) {			
-		direccionProveedorsList = FXCollections.observableList(direccionProveedorController.direccionProveedorIdList(proveedor));
+	
+	private void crearTablaDireccion(Proveedor proveedorList) {			
+		direccionProveedorsList = FXCollections.observableList(direccionProveedorController.direccionProveedorIdList(proveedorList));
 		tblDireccionProveedor.setItems(direccionProveedorsList);	
 		ciudadCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, String>("ciudad"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, String>("nombre"));
 		direccionCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, String>("direccion"));
 		telefonoCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, String>("telefono"));
-		final ObservableList<DireccionProveedor> direccionProveedorsListSelected = tblDireccionProveedor.getSelectionModel().getSelectedItems();
-		direccionProveedorsListSelected.addListener(escuchaCambiosEnTablaDireccion);
-		System.out.println("carga tabla " + direccionProveedorsList);	
+		porDefectoCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, Boolean>("porDefecto"));
+		porDefectoCol.setCellFactory(CheckBoxTableCell.forTableColumn(porDefectoCol));
+		final ObservableList<DireccionProveedor> direccionProveedorsListSeleccionar = tblDireccionProveedor.getSelectionModel().getSelectedItems();
+		direccionProveedorsListSeleccionar.addListener(escuchaCambiosEnTablaDireccion);	
 	}	
 	
 	private final ListChangeListener<DireccionProveedor> escuchaCambiosEnTablaDireccion = new ListChangeListener<DireccionProveedor>() {
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends DireccionProveedor> c) {
 			cargarObjetoSeleccionadaEnFormularioDireccion();
+			actualizarDireccion=true;
 		}
 	};
 
@@ -359,57 +376,75 @@ public class ProveedorListFxController extends AnchorPane {
 	private void cargarObjetoSeleccionadaEnFormularioDireccion() {
 		direccionProveedor = (DireccionProveedor) getObjetoSeleccionadoDeTablaDireccion();
 		if (direccionProveedor != null) {
-				//posicionObjetoEnTablaDireccion = direccionProveedorsList.indexOf(direccionProveedor);
 				posicionObjetoEnTablaDireccion = direccionProveedorsList.indexOf(direccionProveedor);
-				txtCiudad.setText(objetoCiudad().getNombre());
+				txtCiudad.setText(direccionProveedor.getCiudad().getNombre());				
 				txtNombre.setText(direccionProveedor.getNombre());
 				txtDireccion.setText(direccionProveedor.getDireccion());			
 				txtTelefono.setText(direccionProveedor.getTelefono());
 				txtCelular.setText(direccionProveedor.getCelular());
 				txtEmail.setText(direccionProveedor.getEmail());
-				txtCodigoPostal.setText(direccionProveedor.getCodigoPostal());			
+				txtCodigoPostal.setText(direccionProveedor.getCodigoPostal());
+				chkPorDefecto.setSelected(direccionProveedor.getPorDefecto());				
 				btnAgregar.setText("Actualizar");
 				btnAgregar.setDisable(false);
-				btnEliminar.setDisable(false);				
+				btnEliminarDireccion.setDisable(false);				
 		}
 	}
-	private void guardarNuevoDireccion() {
-		error = direccionProveedorController.createDireccionPersona(direccionProveedor);		
+	private void guardarNuevoDireccion(Proveedor proveedorEntrada ) {	
+		direccionProveedor=llenarEntidadAntesDeGuardarDireccion(proveedorEntrada,false);	
+		error = direccionProveedorController.createDireccionProveedor(direccionProveedor);
 		if (error == null) {			
-			AlertsUtil.alertExito("Guardado correctamente");
-			System.out.println("guardad nuevo prove " + direccionProveedor);
-			//direccionProveedorsList.add(direccionProveedor);
-			System.out.println("guardad nuevo provList " + direccionProveedorsList);
-			//btnNuevoClick(null);
+			direccionProveedorsList.add(direccionProveedor);
+			AlertsUtil.alertExito("Guardado correctamente");	
+			//btnNuevoDireccionClick(null);
+		} else {
+			AlertsUtil.alertError(error);			
+		}
+	}
+
+	private void actualizarDireccion(DireccionProveedor direccionProveedor) {
+		direccionProveedor=llenarEntidadAntesDeGuardarDireccion(proveedor, true);			
+		direccionProveedorController=new DireccionProveedorController();
+		error = direccionProveedorController.updateDireccionProveedor(direccionProveedor);		
+		if (error == null) {
+			direccionProveedorsList.set(posicionObjetoEnTablaDireccion, direccionProveedor);
+			AlertsUtil.alertExito("Actualizado correctamente");			
+			//btnNuevoDireccionClick(null);
+		} else {
+			AlertsUtil.alertError(error);
+		}
+	}	
+	
+	private void eliminarDireccion() {
+		error = direccionProveedorController.deleteDireccionProveedor(direccionProveedor);
+		if (error == null){
+			direccionProveedorsList.remove(getObjetoSeleccionadoDeTablaDireccion());
+			//btnNuevoDireccionClick(null);
+			limpiarCamposDireccion();
 		} else {
 			AlertsUtil.alertError(error);
 		}
 	}
 
-	private void actualizarDireccion() {
-		error = direccionProveedorController.updateDireccionProveedor(direccionProveedor);
-		if (error == null) {
-			direccionProveedorsList.set(posicionObjetoEnTablaDireccion, direccionProveedor);
-			AlertsUtil.alertExito("Actualizado correctamente");
-			//btnNuevoClick(null);
-		} else {
-			AlertsUtil.alertError(error);
-		}
-	}			
-		private void llenarEntidadAntesDeGuardarDireccion() {
-			direccionProveedor = new DireccionProveedor();
-			direccionProveedor.setProveedor(proveedor);
-			//direccionProveedor.setCuidad(ciudad);				
-			direccionProveedor.setCuidad(objetoCiudad());
-			System.out.println("{{{{{" + objetoCiudad());
-			direccionProveedor.setNombre(txtNombre.getText());
-			direccionProveedor.setDireccion(txtDireccion.getText());
-			direccionProveedor.setTelefono(txtTelefono.getText());
-			direccionProveedor.setCelular(txtCelular.getText());
-			direccionProveedor.setEmail(txtEmail.getText());
-			direccionProveedor.setCodigoPostal(txtCodigoPostal.getText());				
+	private DireccionProveedor llenarEntidadAntesDeGuardarDireccion(Proveedor proveedor, Boolean actualizarDireccion) {		
+		  
+		if(actualizarDireccion==false)
+		{
+			direccionProveedor=new DireccionProveedor();
 		}		
-		
+		direccionProveedor.setProveedor(proveedor);			
+		direccionProveedor.setCiudad(objetoCiudad());
+		direccionProveedor.setNombre(txtNombre.getText());			
+		direccionProveedor.setDireccion(txtDireccion.getText());
+		direccionProveedor.setTelefono(txtTelefono.getText());
+		direccionProveedor.setCelular(txtCelular.getText());
+		direccionProveedor.setEmail(txtEmail.getText());
+		direccionProveedor.setCodigoPostal(txtCodigoPostal.getText());
+		direccionProveedor.setPorDefecto(chkPorDefecto.isSelected());	
+		return direccionProveedor;
+		 
+		}		
+				
 		private Ciudad objetoCiudad() {
 			Ciudad ciudadTmp = new Ciudad();
 			ciudadTmp.setNombre("Ambato");
@@ -423,7 +458,13 @@ public class ProveedorListFxController extends AnchorPane {
 			txtTelefono.setText("");
 			txtCelular.setText("");
 			txtEmail.setText("");
-			txtCodigoPostal.setText("");			
+			txtCodigoPostal.setText("");
+			chkPorDefecto.setSelected(false);				
+			btnAgregar.setText("Agregar");
+			btnEliminarDireccion.setDisable(true);
+			btnAgregar.setDisable(false);
+			txtNombre.requestFocus();
+			actualizarDireccion=false;
 		}
 		
 		private boolean camposLlenosDireccion() {
@@ -432,16 +473,23 @@ public class ProveedorListFxController extends AnchorPane {
 				llenosDireccion = false;
 			return llenosDireccion;
 		}
+		
 		@FXML
-		private void btnAgregarClick(ActionEvent event) {
-			llenarEntidadAntesDeGuardarDireccion();
-			//System.out.println("prov agregar " + proveedor);
-			//System.out.println("direprov agregar " + direccionProveedor);
+		private void btnNuevoDireccionClick(ActionEvent event) {
+				limpiarCamposDireccion();			
+			}
+		
+		@FXML
+		private void btnAgregarClick(ActionEvent event) {			
+					
 			if (camposLlenosDireccion()) {
 				if (btnAgregar.getText().toLowerCase().equals("actualizar")) {
-					actualizarDireccion();
-				} else {
-					guardarNuevoDireccion();
+					actualizarDireccion(direccionProveedor);
+					//limpiarCamposDireccion();					
+					 System.out.println("actualizar" );
+				} else {			
+					 System.out.println("Nuevo......>" );
+					guardarNuevoDireccion(proveedor);
 					limpiarCamposDireccion();
 					crearTablaDireccion(proveedor);					
 				}
@@ -449,6 +497,17 @@ public class ProveedorListFxController extends AnchorPane {
 				AlertsUtil.alertWarning("Datos incompletos, no es posible guardar");
 			}			
 		}	
+		
+		@FXML
+		private void btnEliminarDireccionClick(ActionEvent event) {
+			Optional<ButtonType> result = AlertsUtil
+					.alertConfirmation("Está seguro que desea eliminar: \n" + direccionProveedor.getNombre());
+			if (result.get() == ButtonType.OK) {
+				eliminarDireccion();
+			}
+		}
+		
+		
 		@FXML
 		private void btnBuscarCiudadClick(ActionEvent event) {
 			txtCiudad.setText(objetoCiudad().getNombre());

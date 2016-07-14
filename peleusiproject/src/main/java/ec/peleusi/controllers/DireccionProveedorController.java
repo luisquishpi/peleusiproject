@@ -14,12 +14,16 @@ public class DireccionProveedorController {
 		direccionProveedorDao = new DaoFactory().getDireccionProveedorDao();
 	}
 
-	public String createDireccionPersona(DireccionProveedor direccionProveedor) {
+	public String createDireccionProveedor(DireccionProveedor direccionProveedor) {
 		return direccionProveedorDao.create(direccionProveedor);
 	}
 	
 	public String updateDireccionProveedor(DireccionProveedor direccionProveedor) {
 		return direccionProveedorDao.update(direccionProveedor);
+	}	
+	
+	public String deleteDireccionProveedor(DireccionProveedor direccionProveedor) {
+		return direccionProveedorDao.deleteById(direccionProveedor.getId());
 	}	
 	
 	public List<DireccionProveedor> direccionProveedorList() {

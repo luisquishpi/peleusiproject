@@ -57,9 +57,9 @@
                         <TableView fx:id="tblLista" editable="true" onKeyReleased="#tblListaReleased" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                            <columns>
                               <TableColumn fx:id="codigoCol" prefWidth="55.0" text="Código" />
-                              <TableColumn fx:id="tipoRetencionCol" prefWidth="55.0" text="Tipo" />
+                              <TableColumn fx:id="tipoRetencionCol" prefWidth="50.0" text="Tipo" />
                               <TableColumn fx:id="descripcionCol" prefWidth="170.0" text="Descripción" />
-                              <TableColumn fx:id="porcentajeCol" prefWidth="68.0" text="Porcentaje" />
+                              <TableColumn fx:id="porcentajeCol" prefWidth="73.0" text="Porcentaje" />
                            </columns></TableView>
                      </center>
                   </BorderPane>
