@@ -18,22 +18,22 @@ public class DireccionProveedor {
 	public DireccionProveedor() {
 
 	}
-
+	
 	public DireccionProveedor(Proveedor proveedor, String nombre, String direccion, String telefono, String celular,
-			String email, Ciudad cuidad, String codigoPostal, Boolean porDefecto) {
+			String email, Ciudad ciudad, String codigoPostal, Boolean porDefecto) {
 		super();
-		this.id = null;
+		this.id= null;
 		this.proveedor = proveedor;
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.celular = celular;
 		this.email = email;
-		this.cuidad = cuidad;
+		this.ciudad = ciudad;
 		this.codigoPostal = codigoPostal;
 		this.porDefecto = porDefecto;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -59,7 +59,7 @@ public class DireccionProveedor {
 	private String email;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = false)
-	private Ciudad cuidad;
+	private Ciudad ciudad;
 	// idCiudad
 
 	@Column(name = "codigoPostal", length = 30)
@@ -124,12 +124,12 @@ public class DireccionProveedor {
 		this.email = email;
 	}
 
-	public Ciudad getCuidad() {
-		return cuidad;
+	public Ciudad getCiudad() {
+		return ciudad;
 	}
 
-	public void setCuidad(Ciudad cuidad) {
-		this.cuidad = cuidad;
+	public void setCiudad(Ciudad ciudad) {
+		this.ciudad = ciudad;
 	}
 
 	public String getCodigoPostal() {
@@ -150,7 +150,9 @@ public class DireccionProveedor {
 
 	@Override
 	public String toString() {
-		return "Persona [id=" + id + ",nombre=" + nombre + ", direccion=" + direccion + ", telefono=" + telefono + "]";
+		return "Direccion Proveedor [id=" + id + ",nombre=" + nombre + ",ciudad=" + ciudad + ", proveedor=" + proveedor
+				+ ", direccion=" + direccion + ", telefono=" + telefono + ",  celular=" + celular + ",  email=" + email
+				+ ",  codigoPostal=" + codigoPostal + "]";
 	}
 
 }

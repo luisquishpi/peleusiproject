@@ -12,15 +12,16 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 
 public class TarifaIvaListFxController extends GenericController {
 	@FXML
@@ -33,8 +34,6 @@ public class TarifaIvaListFxController extends GenericController {
 	private TextField txtBuscar;
 	@FXML
 	private TableView<TarifaIva> tblLista;
-	@FXML
-	TableColumn<TarifaIva, Integer> idCol;
 	@FXML
 	TableColumn<TarifaIva, String> codigoCol;
 	@FXML
@@ -61,11 +60,7 @@ public class TarifaIvaListFxController extends GenericController {
 	@FXML
 	private void initialize() {
 		tarifaIvasList = FXCollections.observableList(tarifaIvaController.tarifaIvaList());
-		tblLista.setItems(tarifaIvasList);
-		idCol.setMinWidth(0);
-		idCol.setMaxWidth(0);
-		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Integer>("id"));
+		tblLista.setItems(tarifaIvasList);		
 		codigoCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("codigo"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, String>("nombre"));
 		porcentajeCol.setCellValueFactory(new PropertyValueFactory<TarifaIva, Double>("porcentaje"));
@@ -195,8 +190,10 @@ public class TarifaIvaListFxController extends GenericController {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
 	@FXML

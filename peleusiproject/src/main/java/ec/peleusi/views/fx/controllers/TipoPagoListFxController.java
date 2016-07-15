@@ -2,7 +2,6 @@ package ec.peleusi.views.fx.controllers;
 
 import java.util.List;
 import java.util.Optional;
-
 import ec.peleusi.controllers.TipoPagoController;
 import ec.peleusi.models.entities.TipoPago;
 import ec.peleusi.utils.fx.AlertsUtil;
@@ -13,18 +12,18 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
-public class TipoPagoListFxController extends AnchorPane {
+public class TipoPagoListFxController extends GenericController {
 	@FXML
 	private TextField txtNombre;
 	@FXML
@@ -54,11 +53,7 @@ public class TipoPagoListFxController extends AnchorPane {
 	@FXML
 	private void initialize() {
 		tipoPagosList = FXCollections.observableList(tipoPagoController.tipoPagoList());
-		tblLista.setItems(tipoPagosList);
-		idCol.setMinWidth(0);
-		idCol.setMaxWidth(0);
-		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<TipoPago, Integer>("id"));
+		tblLista.setItems(tipoPagosList);			
 		nombreCol.setCellValueFactory(new PropertyValueFactory<TipoPago, String>("nombre"));
 		final ObservableList<TipoPago> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);
@@ -180,8 +175,10 @@ public class TipoPagoListFxController extends AnchorPane {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
 	@FXML

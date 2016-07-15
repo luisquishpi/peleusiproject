@@ -2,7 +2,9 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
@@ -22,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane dividerPositions="0.45112781954887216" layoutX="123.0" layoutY="64.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -54,7 +56,10 @@
                      <center>
                         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Pagination id="pagination" fx:id="pagination" prefHeight="518.0" prefWidth="358.0" />
+                              <Pagination id="pagination" fx:id="pagination" prefHeight="518.0" prefWidth="370.0">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin></Pagination>
                            </children>
                         </VBox>
                      </center>
@@ -96,10 +101,10 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <GridPane maxHeight="-Infinity" prefHeight="217.0" prefWidth="435.0">
+                                          <GridPane layoutX="18.0" maxHeight="-Infinity" prefHeight="235.0" prefWidth="458.0">
                                              <columnConstraints>
-                                                <ColumnConstraints maxWidth="131.0" minWidth="10.0" prefWidth="119.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="291.0" />
+                                                <ColumnConstraints maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="287.0" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -110,9 +115,9 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label text="Tipo Identificación" />
-                                                <Label text="Identificación" GridPane.rowIndex="1" />
-                                                <Label text="Razón Social" GridPane.rowIndex="2" />
+                                                <Label text="Tipo Identificación *" />
+                                                <Label text="Identificación *" GridPane.rowIndex="1" />
+                                                <Label text="Razón Social *" GridPane.rowIndex="2" />
                                                 <Label text="Días Crédito" GridPane.rowIndex="3" />
                                                 <Label text="Porcentaje Descuento" GridPane.rowIndex="4" />
                                                 <Label text="Descripción" GridPane.rowIndex="5" />
@@ -128,14 +133,14 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                            <Tab fx:id="pnlDirección" text="Dirección">
+                            <Tab fx:id="pnlDireccion" text="Dirección">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <GridPane maxHeight="-Infinity" prefHeight="215.0" prefWidth="435.0">
+                                          <GridPane layoutX="13.0" maxHeight="-Infinity" prefHeight="215.0" prefWidth="456.0">
                                              <columnConstraints>
-                                                <ColumnConstraints maxWidth="100.0" minWidth="10.0" prefWidth="79.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="321.0" minWidth="10.0" prefWidth="321.0" />
+                                                <ColumnConstraints maxWidth="100.0" minWidth="10.0" prefWidth="92.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="321.0" minWidth="10.0" prefWidth="308.0" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -147,10 +152,10 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label text="Ciudad" />
-                                                <Label text="Nombre" GridPane.rowIndex="1" />
-                                                <Label text="Dirección" GridPane.rowIndex="2" />
-                                                <Label text="Teléfono" GridPane.rowIndex="3" />
+                                                <Label text="Ciudad *" />
+                                                <Label text="Nombre *" GridPane.rowIndex="1" />
+                                                <Label text="Dirección *" GridPane.rowIndex="2" />
+                                                <Label text="Teléfono *" GridPane.rowIndex="3" />
                                                 <Label text="Celular" GridPane.rowIndex="4" />
                                                 <Label text="Email" GridPane.rowIndex="5" />
                                                 <Label text="Código Postal" GridPane.rowIndex="6" />
@@ -172,19 +177,43 @@
                                                 </HBox>
                                              </children>
                                           </GridPane>
-                                          <HBox layoutX="1.0" layoutY="234.0" prefHeight="258.0" prefWidth="435.0">
+                                          <HBox layoutX="1.0" layoutY="272.0" prefHeight="286.0" prefWidth="515.0">
                                              <children>
-                                                <TableView id="tblDireccionProveedor" fx:id="tblDireccionProveedor" prefHeight="258.0" prefWidth="435.0">
+                                                <TableView id="tblDireccionProveedor" fx:id="tblDireccionProveedor" prefHeight="286.0" prefWidth="517.0">
                                                   <columns>
-                                                    <TableColumn fx:id="ciudadCol" prefWidth="81.0" text="Ciudad" />
-                                                    <TableColumn fx:id="nombreCol" prefWidth="146.0" text="Nombre" />
-                                                      <TableColumn fx:id="direccionCol" prefWidth="147.0" text="Dirección" />
-                                                      <TableColumn fx:id="telefonoCol" prefWidth="60.0" text="Teléfono" />
+                                                    <TableColumn fx:id="ciudadCol" prefWidth="82.0" text="Ciudad" />
+                                                    <TableColumn fx:id="nombreCol" prefWidth="110.0" text="Nombre" />
+                                                      <TableColumn fx:id="direccionCol" prefWidth="179.0" text="Dirección" />
+                                                      <TableColumn fx:id="telefonoCol" prefWidth="72.0" text="Teléfono" />
+                                                      <TableColumn fx:id="porDefectoCol" prefWidth="71.0" text="Por Defecto" />
                                                   </columns>
                                                 </TableView>
                                              </children>
                                           </HBox>
-                                          <Button id="btnAgregar" fx:id="btnAgregar" layoutX="335.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnAgregarClick" text="Agregar" />
+                                          <HBox layoutX="1.0" layoutY="237.0" prefHeight="25.0" prefWidth="499.0">
+                                             <children>
+                                                <Button id="btnNuevoDireccion" fx:id="btnNuevoDireccion" mnemonicParsing="false" onAction="#btnNuevoDireccionClick" prefHeight="25.0" prefWidth="80.0" text="Nuevo">
+                                                   <HBox.margin>
+                                                      <Insets left="60.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button id="btnAgregar" fx:id="btnAgregar" mnemonicParsing="false" onAction="#btnAgregarClick" prefHeight="25.0" prefWidth="80.0" text="Agregar">
+                                                   <HBox.margin>
+                                                      <Insets left="70.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button id="btnEliminarDireccion" fx:id="btnEliminarDireccion" mnemonicParsing="false" onAction="#btnEliminarDireccionClick" prefHeight="25.0" prefWidth="80.0" text="Eliminar">
+                                                   <HBox.margin>
+                                                      <Insets left="70.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                          <CheckBox id="chkPorDefecto" fx:id="chkPorDefecto" layoutX="122.0" layoutY="207.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="153.0" text="Por Defecto" textAlignment="JUSTIFY">
+                                             <cursor>
+                                                <Cursor fx:constant="SW_RESIZE" />
+                                             </cursor>
+                                          </CheckBox>
                                        </children>
                                     </AnchorPane>
                               </content>
