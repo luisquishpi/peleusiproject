@@ -29,4 +29,8 @@ public class ProductoController {
 	public Producto getProductoCodigo(String codigo) {
 		return productoDao.getProductoCodigo(codigo);
 	}
+
+	public String deleteProducto(Producto producto) {
+		return productoDao.deleteById(producto.getId());
+	}
 }
