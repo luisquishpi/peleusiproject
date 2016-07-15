@@ -115,9 +115,9 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label text="Tipo Identificación" />
-                                                <Label text="Identificación" GridPane.rowIndex="1" />
-                                                <Label text="Razón Social" GridPane.rowIndex="2" />
+                                                <Label text="Tipo Identificación *" />
+                                                <Label text="Identificación *" GridPane.rowIndex="1" />
+                                                <Label text="Razón Social *" GridPane.rowIndex="2" />
                                                 <Label text="Días Crédito" GridPane.rowIndex="3" />
                                                 <Label text="Porcentaje Descuento" GridPane.rowIndex="4" />
                                                 <Label text="Descripción" GridPane.rowIndex="5" />
@@ -133,7 +133,7 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                            <Tab fx:id="pnlDirección" text="Dirección">
+                            <Tab fx:id="pnlDireccion" text="Dirección">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -152,10 +152,10 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label text="Ciudad" />
-                                                <Label text="Nombre" GridPane.rowIndex="1" />
-                                                <Label text="Dirección" GridPane.rowIndex="2" />
-                                                <Label text="Teléfono" GridPane.rowIndex="3" />
+                                                <Label text="Ciudad *" />
+                                                <Label text="Nombre *" GridPane.rowIndex="1" />
+                                                <Label text="Dirección *" GridPane.rowIndex="2" />
+                                                <Label text="Teléfono *" GridPane.rowIndex="3" />
                                                 <Label text="Celular" GridPane.rowIndex="4" />
                                                 <Label text="Email" GridPane.rowIndex="5" />
                                                 <Label text="Código Postal" GridPane.rowIndex="6" />
