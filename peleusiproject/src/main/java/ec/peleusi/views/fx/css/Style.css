@@ -47,6 +47,10 @@ GridPane {
 	-fx-vgap: 2.0;
 }
 
+#btnAceptar {
+	-fx-background-image: url('../images/fx-acept.png');
+}
+
 #btnNuevo {
 	-fx-background-image: url('../images/fx-new.png');
 }
