@@ -1,7 +1,7 @@
 package ec.peleusi.models.entities.general;
 
 import ec.peleusi.models.entities.Producto;
-public class CompraDetalle {
+public class CompraDetalleAux {
 
 	private Integer id;
 	private Producto idProducto;	
@@ -21,7 +21,7 @@ public class CompraDetalle {
 	private Double total;
 	
 	
-	public CompraDetalle(Integer id, Producto idProducto, String codigo, String nombre, Double cantidad,
+	public CompraDetalleAux(Integer id, Producto idProducto, String codigo, String nombre, Double cantidad,
 			Double costo, Double porcentajeDescuento, Double valorDescuento, Double precioNeto, Double subtotal,
 			Double porcentaIva, Double valorIva, Double stock, Double porcentajeIce, Double valorIce, Double total) {
 		super();
