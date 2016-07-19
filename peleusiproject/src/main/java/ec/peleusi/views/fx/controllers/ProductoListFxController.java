@@ -1,14 +1,22 @@
 package ec.peleusi.views.fx.controllers;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import org.bouncycastle.mail.smime.CMSProcessableBodyPartInbound;
+
+import ec.peleusi.controllers.CategoriaProductoController;
 import ec.peleusi.controllers.ProductoController;
+import ec.peleusi.controllers.ProductoPrecioController;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIceController;
 import ec.peleusi.controllers.TipoGastoDeducibleController;
@@ -16,6 +24,7 @@ import ec.peleusi.controllers.TipoPrecioController;
 import ec.peleusi.controllers.UnidadMedidaController;
 import ec.peleusi.models.entities.CategoriaProducto;
 import ec.peleusi.models.entities.Producto;
+import ec.peleusi.models.entities.ProductoPrecio;
 import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.TablaPreciosProducto;
 import ec.peleusi.models.entities.TarifaIce;
@@ -25,6 +34,7 @@ import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.models.entities.UnidadMedida;
 import ec.peleusi.utils.UnidadMedidaPesoEnum;
 import ec.peleusi.utils.fx.AlertsUtil;
+import ec.peleusi.utils.fx.ImageUtils;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -34,29 +44,33 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
+import javafx.util.converter.DoubleStringConverter;
 
-public class ProductoListFxController extends AnchorPane {
+public class ProductoListFxController extends GenericController {
 
 	@FXML
 	private TextField txtCodigo;
@@ -104,6 +118,8 @@ public class ProductoListFxController extends AnchorPane {
 	@FXML
 	private Button btnCancelar;
 	@FXML
+	private Button btnBuscar;
+	@FXML
 	private TableView<Producto> tblLista;
 	@FXML
 	private TableView<TablaPreciosProducto> tblPreciosUnitario;
@@ -122,10 +138,12 @@ public class ProductoListFxController extends AnchorPane {
 
 	private Integer posicionObjetoEnTabla;
 	private ProductoController productoController = new ProductoController();
+	private ProductoPrecioController productoPrecioController = new ProductoPrecioController();
 	private String error = null;
 	private Producto producto;
 	final static int rowsPerPage = 100;
 	private Image imgOriginal;
+	private Image imgSinFoto;
 	private TarifaIva tarifaIva = new TarifaIva();
 	private TarifaIce tarifaIce = new TarifaIce();
 	private List<TipoPrecio> listaTipoPrecio;
@@ -137,6 +155,7 @@ public class ProductoListFxController extends AnchorPane {
 	Double utilidad = 0.0;
 	TablaPreciosProducto tablaPreciosProducto;
 	private CategoriaProducto categoriaProducto;
+	private ProductoPrecio productoPrecio;
 
 	@FXML
 	private TableColumn<TablaPreciosProducto, String> tipoPrecioCol;
@@ -179,18 +198,17 @@ public class ProductoListFxController extends AnchorPane {
 
 	@FXML
 	private void initialize() {
+
 		crearTablaListaProductos();
 		paginar();
 		cargarCombosUnidaMedida();
 		cargarComboTarifaIva();
 		cargarComboTarifaIce();
 		cargarComboTipoGastoDeducible();
-		limpiarCampos();
 
 		tarifaIva = cmbIva.getValue();
 		tarifaIce = cmbIce.getValue();
-		crearTablaPreciosUnitario();
-		crearTablaPreciosLote();
+		limpiarCampos();
 
 		txtCostoCompra.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
@@ -209,13 +227,71 @@ public class ProductoListFxController extends AnchorPane {
 			}
 		});
 
+		porcentajeUtilidadCol.setCellFactory(
+				TextFieldTableCell.<TablaPreciosProducto, Double> forTableColumn(new DoubleStringConverter()));
+		porcentajeUtilidadCol.setOnEditCommit(new EventHandler<CellEditEvent<TablaPreciosProducto, Double>>() {
+			@Override
+			public void handle(CellEditEvent<TablaPreciosProducto, Double> t) {
+				((TablaPreciosProducto) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+						.setPorcentajeUtilidad(t.getNewValue());
+				actualizarValoresEnTabla(preciosUnitarioList, tblPreciosUnitario,
+						Double.parseDouble(txtCostoUnitario.getText()), t.getTablePosition().getRow());
+			}
+		});
+		totalCol.setCellFactory(
+				TextFieldTableCell.<TablaPreciosProducto, Double> forTableColumn(new DoubleStringConverter()));
+		totalCol.setOnEditCommit(new EventHandler<CellEditEvent<TablaPreciosProducto, Double>>() {
+			@Override
+			public void handle(CellEditEvent<TablaPreciosProducto, Double> t) {
+				((TablaPreciosProducto) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+						.setTotal(t.getNewValue());
+				actualizarValoresEnTablaInversa(preciosUnitarioList, tblPreciosUnitario,
+						Double.parseDouble(txtCostoUnitario.getText()), t.getTablePosition().getRow());
+			}
+		});
+
+		porcentajeUtilidadLoteCol.setCellFactory(
+				TextFieldTableCell.<TablaPreciosProducto, Double> forTableColumn(new DoubleStringConverter()));
+		porcentajeUtilidadLoteCol.setOnEditCommit(new EventHandler<CellEditEvent<TablaPreciosProducto, Double>>() {
+			@Override
+			public void handle(CellEditEvent<TablaPreciosProducto, Double> t) {
+				((TablaPreciosProducto) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+						.setPorcentajeUtilidad(t.getNewValue());
+				actualizarValoresEnTabla(preciosLoteList, tblPreciosLote, Double.parseDouble(txtCostoLote.getText()),
+						t.getTablePosition().getRow());
+			}
+		});
+		totalLoteCol.setCellFactory(
+				TextFieldTableCell.<TablaPreciosProducto, Double> forTableColumn(new DoubleStringConverter()));
+		totalLoteCol.setOnEditCommit(new EventHandler<CellEditEvent<TablaPreciosProducto, Double>>() {
+			@Override
+			public void handle(CellEditEvent<TablaPreciosProducto, Double> t) {
+				((TablaPreciosProducto) t.getTableView().getItems().get(t.getTablePosition().getRow()))
+						.setTotal(t.getNewValue());
+				actualizarValoresEnTablaInversa(preciosLoteList, tblPreciosLote,
+						Double.parseDouble(txtCostoLote.getText()), t.getTablePosition().getRow());
+			}
+		});
+
+		// txtBuscar.setOnKeyReleased(this::txtBuscarReleased);
+		/*
+		 * txtBuscar.setOnKeyReleased(new EventHandler<KeyEvent>() {
+		 * 
+		 * @Override public void handle(KeyEvent event) { System.out.println(
+		 * "hi> "+event.getText()); txtBuscarReleased(event); }
+		 * 
+		 * } );
+		 */
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				btnNuevoClick(null);
+				CategoriaProductoController catCon = new CategoriaProductoController();
+				categoriaProducto = catCon.CategoriaProductoList().get(0);
+				txtCategoriaProducto.setText(categoriaProducto.getNombre());
+				// eliminar 3 lineas anteriores
 			}
 		});
-
 	}
 
 	private void txtCantidadCostoCompraFocusLost() {
@@ -228,6 +304,8 @@ public class ProductoListFxController extends AnchorPane {
 
 	private void crearTablaPreciosUnitario() {
 
+		if (preciosUnitarioList != null)
+			preciosUnitarioList.clear();
 		preciosUnitarioList = tblPreciosUnitario.getItems();
 		tipoPrecioCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, String>("nombre"));
 		porcentajeUtilidadCol
@@ -238,7 +316,7 @@ public class ProductoListFxController extends AnchorPane {
 		totalCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("total"));
 		utilidadCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("utilidad"));
 
-		Double costoProducto = 0.0;//
+		Double costoProducto = 0.0;
 		Double.parseDouble(txtCostoUnitario.getText());
 		cargarTablaConValores(preciosUnitarioList, costoProducto, tarifaIva, tarifaIce);
 		tblPreciosUnitario.setItems(preciosUnitarioList);
@@ -246,6 +324,8 @@ public class ProductoListFxController extends AnchorPane {
 	}
 
 	private void crearTablaPreciosLote() {
+		if (preciosLoteList != null)
+			preciosLoteList.clear();
 		preciosLoteList = tblPreciosLote.getItems();
 		tipoPrecioLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, String>("nombre"));
 		porcentajeUtilidadLoteCol
@@ -256,7 +336,7 @@ public class ProductoListFxController extends AnchorPane {
 		totalLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("total"));
 		utilidadLoteCol.setCellValueFactory(new PropertyValueFactory<TablaPreciosProducto, Double>("utilidad"));
 
-		Double costoProducto = 0.0;//
+		Double costoProducto = 0.0;
 		Double.parseDouble(txtCostoLote.getText());
 		cargarTablaConValores(preciosLoteList, costoProducto, tarifaIva, tarifaIce);
 		tblPreciosLote.setItems(preciosLoteList);
@@ -272,7 +352,6 @@ public class ProductoListFxController extends AnchorPane {
 			pagination.setVisible(true);
 			pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
 			pagination.setPageCount(count);
-			// pagination.setPageFactory(this::createSubList);
 			pagination.setPageFactory(new Callback<Integer, Node>() {
 				public Node call(Integer pageIndex) {
 					int fromIndex = pageIndex * rowsPerPage;
@@ -323,7 +402,72 @@ public class ProductoListFxController extends AnchorPane {
 		producto = (Producto) getObjetoSeleccionadoDeTabla();
 		if (producto != null) {
 			posicionObjetoEnTabla = productosList.indexOf(producto);
+			txtCodigo.setText(producto.getCodigo());
 			txtNombre.setText(producto.getNombre());
+			categoriaProducto = producto.getCategoriaProducto();
+			txtCategoriaProducto.setText(categoriaProducto.getNombre());
+			txtPeso.setText(producto.getPeso().toString());
+			cmbUnidadMedidaPeso.getSelectionModel().select(producto.getUnidadMedidaPeso());
+			txtStockMinimo.setText(producto.getStockMinimo().toString());
+			cmbUnidadMedidaCompra.getSelectionModel().select(producto.getUnidadMedidaCompra());
+			txtCantidadCompra.setText(producto.getCantidadUnidadMedidaCompra().toString());
+			txtCostoCompra.setText(producto.getCosto().toString());
+			cmbUnidadMedidaVenta.getSelectionModel().select(producto.getUnidadMedidaVenta());
+			txtCantidadVenta.setText(producto.getCantidadUnidadMedidaVenta().toString());
+			chkSePuedeFraccionar.setSelected(producto.getSePuedeFraccionar());
+			chkManejaInventario.setSelected(producto.getManejaInventario());
+
+			chkEsDeducible.setSelected(producto.getEsDeducible());
+			cmbTipoGastoDeducible.getSelectionModel().select(producto.getTipoGastoDeducible());
+			if (chkEsDeducible.isSelected())
+				cmbTipoGastoDeducible.setVisible(true);
+			else
+				cmbTipoGastoDeducible.setVisible(false);
+
+			chkTieneIva.setSelected(producto.getTieneIva());
+			if (chkTieneIva.isSelected())
+				cmbIva.setVisible(true);
+			else
+				cmbIva.setVisible(false);
+
+			cmbIce.getSelectionModel().select(producto.getTarifaIce());
+
+			if (producto.getFoto() != null) {
+				try {
+					InputStream in = new ByteArrayInputStream(producto.getFoto());
+					BufferedImage bufferedImage = null;
+					bufferedImage = ImageIO.read(in);
+					Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+					imgProducto.setImage(image);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				imgProducto.setImage(imgSinFoto);
+			}
+
+			txtCantidadCostoCompraFocusLost();
+
+			// cargar precios
+			// FXCollections.observableList(productoPrecioController.productoPrecioList(producto));
+			List<ProductoPrecio> productoPrecioList = productoPrecioController.productoPrecioList(producto);
+			if (productoPrecioList != null) {
+				for (int i = 0; i < listaTipoPrecio.size(); i++) {
+					for (int j = 0; j < productoPrecioList.size(); j++) {
+						if (listaTipoPrecio.get(i).getNombre()
+								.equals(productoPrecioList.get(j).getTipoPrecio().getNombre())) {
+							preciosUnitarioList.get(i)
+									.setPorcentajeUtilidad(productoPrecioList.get(j).getPorcentajeUtilidadUnitario());
+							preciosLoteList.get(i)
+									.setPorcentajeUtilidad(productoPrecioList.get(j).getPorcentajeUtilidadLote());
+						}
+					}
+				}
+			}else{
+				AlertsUtil.alertWarning("El producto no tiene precios, pulse Actualizar");
+			}
+			actualizaConValoresTodasLasTablas();
+
 			btnGuardar.setText("Actualizar");
 			btnGuardar.setDisable(false);
 			btnEliminar.setDisable(false);
@@ -436,20 +580,18 @@ public class ProductoListFxController extends AnchorPane {
 	}
 
 	private void actualizarValoresEnTabla(ObservableList<TablaPreciosProducto> modelo,
-			TableView<TablaPreciosProducto> table, Double costo, int filaPosition) {
+			TableView<TablaPreciosProducto> table, Double costoProducto, int filaPosition) {
 		int inicio = 0;
 		if (filaPosition == -1) {
 			filaPosition = modelo.size() - 1;
 		} else {
 			inicio = filaPosition;
 		}
-		System.out.println("Fila. " + filaPosition + " inicio:" + inicio);
-		System.out.println("modelo: " + modelo);
 		for (int i = inicio; i <= filaPosition; i++) {
 			porcentaje = Double.parseDouble(modelo.get(i).getPorcentajeUtilidad().toString());
 			tarifaIva = (TarifaIva) cmbIva.getValue();
 			tarifaIce = (TarifaIce) cmbIce.getValue();
-			calcularFila(costo, tarifaIva, tarifaIce);
+			calcularFila(costoProducto, tarifaIva, tarifaIce);
 
 			modelo.get(i).setSubtotal(subtotal);
 			modelo.get(i).setIce(ice);
@@ -460,6 +602,38 @@ public class ProductoListFxController extends AnchorPane {
 		}
 		table.refresh();
 
+	}
+
+	private void actualizarValoresEnTablaInversa(ObservableList<TablaPreciosProducto> modelo,
+			TableView<TablaPreciosProducto> table, Double costoProducto, int filaPosition) {
+		int inicio = 0;
+		if (filaPosition == -1) {
+			filaPosition = modelo.size() - 1;
+		} else {
+			inicio = filaPosition;
+		}
+		for (int i = inicio; i <= filaPosition; i++) {
+			total = Double.parseDouble(modelo.get(i).getTotal().toString());
+			tarifaIva = (TarifaIva) cmbIva.getValue();
+			tarifaIce = (TarifaIce) cmbIce.getValue();
+			calcularFilaInversa(total, tarifaIva, tarifaIce, costoProducto);
+			modelo.get(i).setPorcentajeUtilidad(porcentaje);
+			modelo.get(i).setSubtotal(subtotal);
+			modelo.get(i).setIce(ice);
+			modelo.get(i).setIva(iva);
+			modelo.get(i).setUtilidad(utilidad);
+		}
+		table.refresh();
+	}
+
+	private void calcularFilaInversa(Double total, TarifaIva tarifaIva, TarifaIce tarifaIce, Double costoProducto) {
+		Double subtotalConIva = total / ((tarifaIva.getPorcentaje() / 100) + 1);
+		iva = total - subtotalConIva;
+		Double subtotalConIce = subtotalConIva / ((tarifaIce.getPorcentaje() / 100) + 1);
+		ice = subtotalConIva - subtotalConIce;
+		subtotal = subtotalConIce;
+		porcentaje = ((subtotal - costoProducto) / costoProducto) * 100;
+		utilidad = subtotal - costoProducto;
 	}
 
 	private void limpiarCampos() {
@@ -477,16 +651,91 @@ public class ProductoListFxController extends AnchorPane {
 		cmbTipoGastoDeducible.setVisible(false);
 		chkTieneIva.setSelected(true);
 		cmbIva.setVisible(true);
-		imgProducto.setImage(new Image(getClass().getResourceAsStream("../images/foto.jpg")));
+		imgSinFoto = new Image(getClass().getResourceAsStream("../images/foto.jpg"));
+		imgOriginal = imgSinFoto;
+		imgProducto.setImage(imgSinFoto);
+
 		txtCostoUnitario.setText("0");
 		txtCostoLote.setText("0");
 		txtCostoCompra.setText("0");
 		txtCodigo.requestFocus();
+		crearTablaPreciosUnitario();
+		crearTablaPreciosLote();
 		actualizaConValoresTodasLasTablas();
+		tblPreciosUnitario.refresh();
+		tblPreciosLote.refresh();
+	}
+
+	private void llenarEntidadAntesDeGuardar() {
+		producto.setCodigo(txtCodigo.getText());
+		producto.setNombre(txtNombre.getText());
+		producto.setPeso(Double.parseDouble(txtPeso.getText()));
+		producto.setUnidadMedidaPeso((UnidadMedidaPesoEnum) cmbUnidadMedidaPeso.getValue());
+		producto.setCosto(Double.parseDouble(txtCostoCompra.getText()));
+		if (imgProducto.getImage() != imgSinFoto) {
+			producto.setFoto(ImageUtils.getByteFoto(imgProducto.getImage()));
+		} else {
+			producto.setFoto(null);
+		}
+		producto.setEsDeducible(chkEsDeducible.isSelected());
+		producto.setTipoGastoDeducible((TipoGastoDeducible) cmbTipoGastoDeducible.getValue());
+		producto.setSePuedeFraccionar(chkSePuedeFraccionar.isSelected());
+		producto.setManejaInventario(chkManejaInventario.isSelected());
+		producto.setStock(0.0);
+		producto.setStockMinimo(Double.parseDouble(txtStockMinimo.getText()));
+		producto.setFechaActualizacion(new Date());
+		producto.setCategoriaProducto(categoriaProducto);
+		producto.setTarifaIce((TarifaIce) cmbIce.getValue());
+		producto.setUnidadMedidaCompra((UnidadMedida) cmbUnidadMedidaCompra.getValue());
+		producto.setCantidadUnidadMedidaCompra(Double.parseDouble(txtCantidadCompra.getText()));
+		producto.setUnidadMedidaVenta((UnidadMedida) cmbUnidadMedidaVenta.getValue());
+		producto.setCantidadUnidadMedidaVenta(Double.parseDouble(txtCantidadVenta.getText()));
+		producto.setTieneIva(chkTieneIva.isSelected());
 	}
 
 	private void guardarNuevo() {
+		producto = new Producto();
+		llenarEntidadAntesDeGuardar();
+		ProductoController productoController = new ProductoController();
+		error = productoController.createProducto(producto);
+		if (error == null) {
+			Integer numeroVecesGuardadoCorrectamente = 0;
+			TipoPrecioController tipoPrecioController = new TipoPrecioController();
+			listaTipoPrecio = tipoPrecioController.tipoPrecioList();
+			int i = 0;
+			for (TipoPrecio tipoPrecio : listaTipoPrecio) {
+				productoPrecio = new ProductoPrecio();
+				productoPrecio.setProducto(producto);
+				productoPrecio.setTipoPrecio(tipoPrecio);
+				productoPrecio.setPorcentajeUtilidadUnitario(preciosUnitarioList.get(i).getPorcentajeUtilidad());
+				productoPrecio.setPorcentajeUtilidadLote(preciosLoteList.get(i).getPorcentajeUtilidad());
+				productoPrecio.setPrecioBrutoUnitario(preciosUnitarioList.get(i).getSubtotal());
+				productoPrecio.setPrecioBrutoLote(preciosLoteList.get(i).getSubtotal());
+				productoPrecio.setUtilidadUnitario(preciosUnitarioList.get(i).getUtilidad());
+				productoPrecio.setUtilidadLote(preciosLoteList.get(i).getUtilidad());
 
+				ProductoPrecioController productoPrecioController = new ProductoPrecioController();
+				error = productoPrecioController.createProductoPrecio(productoPrecio);
+				if (error == null) {
+					numeroVecesGuardadoCorrectamente++;
+				}
+				i++;
+			}
+			if (numeroVecesGuardadoCorrectamente == listaTipoPrecio.size()) {
+				AlertsUtil.alertExito("Guardado correctamente");
+				limpiarCampos();
+				txtBuscar.setText("");
+				btnBuscarClick(null);
+			} else {
+				AlertsUtil.alertError("Producto guardado correctamente, excepto los precios");
+				limpiarCampos();
+				txtBuscar.setText("");
+				btnBuscarClick(null);
+			}
+
+		} else {
+			AlertsUtil.alertError(error);
+		}
 	}
 
 	private void actualizar() {
@@ -494,7 +743,21 @@ public class ProductoListFxController extends AnchorPane {
 	}
 
 	private void eliminar() {
-
+		List<ProductoPrecio> productoPrecioList = productoPrecioController.productoPrecioList(producto);
+		if (productoPrecioList != null) {
+			for (ProductoPrecio productoPrecio : productoPrecioList) {
+				productoPrecioController.deleteProductoPrecio(productoPrecio);
+			}
+		}
+		error = productoController.deleteProducto(producto);
+		if (error == null) {
+			btnNuevoClick(null);
+			AlertsUtil.alertExito("Eliminado Correctamente");
+		} else {
+			AlertsUtil.alertError(error);
+		}
+		btnNuevoClick(null);
+		btnBuscarClick(null);
 	}
 
 	@FXML
@@ -551,14 +814,16 @@ public class ProductoListFxController extends AnchorPane {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
-	@FXML
 	private void txtBuscarReleased(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
 			btnBuscarClick(null);
+			// System.out.println("Aqui error");
 		}
 	}
 
@@ -581,8 +846,7 @@ public class ProductoListFxController extends AnchorPane {
 
 	@FXML
 	private void btnEliminarImagenClick(ActionEvent event) {
-		Image image = new Image(getClass().getResourceAsStream("../images/foto.jpg"));
-		imgProducto.setImage(image);
+		imgProducto.setImage(imgSinFoto);
 	}
 
 	@FXML
@@ -619,8 +883,16 @@ public class ProductoListFxController extends AnchorPane {
 
 	private boolean isCamposLlenos() {
 		boolean llenos = true;
-		if (txtNombre.getText().trim().isEmpty())
+		if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() || txtCategoriaProducto.getText().isEmpty()
+				|| txtPeso.getText().isEmpty() || cmbUnidadMedidaPeso.getItems().size() == 0
+				|| txtStockMinimo.getText().isEmpty() || cmbIva.getItems().size() == 0 || cmbIce.getItems().size() == 0
+				|| cmbUnidadMedidaCompra.getItems().size() == 0 || cmbUnidadMedidaVenta.getItems().size() == 0
+				|| txtCantidadCompra.getText().isEmpty() || txtCantidadVenta.getText().isEmpty()) {
 			llenos = false;
+		}
+		if (chkEsDeducible.isSelected() && cmbTipoGastoDeducible.getItems().size() == 0) {
+			llenos = false;
+		}
 		return llenos;
 	}
 }

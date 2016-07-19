@@ -55,8 +55,7 @@
                      <center>
                         <TableView fx:id="tblLista" editable="true" onKeyReleased="#tblListaReleased" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <columns>
-                              <TableColumn fx:id="idCol" minWidth="8.0" prefWidth="17.0" text="Id" />
-                              <TableColumn fx:id="nombreCol" prefWidth="336.0" text="Nombre" />
+                              <TableColumn fx:id="nombreCol" prefWidth="356.0" text="Nombre" />
                            </columns></TableView>
                      </center>
                   </BorderPane>

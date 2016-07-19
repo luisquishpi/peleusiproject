@@ -25,4 +25,8 @@ public class ProductoPrecioController {
 	public List<ProductoPrecio> productoPrecioList(Producto producto) {
 		return productoPrecioDao.productoPrecioList(producto);
 	}
+
+	public String deleteProductoPrecio(ProductoPrecio productoPrecio) {
+		return productoPrecioDao.deleteById(productoPrecio.getId());
+	}
 }

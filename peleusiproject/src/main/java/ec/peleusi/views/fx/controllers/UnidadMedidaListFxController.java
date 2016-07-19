@@ -12,18 +12,18 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
-public class UnidadMedidaListFxController extends AnchorPane {
+public class UnidadMedidaListFxController extends GenericController {
 	@FXML
 	private TextField txtNombre;
 	@FXML
@@ -32,8 +32,6 @@ public class UnidadMedidaListFxController extends AnchorPane {
 	private TextField txtBuscar;
 	@FXML
 	private TableView<UnidadMedida> tblLista;
-	@FXML
-	TableColumn<UnidadMedida, Integer> idCol;
 	@FXML
 	TableColumn<UnidadMedida, String> nombreCol;
 	@FXML
@@ -58,10 +56,6 @@ public class UnidadMedidaListFxController extends AnchorPane {
 	private void initialize() {
 		unidadMedidasList = FXCollections.observableList(unidadMedidaController.unidadMedidaList());
 		tblLista.setItems(unidadMedidasList);
-		idCol.setMinWidth(0);
-		idCol.setMaxWidth(0);
-		idCol.setPrefWidth(0);
-		idCol.setCellValueFactory(new PropertyValueFactory<UnidadMedida, Integer>("id"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<UnidadMedida, String>("nombre"));
 		abreviaturaCol.setCellValueFactory(new PropertyValueFactory<UnidadMedida, String>("abreviatura"));
 		final ObservableList<UnidadMedida> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
@@ -187,8 +181,10 @@ public class UnidadMedidaListFxController extends AnchorPane {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
 	@FXML

@@ -256,7 +256,7 @@ public class ProveedorCrudFrm extends JDialog {
 		filaDatosDireccionProveedor[0] = direccionProveedor.getId();
 		filaDatosDireccionProveedor[1] = direccionProveedor.getNombre();
 		filaDatosDireccionProveedor[2] = direccionProveedor.getDireccion();
-		filaDatosDireccionProveedor[3] = direccionProveedor.getCuidad();
+		filaDatosDireccionProveedor[3] = direccionProveedor.getCiudad();
 		filaDatosDireccionProveedor[4] = direccionProveedor.getProveedor();
 		filaDatosDireccionProveedor[5] = direccionProveedor.getTelefono();
 		filaDatosDireccionProveedor[6] = direccionProveedor.getCelular();
@@ -365,10 +365,10 @@ public class ProveedorCrudFrm extends JDialog {
 				direccionProveedor.setCelular(txtCelular.getText());
 				direccionProveedor.setEmail(txtEmail.getText());
 				direccionProveedor.setCodigoPostal(txtCodigoPostal.getText());
-				direccionProveedor.setCuidad(ciudad);
+				direccionProveedor.setCiudad(ciudad);
 				direccionProveedor.setPorDefecto(chkPorDefecto.isSelected());
 				DireccionProveedorController direccionPersonaControllers = new DireccionProveedorController();
-				String error = direccionPersonaControllers.createDireccionPersona(direccionProveedor);
+				String error = direccionPersonaControllers.createDireccionProveedor(direccionProveedor);
 				if (error == null) {
 					JOptionPane.showMessageDialog(null, "Guardado correctamente", "Éxito", JOptionPane.PLAIN_MESSAGE);
 					cargarTablaDireccionProveedor();

@@ -14,19 +14,19 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
-public class CajaListFxController extends AnchorPane {
+public class CajaListFxController extends GenericController {
 	@FXML
 	private TextField txtNombre;
 	@FXML
@@ -37,8 +37,6 @@ public class CajaListFxController extends AnchorPane {
 	private TextField txtBuscar;
 	@FXML
 	private TableView<Caja> tblLista;
-	@FXML
-	TableColumn<Caja, Integer> idCol;
 	@FXML
 	TableColumn<Caja, String> nombreCol;
 	@FXML
@@ -201,8 +199,10 @@ public class CajaListFxController extends AnchorPane {
 
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
-		Stage stage = (Stage) btnCancelar.getScene().getWindow();
-		stage.close();
+		Button btnCloseTab = (Button) event.getSource();
+		Scene btnScene = btnCloseTab.getScene();
+		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
+		thisTabPane.getTabs().remove(tabIndex);
 	}
 
 	@FXML
