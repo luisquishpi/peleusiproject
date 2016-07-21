@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import ec.peleusi.utils.UnidadMedidaPesoEnum;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 @Entity
 @Table(name = "producto")
@@ -253,6 +255,11 @@ public class Producto {
 
 	public void setTieneIva(Boolean tieneIva) {
 		this.tieneIva = tieneIva;
+	}
+
+	public BooleanProperty tieneIvaProperty() {
+		BooleanProperty tieneIvaProperty = new SimpleBooleanProperty(tieneIva);
+		return tieneIvaProperty;
 	}
 
 	@Override

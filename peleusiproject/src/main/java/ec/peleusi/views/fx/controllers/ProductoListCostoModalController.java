@@ -16,6 +16,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -94,9 +95,16 @@ public class ProductoListCostoModalController {
 		unidadMedidaCompraCol.setCellValueFactory(new PropertyValueFactory<Producto, String>("unidadMedidaCompra"));
 		unidadMedidaCompraCol.setPrefWidth(70);
 
+		// TableColumn<Producto, Boolean> tieneIvaCol = new
+		// TableColumn<Producto, Boolean>("Iva");
+		// tieneIvaCol.setCellValueFactory(new PropertyValueFactory<Producto,
+		// Boolean>("tieneIva"));
+		// tieneIvaCol.setPrefWidth(30);
+
 		TableColumn<Producto, Boolean> tieneIvaCol = new TableColumn<Producto, Boolean>("Iva");
 		tieneIvaCol.setCellValueFactory(new PropertyValueFactory<Producto, Boolean>("tieneIva"));
-		tieneIvaCol.setPrefWidth(30);
+		tieneIvaCol.setCellFactory(CheckBoxTableCell.forTableColumn(tieneIvaCol));
+		tieneIvaCol.setPrefWidth(35);
 
 		tblLista.getColumns().addAll(codigoCol, nombreCol, stockCol, unidadMedidaCompraCol, tieneIvaCol);
 		productosList = FXCollections.observableList(productoController.productoList());
