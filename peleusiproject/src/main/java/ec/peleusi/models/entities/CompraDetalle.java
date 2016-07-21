@@ -17,7 +17,7 @@ public class CompraDetalle {
 	
 	
 	public CompraDetalle() {
-		super();
+		//super();
 	}
 
 	public CompraDetalle(Compra compra, Producto producto, String codigoProducto, String nombreProducto,
