@@ -108,5 +108,9 @@ public class DaoFactory {
 	public CompraRetencionDao getCompraRetencionDao() {
 		return new CompraRetencionDao();
 	}
+	
+	public CompraTipoPagoDao getCompraTipoPagoDao() {
+		return new CompraTipoPagoDao();
+	}
 
 }

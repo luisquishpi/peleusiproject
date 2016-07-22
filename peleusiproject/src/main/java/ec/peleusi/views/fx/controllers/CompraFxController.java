@@ -49,7 +49,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 
-public class CompraProductoFxController extends AnchorPane {
+public class CompraFxController extends AnchorPane {
 
 	@FXML
 	private TableView<CompraDetalleAux> tblDetalleCompra;
@@ -128,7 +128,9 @@ public class CompraProductoFxController extends AnchorPane {
 	@FXML
 	public DatePicker dtpFechaRegistro;
 	@FXML
-	public Button btnBuscarProveedor;
+	public Button btnBuscarProveedor;	
+	
+	
 
 	ObservableList<CompraDetalleAux> oblCompraDetalleList = FXCollections.observableArrayList();
 	Proveedor proveedor;
@@ -394,7 +396,6 @@ public class CompraProductoFxController extends AnchorPane {
 		compra.setUsuario(usuario);
 		return compra;
 	}
-
 	private void grabarDetalle(Compra compraAux) {
 
 		for (CompraDetalleAux compraDetalleAux : oblCompraDetalleList) {
@@ -419,7 +420,7 @@ public class CompraProductoFxController extends AnchorPane {
 
 	@FXML
 	private void bntEliminarClick() {
-	}
+	}	
 
 	@FXML
 	private void bntCancelarClick() {
