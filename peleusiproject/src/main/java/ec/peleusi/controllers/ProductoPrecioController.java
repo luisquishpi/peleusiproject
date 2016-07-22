@@ -5,6 +5,7 @@ import java.util.List;
 import ec.peleusi.models.daos.DaoFactory;
 import ec.peleusi.models.daos.ProductoPrecioDao;
 import ec.peleusi.models.entities.ProductoPrecio;
+import ec.peleusi.models.entities.TipoPrecio;
 import ec.peleusi.models.entities.Producto;
 
 public class ProductoPrecioController {
@@ -29,4 +30,9 @@ public class ProductoPrecioController {
 	public String deleteProductoPrecio(ProductoPrecio productoPrecio) {
 		return productoPrecioDao.deleteById(productoPrecio.getId());
 	}
+
+	public List<ProductoPrecio> productoConPrecioList(String txtBuscar, TipoPrecio tipoPrecio) {
+		return productoPrecioDao.productoPrecioListPorTipoPrecio(txtBuscar, tipoPrecio);
+	}
+
 }
