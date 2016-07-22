@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPanePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane prefHeight="398.0" prefWidth="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <GridPane maxHeight="146.0" prefHeight="80.0" prefWidth="357.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField id="txtBuscar" fx:id="txtBuscar" onKeyReleased="#txtBuscarReleased" promptText="Identificación o Nombre">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+            </GridPane>
+         </top>
+         <center>
+            <VBox fx:id="vbParaTabla" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Pagination fx:id="pagination" maxHeight="1.7976931348623157E308" onKeyReleased="#paginationReleased" prefHeight="5000.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="435.0" spacing="5.0" styleClass="HBoxBotones" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#btnAceptarClick" styleClass="ButtonCRUD" text="Aceptar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarClick" styleClass="ButtonCRUD" text="Cancelar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/Style.css" />
+      <URL value="@../css/ListStyle.css" />
+   </stylesheets>
+</AnchorPane>

@@ -1,10 +1,14 @@
 package ec.peleusi.views.fx.controllers;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import ec.peleusi.controllers.CompraController;
 import ec.peleusi.controllers.CompraDetalleController;
@@ -23,9 +27,13 @@ import ec.peleusi.models.entities.Seteo;
 import ec.peleusi.models.entities.Sucursal;
 import ec.peleusi.models.entities.Usuario;
 import ec.peleusi.models.entities.general.CompraDetalleAux;
+import ec.peleusi.utils.fx.AlertsUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
@@ -37,6 +45,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 
 public class CompraProductoFxController extends AnchorPane {
@@ -214,9 +224,10 @@ public class CompraProductoFxController extends AnchorPane {
 		});
 
 	}
-	private void cargarDetalleProducto(Producto producto) {
-		System.out.println("Producto" + producto.getStock());
 
+	private void cargarDetalleProducto(Producto producto) {
+
+		System.out.println("Producto" + producto.getStock());
 		precioBrutoFila = producto.getCosto();
 		valorDescuentoFila = precioBrutoFila * ((porcentajeDescuentoFila) / 100);
 		precioNetoFila = precioBrutoFila - valorDescuentoFila;
@@ -231,6 +242,7 @@ public class CompraProductoFxController extends AnchorPane {
 
 		calcularTotales();
 	}
+
 	private Double PorcentajeIvaProducto(Boolean productoConIva) {
 
 		double tarifaIva = 0;
@@ -244,6 +256,7 @@ public class CompraProductoFxController extends AnchorPane {
 		return tarifaIva;
 
 	}
+
 	private void limpiarControles() {
 		txtBaseImponible0.setText("0.00");
 		txtBaseImponibleDiferente0.setText("0.00");
@@ -263,10 +276,10 @@ public class CompraProductoFxController extends AnchorPane {
 		dtpFechaAutorizacion.setValue(LocalDate.now());
 		dtpFechaEmision.setValue(LocalDate.now());
 		dtpFechaRegistro.setValue(LocalDate.now());
-		dtpFechaVencimiento.setValue(LocalDate.now());
+		dtpFechaVencimiento.setValue(LocalDate.now());		
 		txtRuc.requestFocus();
+		oblCompraDetalleList.clear();
 	}
-
 	private void calcularTotales() {
 		subtotalIvaDiferente0 = 0.0;
 		subtotalIva0 = 0.0;
@@ -274,8 +287,7 @@ public class CompraProductoFxController extends AnchorPane {
 		totalIce = 0.0;
 		totalDescuento = 0.0;
 		total = 0.0;
-		System.out.println("Numero de datos....>" + oblCompraDetalleList.size());
-
+		
 		for (CompraDetalleAux compraDetalle : oblCompraDetalleList) {
 			if (compraDetalle.getPorcentaIva() != 0) {
 				subtotalIvaDiferente0 = subtotalIvaDiferente0 + compraDetalle.getSubtotal();
@@ -331,47 +343,62 @@ public class CompraProductoFxController extends AnchorPane {
 	@FXML
 	private void bntGuardarClick() {
 		try {
-			Double baseImponibleExentoIva = 0.0;
-			Double baseImponibleNoObjetoIva = 0.0;
-			Boolean estado = false;
-			Compra compra = new Compra();
+			String error = "";
 			CompraController compraController = new CompraController();
-			compra.setBaseImponibleExentoIva(baseImponibleExentoIva);
-			compra.setBaseImponibleIva0(Double.parseDouble(txtBaseImponible0.getText()));
-			compra.setBaseImponibleIvaDiferente0(Double.parseDouble(txtBaseImponibleDiferente0.getText()));
-			compra.setBaseImponibleNoObjetoIva(baseImponibleNoObjetoIva);
-			compra.setDiasCredito(Double.parseDouble(txtDiasCredito.getText()));
-			compra.setEstablecimiento(txtEstablecimiento.getText());
-			compra.setEstado(estado);
-			compra.setFechaAutorizacion(Fecha(dtpFechaAutorizacion.getValue()));
-			compra.setFechaEmision(Fecha(dtpFechaEmision.getValue()));
-			compra.setFechaRegistro(Fecha(dtpFechaRegistro.getValue()));
-			compra.setFechaVencimiento(Fecha(dtpFechaVencimiento.getValue()));
-			compra.setMontoIce(Double.parseDouble(txtMontoIce.getText()));
-			compra.setMontoIva(Double.parseDouble(txtMontoIva.getText()));
-			compra.setNumeroAutorizacion(txtAutorizacion.getText());
-			compra.setPuntoEmision(txtPuntoEmision.getText());
-			compra.setSecuencial(txtSecuencial.getText());
-			compra.setValorDescuento(Double.parseDouble(txtDescuento.getText()));
-			compra.setProveedor(proveedor);
-			compra.setSucursal(sucursal);
-			compra.setUsuario(usuario);
-			compraController.createCompra(compra);
-			grabarDetalle(compra);
+
+			if (isCamposLlenos()) {
+				Compra compra = new Compra();
+				compra = grabarCabecera();
+				error = compraController.createCompra(compra);
+				if (error == null) {
+					AlertsUtil.alertExito("Guardado correctamente");
+					grabarDetalle(compra);
+
+				} else {
+					AlertsUtil.alertError(error);
+				}
+
+			} else {
+				AlertsUtil.alertWarning("Datos incompletos, no es posible guardar");
+			}
 
 		} catch (Exception err) {
 		}
+	}
 
-		System.out.println("Hola Lucho, como fastidia ud.....");
+	private Compra grabarCabecera() {
 
+		Double baseImponibleExentoIva = 0.0;
+		Double baseImponibleNoObjetoIva = 0.0;
+		Boolean estado = false;
+		Compra compra = new Compra();
+		compra.setBaseImponibleExentoIva(baseImponibleExentoIva);
+		compra.setBaseImponibleIva0(Double.parseDouble(txtBaseImponible0.getText()));
+		compra.setBaseImponibleIvaDiferente0(Double.parseDouble(txtBaseImponibleDiferente0.getText()));
+		compra.setBaseImponibleNoObjetoIva(baseImponibleNoObjetoIva);
+		compra.setDiasCredito(Double.parseDouble(txtDiasCredito.getText()));
+		compra.setEstablecimiento(txtEstablecimiento.getText());
+		compra.setEstado(estado);
+		compra.setFechaAutorizacion(Fecha(dtpFechaAutorizacion.getValue()));
+		compra.setFechaEmision(Fecha(dtpFechaEmision.getValue()));
+		compra.setFechaRegistro(Fecha(dtpFechaRegistro.getValue()));
+		compra.setFechaVencimiento(Fecha(dtpFechaVencimiento.getValue()));
+		compra.setMontoIce(Double.parseDouble(txtMontoIce.getText()));
+		compra.setMontoIva(Double.parseDouble(txtMontoIva.getText()));
+		compra.setNumeroAutorizacion(txtAutorizacion.getText());
+		compra.setPuntoEmision(txtPuntoEmision.getText());
+		compra.setSecuencial(txtSecuencial.getText());
+		compra.setValorDescuento(Double.parseDouble(txtDescuento.getText()));
+		compra.setProveedor(proveedor);
+		compra.setSucursal(sucursal);
+		compra.setUsuario(usuario);
+		return compra;
 	}
 
 	private void grabarDetalle(Compra compraAux) {
 
 		for (CompraDetalleAux compraDetalleAux : oblCompraDetalleList) {
-
 			CompraDetalle compraDetalle = new CompraDetalle();
-
 			CompraDetalleController compraDetalleController = new CompraDetalleController();
 			compraDetalle.setStock(compraDetalleAux.getStock());
 			compraDetalle.setCodigoProducto(compraDetalleAux.getCodigo());
@@ -387,31 +414,41 @@ public class CompraProductoFxController extends AnchorPane {
 			compraDetalle.setCompra(compraAux);
 			compraDetalle.setProducto(compraDetalleAux.getIdProducto());
 			compraDetalleController.createCompra(compraDetalle);
-
 		}
-
 	}
 
 	@FXML
 	private void bntEliminarClick() {
-
-		System.out.println("Hola Lucho, como fastidia ud.....");
-
 	}
 
 	@FXML
 	private void bntCancelarClick() {
 
-		System.out.println("Hola Lucho, como fastidia ud.....");
-
 	}
 
 	@FXML
 	private void bntBuscarProductoClick() {
-		ProductoController productoController = new ProductoController();
+
 		Producto producto = new Producto();
-		producto = productoController.getProductoCodigo(txtProducto.getText());
-		cargarDetalleProducto(producto);
+		Parent parent = null;
+		Stage stage = new Stage();
+		ProductoListCostoModalController control = new ProductoListCostoModalController();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/ProductoListCostoModalFx.fxml"));
+		loader.setController(control);
+		try {
+			parent = (Parent) loader.load();
+			stage.setTitle("Lista de Caja");
+			stage.setScene(new Scene(parent));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			producto = control.getProducto();
+			cargarDetalleProducto(producto);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@FXML
@@ -429,8 +466,7 @@ public class CompraProductoFxController extends AnchorPane {
 	@FXML
 	private void txtRucReleased(KeyEvent event) {
 
-		if (event.getCode() == KeyCode.ENTER) {
-			System.out.println(txtRuc.getText());
+		if (event.getCode() == KeyCode.ENTER) {		
 			buscarProveedoridentificacion(txtRuc.getText());
 		}
 	}
@@ -466,7 +502,6 @@ public class CompraProductoFxController extends AnchorPane {
 			oblCompraDetalleList.remove(tblDetalleCompra.getSelectionModel().getSelectedIndex());
 			tblDetalleCompra.refresh();
 			calcularTotales();
-
 		}
 	}
 
@@ -501,6 +536,7 @@ public class CompraProductoFxController extends AnchorPane {
 			txtTelefono.setText("");
 		}
 	}
+
 	public static Date Fecha(LocalDate ld) {
 
 		Instant instant = ld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
@@ -522,5 +558,15 @@ public class CompraProductoFxController extends AnchorPane {
 		List<Sucursal> sucursalList = sucursalController.SucursalList();
 		sucursal = sucursalList.get(0);
 
+	}
+
+	private boolean isCamposLlenos() {
+		boolean llenos = true;
+		if (txtRuc.getText().isEmpty() || txtContribuyente.getText().isEmpty() || txtDireccion.getText().isEmpty()
+				|| txtTelefono.getText().isEmpty() || txtPuntoEmision.getText().isEmpty()
+				|| txtEstablecimiento.getText().isEmpty() || txtSecuencial.getText().isEmpty()
+				|| oblCompraDetalleList.size() == 0)
+			llenos = false;
+		return llenos;
 	}
 }

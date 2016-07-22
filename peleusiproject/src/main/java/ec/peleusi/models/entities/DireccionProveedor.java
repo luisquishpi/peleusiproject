@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 @Entity
 @Table(name = "direccionProveedor")
 
@@ -148,6 +151,11 @@ public class DireccionProveedor {
 		this.porDefecto = porDefecto;
 	}
 
+	public BooleanProperty porDefectoProperty() {
+		BooleanProperty porDefectoProperty = new SimpleBooleanProperty(porDefecto);
+		return porDefectoProperty;
+	}
+	
 	@Override
 	public String toString() {
 		return "Direccion Proveedor [id=" + id + ",nombre=" + nombre + ",ciudad=" + ciudad + ", proveedor=" + proveedor
