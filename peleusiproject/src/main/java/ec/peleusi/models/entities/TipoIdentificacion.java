@@ -3,6 +3,10 @@ package ec.peleusi.models.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 import javax.persistence.Id;
 import javax.persistence.Column;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -68,6 +72,11 @@ public class TipoIdentificacion {
 
 	public void setValida(Boolean valida) {
 		this.valida = valida;
+	}
+	
+	public BooleanProperty validaProperty() {
+		BooleanProperty validaProperty = new SimpleBooleanProperty(valida);
+		return validaProperty;
 	}
 
 	@Override

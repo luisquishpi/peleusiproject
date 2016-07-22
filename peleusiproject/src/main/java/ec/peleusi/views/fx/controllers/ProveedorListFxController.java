@@ -365,6 +365,7 @@ public class ProveedorListFxController extends GenericController {
 		telefonoCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, String>("telefono"));
 		porDefectoCol.setCellValueFactory(new PropertyValueFactory<DireccionProveedor, Boolean>("porDefecto"));
 		porDefectoCol.setCellFactory(CheckBoxTableCell.forTableColumn(porDefectoCol));
+		limpiarCamposDireccion();
 		final ObservableList<DireccionProveedor> direccionProveedorsListSeleccionar = tblDireccionProveedor
 				.getSelectionModel().getSelectedItems();
 		direccionProveedorsListSeleccionar.addListener(escuchaCambiosEnTablaDireccion);
@@ -374,11 +375,11 @@ public class ProveedorListFxController extends GenericController {
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends DireccionProveedor> c) {
 			cargarObjetoSeleccionadaEnFormularioDireccion();
-			actualizarDireccion = true;
+			actualizarDireccion = true;			
 			if (direccionProveedorsList.size()== 1)
 			{
-				btnEliminarDireccion.setDisable(true);
-				chkPorDefecto.setSelected(true);
+				btnEliminarDireccion.setDisable(true);				
+				chkPorDefecto.setSelected(true);				
 			}
 		}
 	};
@@ -406,7 +407,7 @@ public class ProveedorListFxController extends GenericController {
 			chkPorDefecto.setSelected(direccionProveedor.getPorDefecto());
 			btnAgregar.setText("Actualizar");
 			btnAgregar.setDisable(false);
-			btnEliminarDireccion.setDisable(false);
+			btnEliminarDireccion.setDisable(false);			
 		}
 	}
 

@@ -148,5 +148,14 @@ public class Seteo {
 	public void setConServicioAdicional(Boolean conServicioAdicional) {
 		this.conServicioAdicional = conServicioAdicional;
 	}
+	
+	@Override
+	public String toString() {
+		return "Seteo [id " +id +", tarifaIva= " + tarifaIva + ",numeroDecimales=" + numeroDecimales + ", identificacionDecimal=" + identificacionDecimal
+				+ ", signoMoneda=" + signoMoneda + ", cliente=" + cliente + ", nombrePercentajeServicioAdicional="
+				+ nombrePercentajeServicioAdicional + ", porcentajeServicioAdicional="
+				+ porcentajeServicioAdicional + ", tipoInventario="
+				+ tipoInventario + " conServicioAdicional=" + conServicioAdicional + "]";
+	}
 
 }
