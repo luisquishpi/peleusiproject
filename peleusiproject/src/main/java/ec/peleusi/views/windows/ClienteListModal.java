@@ -140,7 +140,7 @@ public class ClienteListModal extends javax.swing.JDialog {
 			public void actionPerformed(ActionEvent e) {
 
 				ClienteController clienteController = new ClienteController();
-				List<Cliente> listaCliente = clienteController.ClienteList(txtBuscar.getText());
+				List<Cliente> listaCliente = clienteController.getClienteList(txtBuscar.getText());
 				modelo.getDataVector().removeAllElements();
 				modelo.fireTableDataChanged();
 				for (Cliente cliente : listaCliente) {

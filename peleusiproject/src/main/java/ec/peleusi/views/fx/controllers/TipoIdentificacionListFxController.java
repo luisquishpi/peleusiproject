@@ -67,16 +67,7 @@ public class TipoIdentificacionListFxController extends GenericController {
 		codigoCol.setCellValueFactory(new PropertyValueFactory<TipoIdentificacion, String>("codigo"));
 		nombreCol.setCellValueFactory(new PropertyValueFactory<TipoIdentificacion, String>("nombre"));
 		validaCol.setCellValueFactory(new PropertyValueFactory<TipoIdentificacion, Boolean>("valida"));
-		validaCol.setCellFactory(CheckBoxTableCell.forTableColumn(validaCol));
-
-		//TableColumn<TipoIdentificacion,Boolean>  validaCol = new TableColumn<>("Check");
-		//validaCol.setCellValueFactory( new PropertyValueFactory<TipoIdentificacion,Boolean>( "valida" ) );
-		//validaCol.setCellFactory( CheckBoxTableCell.forTableColumn( validaCol ) );
-		
-		
-		/*TableColumn<Person, CheckBox> column = (TableColumn<Person, CheckBox>) personTable.getColumns().get(0);
-		column.setCellValueFactory(new PersonUnemployedValueFactory());*/
-		
+		validaCol.setCellFactory(CheckBoxTableCell.forTableColumn(validaCol));			
 		final ObservableList<TipoIdentificacion> tblListaObs = tblLista.getSelectionModel().getSelectedItems();
 		tblListaObs.addListener(escuchaCambiosEnTabla);		 
 	 
@@ -86,20 +77,7 @@ public class TipoIdentificacionListFxController extends GenericController {
 				btnNuevoClick(null);
 			}
 		});
-	}
-	
-	/*TableColumn<Job,Boolean>  checkCol = new TableColumn<>("Check");
-	checkCol.setCellValueFactory( new PropertyValueFactory<Job,Boolean>( "checkBoxValue" ) );
-	checkCol.setCellFactory( CheckBoxTableCell.forTableColumn( checkCol ) );*/	
-	
-	
-	 //chkValida.setCellFactory(new Callback<TableColumn<TipoIdentificacion, Boolean>, TableCell<TipoIdentificacion, Boolean>>() {
-
-       //  public TableCell<TipoIdentificacion, Boolean> call(TableColumn<TipoIdentificacion, Boolean> p) {
-         //    return new CheckBoxTableCell<TipoIdentificacion, Boolean>();
-         //}
-	
-	
+	}	
          
 	private final ListChangeListener<TipoIdentificacion> escuchaCambiosEnTabla = new ListChangeListener<TipoIdentificacion>() {
 		@Override
