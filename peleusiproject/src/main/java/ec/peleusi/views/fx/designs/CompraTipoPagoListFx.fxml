@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.45112781954887216" layoutX="123.0" layoutY="64.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="-78.0" layoutY="-2.0" prefHeight="600.0" prefWidth="431.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                     <top>
+                        <GridPane maxHeight="169.0" prefHeight="169.0" prefWidth="431.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <TextField id="txtBuscar" fx:id="txtBuscar" />
+                           </children>
+                        </GridPane>
+                     </top>
+                     <center>
+                        <VBox prefHeight="452.0" prefWidth="431.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Pagination id="pagination" fx:id="pagination" prefHeight="518.0" prefWidth="431.0">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin></Pagination>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="128.0" layoutY="55.0" prefHeight="398.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="435.0" spacing="5.0" styleClass="HBoxBotones" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button id="btnNuevo" fx:id="btnNuevo" mnemonicParsing="false" onAction="#btnNuevoClick" styleClass="ButtonCRUD" text="Nuevo" />
+                              <Button id="btnGuardar" fx:id="btnGuardar" mnemonicParsing="false" onAction="#btnGuardarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Guardar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnEliminar" fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Eliminar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button id="btnSalir" fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarClick" prefHeight="80.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Cancelar">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </top>
+                     <center>
+                        <AnchorPane prefHeight="465.0" prefWidth="461.0">
+                           <children>
+                              <TitledPane animated="false" layoutX="13.0" layoutY="14.0" prefHeight="146.0" prefWidth="484.0" text="Datos de Factura">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane prefHeight="118.0" prefWidth="452.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="10.0" prefWidth="152.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="464.0" minWidth="0.0" prefWidth="143.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="524.0" minWidth="6.0" prefWidth="140.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints maxHeight="23.0" minHeight="7.0" prefHeight="22.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="17.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label text="Base Imponible 0%" textAlignment="CENTER" />
+                                                <TextField fx:id="txtBaseImponible0" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtBaseImponibleDiferente0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtDescuento" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <Label text="Base Imp. Diferente 0%" GridPane.columnIndex="1" />
+                                                <Label text="Descuento" GridPane.columnIndex="2" />
+                                                <Label text="Monto IVA" GridPane.rowIndex="2" />
+                                                <Label text="Monto ICE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label text="TOTAL" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtMontoIva" prefHeight="19.0" prefWidth="140.0" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtMontoIce" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtTotal" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                              <TitledPane animated="false" layoutX="14.0" layoutY="169.0" prefHeight="309.0" prefWidth="482.0" text="Tipo de pagos">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane layoutX="4.0" maxHeight="-Infinity" prefHeight="120.0" prefWidth="452.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints maxWidth="100.0" minWidth="10.0" prefWidth="92.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="321.0" minWidth="10.0" prefWidth="308.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints maxHeight="87.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label text="Nombre *" />
+                                                <Label text="Detalle*" GridPane.rowIndex="2" />
+                                                <TextField id="txtNombre" fx:id="txtDetalle" promptText="Nombre de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <HBox prefHeight="25.0" prefWidth="321.0" GridPane.columnIndex="1">
+                                                   <children>
+                                                      <TextField id="txtCiudad" fx:id="txtNombre" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
+                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarTipoPago" mnemonicParsing="false" onAction="#btnBuscarTipoPagoClick" prefHeight="25.0" prefWidth="72.0" text="Button">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                                <TextField id="txtCiudad" fx:id="txtValor" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label text="Valor *" GridPane.rowIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                          <HBox layoutX="14.0" layoutY="120.0" prefHeight="147.0" prefWidth="451.0">
+                                             <children>
+                                                <TableView id="tblDireccionProveedor" fx:id="tblTipoPago" prefHeight="286.0" prefWidth="517.0">
+                                                   <columns>
+                                                      <TableColumn fx:id="IdCol" prefWidth="82.0" text="Ciudad" visible="false" />
+                                                      <TableColumn fx:id="nombreCol" prefWidth="150.0" text="Nombre" />
+                                                      <TableColumn fx:id="direccionCol" prefWidth="100.0" text="Valor" />
+                                                      <TableColumn fx:id="telefonoCol" prefWidth="200.0" text="Detalle" />
+                                                   </columns>
+                                                </TableView>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                           </children>
+                        </AnchorPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/ListStyle.css" />
+      <URL value="@../css/Style.css" />
+   </stylesheets>
+</AnchorPane>

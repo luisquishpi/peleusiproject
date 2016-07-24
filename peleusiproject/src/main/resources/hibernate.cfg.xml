@@ -54,6 +54,7 @@
 		<mapping class='ec.peleusi.models.entities.DireccionProveedor' />
 		<mapping class='ec.peleusi.models.entities.Caja' />
 		<mapping class='ec.peleusi.models.entities.CompraRetencion' />
+		<mapping class='ec.peleusi.models.entities.CompraTipoPago' />
 
 
 	</session-factory>
