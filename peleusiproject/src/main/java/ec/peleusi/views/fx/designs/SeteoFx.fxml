@@ -89,9 +89,9 @@
                                                    <children>
                                                       <Label layoutX="8.0" layoutY="6.0" text="RUC/ CI" />
                                                       <Label layoutX="260.0" layoutY="6.0" text="Contribuyente" />
-                                                      <TextField id="txtidentificacion" fx:id="txtIdentificacion" layoutX="8.0" layoutY="23.0" prefHeight="25.0" prefWidth="204.0" />
+                                                      <TextField id="txtidentificacion" fx:id="txtIdentificacion" editable="false" layoutX="8.0" layoutY="23.0" prefHeight="25.0" prefWidth="204.0" />
                                                       <Button id="btnBuscarCliente" fx:id="btnBuscarCliente" layoutX="220.0" layoutY="23.0" mnemonicParsing="false" onAction="#btnBuscarClienteClick" prefHeight="25.0" prefWidth="26.0" text="Button" />
-                                                      <TextField id="txtRazonSocial" fx:id="txtRazonSocial" layoutX="260.0" layoutY="23.0" prefHeight="25.0" prefWidth="373.0" />
+                                                      <TextField id="txtRazonSocial" fx:id="txtRazonSocial" editable="false" layoutX="260.0" layoutY="23.0" prefHeight="25.0" prefWidth="373.0" />
                                                    </children>
                                                 </AnchorPane>
                                             </content>

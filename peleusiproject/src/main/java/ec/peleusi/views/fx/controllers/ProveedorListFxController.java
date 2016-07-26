@@ -1,5 +1,6 @@
 package ec.peleusi.views.fx.controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import ec.peleusi.controllers.DireccionProveedorController;
@@ -17,7 +18,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -32,6 +35,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class ProveedorListFxController extends GenericController {
@@ -121,6 +126,7 @@ public class ProveedorListFxController extends GenericController {
 	private DireccionProveedorController direccionProveedorController = new DireccionProveedorController();
 	private Integer posicionObjetoEnTablaDireccion;
 	Boolean eliminarDireccion = false;
+	Ciudad ciudad = new Ciudad();
 
 	@FXML
 	private void initialize() {
@@ -205,8 +211,23 @@ public class ProveedorListFxController extends GenericController {
 		TipoIdentificacionController tipoIdenficacionController = new TipoIdentificacionController();
 		tipoIdentificacionsList = FXCollections.observableList(tipoIdenficacionController.tipoIdentificacionList());
 		cmbTipoIdentificacion.setItems(tipoIdentificacionsList);
+		System.out.println("hola " + tipoIdentificacionsList);
 	}
 
+	@FXML
+	private void cmbTipoIdentificacionClick(ActionEvent event) {
+		//cmbTipoIdentificacion.getValue().getNombre();
+		//System.out.println(" "+ cmbTipoIdentificacion);
+		
+		
+		
+		/*cmbTipoIdentificacion.setValue(tipoIdentificacion);
+		System.out.println("hola combo " + tipoIdentificacion);
+		//System.out.println("hola combo " + tipoIdentificacion);
+	    System.out.println (cmbTipoIdentificacion.getValue ());*/
+	}
+	
+	
 	private void cargarObjetoSeleccionadaEnFormulario() {
 		proveedor = (Proveedor) getObjetoSeleccionadoDeTabla();
 		if (proveedor != null) {
@@ -350,8 +371,7 @@ public class ProveedorListFxController extends GenericController {
 		} else {
 			proveedorsList.clear();
 		}
-		proveedor = proveedorList.get(0);
-		// btnNuevoClick(null);
+		proveedor = proveedorList.get(0);		
 		tblLista.requestFocus();
 	}
 
@@ -376,11 +396,12 @@ public class ProveedorListFxController extends GenericController {
 		public void onChanged(ListChangeListener.Change<? extends DireccionProveedor> c) {
 			cargarObjetoSeleccionadaEnFormularioDireccion();
 			actualizarDireccion = true;			
-			if (direccionProveedorsList.size()== 1)
+			if (direccionProveedor.getPorDefecto()== true)
 			{
-				btnEliminarDireccion.setDisable(true);				
-				chkPorDefecto.setSelected(true);				
-			}
+				btnEliminarDireccion.setDisable(true);
+				chkPorDefecto.setSelected(true);
+				chkPorDefecto.setDisable(true);
+			}		
 		}
 	};
 
@@ -416,8 +437,7 @@ public class ProveedorListFxController extends GenericController {
 		error = direccionProveedorController.createDireccionProveedor(direccionProveedor);
 		if (error == null) {
 			direccionProveedorsList.add(direccionProveedor);
-			AlertsUtil.alertExito("Guardado correctamente");
-			// btnNuevoDireccionClick(null);
+			AlertsUtil.alertExito("Guardado correctamente");			
 		} else {
 			AlertsUtil.alertError(error);
 		}
@@ -429,21 +449,22 @@ public class ProveedorListFxController extends GenericController {
 		error = direccionProveedorController.updateDireccionProveedor(direccionProveedor);
 		if (error == null) {
 			direccionProveedorsList.set(posicionObjetoEnTablaDireccion, direccionProveedor);
-			AlertsUtil.alertExito("Actualizado correctamente");
-			// btnNuevoDireccionClick(null);
+			AlertsUtil.alertExito("Actualizado correctamente");			
 		} else {
 			AlertsUtil.alertError(error);
 		}
 	}
 
 	private void eliminarDireccion() {
+		if (direccionProveedor.getPorDefecto()== false){
 		error = direccionProveedorController.deleteDireccionProveedor(direccionProveedor);
-		if (error == null) {				
+			if (error == null) {				
 				direccionProveedorsList.remove(getObjetoSeleccionadoDeTablaDireccion());				
-			limpiarCamposDireccion();
-		} else {
-			AlertsUtil.alertError(error);
-		}
+				limpiarCamposDireccion();
+			} else {
+				AlertsUtil.alertError(error);
+			}			
+		}	
 	}	
 
 	private DireccionProveedor llenarEntidadAntesDeGuardarDireccion(Proveedor proveedor, Boolean actualizarDireccion) {
@@ -451,23 +472,15 @@ public class ProveedorListFxController extends GenericController {
 			direccionProveedor = new DireccionProveedor();
 		}
 		direccionProveedor.setProveedor(proveedor);
-		direccionProveedor.setCiudad(objetoCiudad());
+		direccionProveedor.setCiudad(ciudad);					
 		direccionProveedor.setNombre(txtNombre.getText());
-		direccionProveedor.setDireccion(txtDireccion.getText());
+		direccionProveedor.setDireccion(txtDireccion.getText().trim());
 		direccionProveedor.setTelefono(txtTelefono.getText());
 		direccionProveedor.setCelular(txtCelular.getText());
 		direccionProveedor.setEmail(txtEmail.getText());
 		direccionProveedor.setCodigoPostal(txtCodigoPostal.getText());
 		direccionProveedor.setPorDefecto(chkPorDefecto.isSelected());
 		return direccionProveedor;
-
-	}
-
-	private Ciudad objetoCiudad() {
-		Ciudad ciudadTmp = new Ciudad();
-		ciudadTmp.setNombre("Ambato");
-		ciudadTmp.setId(1);
-		return ciudadTmp;
 	}
 
 	private void limpiarCamposDireccion() {
@@ -503,7 +516,7 @@ public class ProveedorListFxController extends GenericController {
 		if (camposLlenosDireccion()) {
 			if (btnAgregar.getText().toLowerCase().equals("actualizar")) {
 				actualizarDireccion(direccionProveedor);
-				// limpiarCamposDireccion();
+				 limpiarCamposDireccion();
 			} else {
 				guardarNuevoDireccion(proveedor);
 				limpiarCamposDireccion();
@@ -524,7 +537,23 @@ public class ProveedorListFxController extends GenericController {
 	}
 
 	@FXML
-	private void btnBuscarCiudadClick(ActionEvent event) {
-		txtCiudad.setText(objetoCiudad().getNombre());
+	private void btnBuscarCiudadClick(ActionEvent event) {		
+		Parent parent = null;
+		Stage stage = new Stage();
+		CiudadListModalController control = new CiudadListModalController();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/CiudadListModalFx.fxml"));
+		loader.setController(control);
+		try{
+			parent = (Parent) loader.load();
+			stage.setTitle("Lista de Ciudad");
+			stage.setScene(new Scene(parent));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			ciudad = control.getCiudad();	
+			txtCiudad.setText(ciudad.getNombre());
+		}	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
 	}
 }

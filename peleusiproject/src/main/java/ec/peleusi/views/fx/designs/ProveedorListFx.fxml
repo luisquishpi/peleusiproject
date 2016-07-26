@@ -121,7 +121,7 @@
                                                 <Label text="Días Crédito" GridPane.rowIndex="3" />
                                                 <Label text="Porcentaje Descuento" GridPane.rowIndex="4" />
                                                 <Label text="Descripción" GridPane.rowIndex="5" />
-                                                <ComboBox id="cmbTipoIdentificacion" fx:id="cmbTipoIdentificacion" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
+                                                <ComboBox id="cmbTipoIdentificacion" fx:id="cmbTipoIdentificacion" onAction="#cmbTipoIdentificacionClick" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
                                                 <TextField id="txtIdentificacion" fx:id="txtIdentificacion" promptText="Identificación de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <TextField id="txtRazonSocial" fx:id="txtRazonSocial" promptText="Razón Social de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <TextField id="txtDiasCredito" fx:id="txtDiasCredito" promptText="Días Crédito de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -167,8 +167,8 @@
                                                 <TextField id="txtCodigoPostal" fx:id="txtCodigoPostal" promptText="Codigo Postal del Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                 <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                    <children>
-                                                      <TextField id="txtCiudad" fx:id="txtCiudad" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
-                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarCiudad" mnemonicParsing="false" onAction="#btnBuscarCiudadClick" prefHeight="25.0" prefWidth="72.0" text="Button">
+                                                      <TextField id="txtCiudad" fx:id="txtCiudad" editable="false" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
+                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarCiudad" mnemonicParsing="false" onAction="#btnBuscarCiudadClick" prefHeight="25.0" prefWidth="66.0" text="Buscar">
                                                          <HBox.margin>
                                                             <Insets left="20.0" />
                                                          </HBox.margin>

@@ -1,5 +1,6 @@
 package ec.peleusi.views.fx.controllers;
 
+import java.io.IOException;
 import java.util.List;
 import ec.peleusi.controllers.SeteoController;
 import ec.peleusi.controllers.TarifaIvaController;
@@ -15,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -23,6 +26,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class SeteoFxController extends GenericController {
 	@FXML
@@ -64,11 +69,13 @@ public class SeteoFxController extends GenericController {
 	
 	ObservableList<TarifaIva> tarifaIvasList;
 
-	Cliente cliente;
+	//Cliente cliente;
 	TarifaIva tarifaIva;
 	Seteo seteo = new Seteo();
 	SeteoController seteoController = new SeteoController();
-	String error = "";
+	private String error = null;
+	Cliente cliente = new Cliente();
+	
 	
 	@FXML
 	private void initialize() {
@@ -139,8 +146,7 @@ public class SeteoFxController extends GenericController {
 		seteo.setNumeroDecimales(Integer.parseInt(txtNumeroDecimales.getText()));
 		seteo.setIdentificacionDecimal((IdentificacionDecimalEnum) cmbIdentificacionDecimal.getValue());
 		seteo.setSignoMoneda((SignoMonedaEnum) cmbSignoMoneda.getValue());
-		seteo.setCliente(objetoCliente());
-		//seteo.setCliente((Cliente)txtRazonSocial.getText());
+		seteo.setCliente(cliente);
 		seteo.setNombrePercentajeServicioAdicional(txtNombreCampoServicioAdicional.getText());
 		seteo.setPorcentajeServicioAdicional(Double.parseDouble(txtPorcentajeServicioAdicional.getText()));
 		seteo.setTipoInventario((TipoInventarioEnum) cmbTipoInventario.getValue());
@@ -151,7 +157,6 @@ public class SeteoFxController extends GenericController {
 	private void guardarNuevo() {
 		llenarEntidadAntesDeGuardar();
 		error = seteoController.createSeteos(seteo);
-		System.out.println("guardar " + seteo);
 		if (error == null) {			
 			cargarDatosSeteos();
 			AlertsUtil.alertExito("Guardado correctamente");			
@@ -161,6 +166,7 @@ public class SeteoFxController extends GenericController {
 	}
 
 	private void actualizar() {
+		llenarEntidadAntesDeGuardar();
 		error = seteoController.update(seteo);
 		if (error == null) {
 			AlertsUtil.alertExito("Actualizado correctamente");
@@ -176,14 +182,6 @@ public class SeteoFxController extends GenericController {
 			llenos = false;
 		return llenos;
 	}
-	
-	private Cliente objetoCliente() {
-		Cliente clienteTmp = new Cliente();
-		clienteTmp.setId(3);
-		clienteTmp.setIdentificacion("0301768901");
-		clienteTmp.setRazonSocial("Mercedes");
-		return clienteTmp;
-	}	
 	
 	@FXML
 	private void btnGuardarClick(ActionEvent event) {
@@ -204,11 +202,28 @@ public class SeteoFxController extends GenericController {
 		Scene btnScene = btnCloseTab.getScene();
 		TabPane thisTabPane = (TabPane) btnScene.lookup("#tpPrincipal");
 		thisTabPane.getTabs().remove(tabIndex);
-	}	
+	}		
 	
 	@FXML
 	private void btnBuscarClienteClick(ActionEvent event) {
-		
+		Parent parent = null;
+		Stage stage = new Stage();
+		ClienteListModalController control = new ClienteListModalController();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/ClienteListModalFx.fxml"));
+		loader.setController(control);
+		try{
+			parent = (Parent) loader.load();
+			stage.setTitle("Lista de Cliente");
+			stage.setScene(new Scene(parent));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			cliente = control.getCliente();
+			txtIdentificacion.setText(cliente.getIdentificacion());
+			txtRazonSocial.setText(cliente.getRazonSocial());
+		}	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 }
 
