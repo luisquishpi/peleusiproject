@@ -27,6 +27,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -323,6 +324,9 @@ public class ProveedorListFxController extends GenericController {
 	private void btnNuevoClick(ActionEvent event) {
 		limpiarCampos();
 		limpiarCamposDireccion();
+		SingleSelectionModel<Tab> selectionModel;
+		selectionModel = tpnlProveedor.getSelectionModel();
+		selectionModel.select(pnlDatos);
 	}
 
 	@FXML
@@ -334,6 +338,10 @@ public class ProveedorListFxController extends GenericController {
 			} else {
 				guardarNuevo();
 				pnlDireccion.setDisable(false);
+				SingleSelectionModel<Tab> selectionModel;
+				selectionModel = tpnlProveedor.getSelectionModel();
+				selectionModel.select(pnlDireccion);
+				txtCiudad.requestFocus();
 				//tpnlProveedor.setEnabledAt(1, true);
 				//tpnlProveedor.setSelectedIndex(1);				
 			}
@@ -351,6 +359,9 @@ public class ProveedorListFxController extends GenericController {
 			pnlDireccion.setDisable(true);
 			tblLista.refresh();
 			limpiarCampos();
+			SingleSelectionModel<Tab> selectionModel;
+			selectionModel = tpnlProveedor.getSelectionModel();
+			selectionModel.select(pnlDatos);
 		}
 	}
 
