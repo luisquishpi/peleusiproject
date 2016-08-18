@@ -37,13 +37,24 @@
 		<mapping class='ec.peleusi.models.entities.TarifaIva' />
 		<mapping class='ec.peleusi.models.entities.TarifaIce' />
 		<mapping class='ec.peleusi.models.entities.Producto' />
+		<mapping class='ec.peleusi.models.entities.ProductoPrecio' />
 		<mapping class='ec.peleusi.models.entities.TipoIdentificacion' />
 		<mapping class='ec.peleusi.models.entities.TipoPrecio' />
 		<mapping class='ec.peleusi.models.entities.Empresa' />
-		<mapping class='ec.peleusi.models.entities.Sucursal' />	
-		<mapping class='ec.peleusi.models.entities.TipoCalificacionPersona' />
+		<mapping class='ec.peleusi.models.entities.Sucursal' />
+		<mapping class='ec.peleusi.models.entities.TipoCalificacionCliente' />
 		<mapping class='ec.peleusi.models.entities.TipoRetencion' />
-		
-		
+		<mapping class='ec.peleusi.models.entities.TipoPago' />
+		<mapping class='ec.peleusi.models.entities.Usuario' />
+		<mapping class='ec.peleusi.models.entities.Compra' />
+		<mapping class='ec.peleusi.models.entities.CompraDetalle' />
+		<mapping class='ec.peleusi.models.entities.Seteo' />
+		<mapping class='ec.peleusi.models.entities.Cliente' />
+		<mapping class='ec.peleusi.models.entities.Proveedor' />
+		<mapping class='ec.peleusi.models.entities.DireccionProveedor' />
+		<mapping class='ec.peleusi.models.entities.Caja' />
+		<mapping class='ec.peleusi.models.entities.CompraRetencion' />
+
+
 	</session-factory>
 </hibernate-configuration>
