@@ -3,6 +3,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.SplitPane?>
@@ -27,16 +28,19 @@
                <children>
                   <BorderPane layoutX="-78.0" layoutY="-2.0" prefHeight="600.0" prefWidth="431.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                      <top>
-                        <GridPane maxHeight="169.0" prefHeight="169.0" prefWidth="431.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
+                        <GridPane maxHeight="101.0" prefHeight="101.0" prefWidth="431.0" styleClass="grid-buscar" BorderPane.alignment="CENTER">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="323.0" minWidth="10.0" prefWidth="123.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.0" minWidth="10.0" prefWidth="308.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                              <Button id="btnBuscar" fx:id="btnBuscar" mnemonicParsing="false" onAction="#btnBuscarClick" prefHeight="40.0" prefWidth="100.0" styleClass="ButtonCRUD" text="Buscar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -44,7 +48,11 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Button>
-                              <TextField id="txtBuscar" fx:id="txtBuscar" />
+                              <TextField id="txtBuscar" fx:id="txtBuscar" prefHeight="11.0" prefWidth="308.0" GridPane.columnIndex="1" />
+                              <DatePicker prefHeight="25.0" prefWidth="174.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Fecha Inicio" GridPane.rowIndex="1" />
+                              <Label text="Fecha Final" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </top>
@@ -110,17 +118,17 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label text="Base Imponible 0%" textAlignment="CENTER" />
-                                                <TextField fx:id="txtBaseImponible0" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtBaseImponibleDiferente0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtDescuento" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtBaseImponible0" editable="false" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtBaseImponibleDiferente0" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtDescuento" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <Label text="Base Imp. Diferente 0%" GridPane.columnIndex="1" />
                                                 <Label text="Descuento" GridPane.columnIndex="2" />
                                                 <Label text="Monto IVA" GridPane.rowIndex="2" />
                                                 <Label text="Monto ICE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label text="TOTAL" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtMontoIva" prefHeight="19.0" prefWidth="140.0" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtMontoIce" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtTotal" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtMontoIva" editable="false" prefHeight="19.0" prefWidth="140.0" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtMontoIce" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtTotal" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -147,8 +155,8 @@
                                                 <TextField id="txtNombre" fx:id="txtDetalle" promptText="Nombre de Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <HBox prefHeight="25.0" prefWidth="321.0" GridPane.columnIndex="1">
                                                    <children>
-                                                      <TextField id="txtCiudad" fx:id="txtNombre" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
-                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarTipoPago" mnemonicParsing="false" onAction="#btnBuscarTipoPagoClick" prefHeight="25.0" prefWidth="72.0" text="Button">
+                                                      <TextField id="txtCiudad" fx:id="txtNombre" editable="false" prefHeight="25.0" prefWidth="226.0" promptText="Ciudad de Proveedor" />
+                                                      <Button id="btnBuscarCiudad" fx:id="btnBuscarTipoPago" mnemonicParsing="false" onAction="#btnBuscarTipoPagoClick" prefHeight="25.0" prefWidth="95.0" text="Seleccionar">
                                                          <HBox.margin>
                                                             <Insets left="20.0" />
                                                          </HBox.margin>
@@ -163,10 +171,10 @@
                                              <children>
                                                 <TableView id="tblDireccionProveedor" fx:id="tblTipoPago" prefHeight="286.0" prefWidth="517.0">
                                                    <columns>
-                                                      <TableColumn fx:id="IdCol" prefWidth="82.0" text="Ciudad" visible="false" />
-                                                      <TableColumn fx:id="nombreCol" prefWidth="150.0" text="Nombre" />
-                                                      <TableColumn fx:id="direccionCol" prefWidth="100.0" text="Valor" />
-                                                      <TableColumn fx:id="telefonoCol" prefWidth="200.0" text="Detalle" />
+                                                      <TableColumn fx:id="IdColPago" prefWidth="82.0" text="Id" visible="false" />
+                                                      <TableColumn fx:id="nombreColPago" prefWidth="150.0" text="Nombre" />
+                                                      <TableColumn fx:id="valorColPago" prefWidth="100.0" text="Valor" />
+                                                      <TableColumn fx:id="detalleColPago" prefWidth="200.0" text="Detalle" />
                                                    </columns>
                                                 </TableView>
                                              </children>

@@ -36,6 +36,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -424,8 +425,9 @@ public class CompraFxController extends AnchorPane {
 
 	@FXML
 	private void bntCancelarClick() {
+		
 
-	}
+	}	
 
 	@FXML
 	private void bntBuscarProductoClick() {
@@ -461,7 +463,28 @@ public class CompraFxController extends AnchorPane {
 
 	@FXML
 	private void btnBuscarProveedorClick() {
-		buscarProveedoridentificacion(txtRuc.getText());
+		
+		Proveedor proveedor= new Proveedor();		
+		Parent parent = null;
+		Stage stage = new Stage();
+		ProveedorListModalController control = new ProveedorListModalController();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/ProveedorListModalFx.fxml"));
+		loader.setController(control);
+		try {
+			parent = (Parent) loader.load();
+			stage.setTitle("Lista de Caja");
+			stage.setScene(new Scene(parent));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			proveedor = control.getProveedor();
+			buscarProveedoridentificacion(proveedor.getIdentificacion());
+		
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@FXML
@@ -520,8 +543,7 @@ public class CompraFxController extends AnchorPane {
 
 			txtContribuyente.setText("");
 			txtDireccion.setText("");
-			txtTelefono.setText("");
-			// llamarVentanaProveedor();
+			txtTelefono.setText("");			
 		}
 	}
 
