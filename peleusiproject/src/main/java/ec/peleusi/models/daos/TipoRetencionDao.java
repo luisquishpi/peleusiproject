@@ -43,10 +43,8 @@ public class TipoRetencionDao extends GenericDao<TipoRetencion, Integer> {
 	
 	@SuppressWarnings("unchecked")
 	public List<TipoRetencion> tipoRetencionList(String parametro){
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		
-		try{
-			
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		try{		
 				session.beginTransaction();
 				Query query = session.createQuery("from TipoRetencion T WHERE CONCAT(T.codigo,T.descripcion,T.porcentaje) LIKE CONCAT('%',:parametro, '%')");
 				query.setParameter("parametro", parametro);
