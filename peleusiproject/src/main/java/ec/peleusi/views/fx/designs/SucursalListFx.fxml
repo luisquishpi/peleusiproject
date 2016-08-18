@@ -120,7 +120,7 @@
                               <TextField id="txtNombre" fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
-                                    <TextField id="txtCiudad" fx:id="txtCiudad" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField id="txtCiudad" fx:id="txtCiudad" editable="false" prefHeight="25.0" prefWidth="279.0" />
                                     <Button id="bntBuscarCiudad" fx:id="btnBuscarCiudad" mnemonicParsing="false" onAction="#btnBuscarCiudadClick" text="...">
                                        <HBox.margin>
                                           <Insets left="20.0" />

@@ -77,6 +77,7 @@ public class SucursalListFxController extends GenericController {
 	private Integer posicionObjetoEnTabla;
 	private String error = null;
 	Boolean actualizarSucursal = false;
+	Ciudad ciudad = new Ciudad();
 
 	@FXML
 	private void initialize() {
@@ -185,7 +186,7 @@ public class SucursalListFxController extends GenericController {
 		}
 		sucursal.setEmpresa((Empresa) cmbEmpresa.getValue());
 		sucursal.setNombre(txtNombre.getText());
-		sucursal.setCiudad((Ciudad) txtCiudad.getUserData());
+		sucursal.setCiudad(ciudad);
 		sucursal.setDireccion(txtDireccion.getText());
 		sucursal.setTelefono(txtTelefono.getText());
 		sucursal.setFax(txtFax.getText());
@@ -264,8 +265,7 @@ public class SucursalListFxController extends GenericController {
 	}
 
 	@FXML
-	private void btnBuscarCiudadClick(ActionEvent event) {
-		Ciudad ciudad = new Ciudad();
+	private void btnBuscarCiudadClick(ActionEvent event) {		
 		Parent parent = null;
 		Stage stage = new Stage();
 		CiudadListModalController control = new CiudadListModalController();
@@ -277,7 +277,8 @@ public class SucursalListFxController extends GenericController {
 			stage.setScene(new Scene(parent));
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.showAndWait();
-			ciudad = control.getCiudad();			
+			ciudad = control.getCiudad();
+			txtCiudad.setText(ciudad.getNombre());
 		}	catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

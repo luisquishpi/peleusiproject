@@ -1,5 +1,6 @@
 package ec.peleusi.views.fx.controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import ec.peleusi.controllers.ClienteController;
@@ -19,7 +20,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -31,6 +34,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class ClienteListFxController extends GenericController {
@@ -89,7 +94,7 @@ public class ClienteListFxController extends GenericController {
 	private Integer posicionObjetoEnTabla;	
 	private String error = null;
 	final static int rowsPerPage = 100;
-	
+	Ciudad ciudad = new Ciudad();
 
 	@FXML
 	private void initialize() {
@@ -260,7 +265,7 @@ public class ClienteListFxController extends GenericController {
 		cliente.setTipoIdentificacion((TipoIdentificacion) cmbTipoIdentificacion.getValue());
 		cliente.setIdentificacion(txtIdentificacion.getText());
 		cliente.setRazonSocial(txtRazonSocial.getText());
-		cliente.setCiudad(objetoCiudad());
+		cliente.setCiudad(ciudad);
 		cliente.setDireccion(txtDireccion.getText());
 		cliente.setEmail(txtEmail.getText());
 		cliente.setTelefono(txtTelefono.getText());
@@ -289,7 +294,7 @@ public class ClienteListFxController extends GenericController {
 		btnGuardar.setText("Guardar");
 		btnEliminar.setDisable(true);
 		btnGuardar.setDisable(false);
-		cmbTipoIdentificacion.requestFocus();		
+		txtRazonSocial.requestFocus();		
 	}
 
 	private boolean camposLlenos() {
@@ -350,20 +355,28 @@ public class ClienteListFxController extends GenericController {
 			clientesList.clear();
 		}
 		paginar();
-		//cliente = clienteList.get(0);
 		btnNuevoClick(null);
 		tblLista.requestFocus();
 	}		
 
-	private Ciudad objetoCiudad() {
-		Ciudad ciudadTmp = new Ciudad();
-		ciudadTmp.setNombre("Ambato");
-		ciudadTmp.setId(1);
-		return ciudadTmp;
-	}
-
 	@FXML
 	private void btnBuscarCiudadClick(ActionEvent event) {
-		txtCiudad.setText(objetoCiudad().getNombre());
+		Parent parent = null;
+		Stage stage = new Stage();
+		CiudadListModalController control = new CiudadListModalController();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("../designs/CiudadListModalFx.fxml"));
+		loader.setController(control);
+		try{
+			parent = (Parent) loader.load();
+			stage.setTitle("Lista de Ciudad");
+			stage.setScene(new Scene(parent));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			ciudad = control.getCiudad();
+			txtCiudad.setText(ciudad.getNombre());
+		}	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
 	}
 }

@@ -121,7 +121,6 @@ public class Sucursal {
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", empresa=" + empresa	+ ", ciudad=" + ciudad + ", nombre=" + nombre + ", direccion="
-				+ direccion + ", fax=" + fax + ", email=" + email + "]";
+		return nombre;
 	}	
 }
