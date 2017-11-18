@@ -1,12 +1,21 @@
 package ec.peleusi.views.fx.controllers;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import ec.peleusi.controllers.CompraController;
 import ec.peleusi.controllers.CompraTipoPagoController;
+
 import ec.peleusi.models.entities.Compra;
 import ec.peleusi.models.entities.CompraTipoPago;
+
 import ec.peleusi.models.entities.TipoPago;
+import ec.peleusi.utils.TipoBusquedaCompraEnum;
+
 import ec.peleusi.utils.fx.AlertsUtil;
 import ec.peleusi.utils.fx.TableViewUtils;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,6 +30,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -58,6 +69,8 @@ public class CompraTipoPagoListFxController extends GenericController {
 	@FXML
 	private Button btnBuscarTipoPago;
 	@FXML
+	private Button btnDetalleFactura;
+	@FXML
 	private TextField txtBuscar;
 	@FXML
 	public TextField txtBaseImponible0;
@@ -77,7 +90,12 @@ public class CompraTipoPagoListFxController extends GenericController {
 	public TextField txtValor;
 	@FXML
 	public TextField txtDetalle;
-
+	@FXML
+	public DatePicker dtpFechaInicial;
+	@FXML
+	public DatePicker dtpFechaFinal;
+	@FXML
+	public ComboBox<TipoBusquedaCompraEnum> cmbTipoBusquedaCompra;	
 	@FXML
 	private Pagination pagination;
 	@FXML
@@ -94,6 +112,7 @@ public class CompraTipoPagoListFxController extends GenericController {
 	private Integer posicionObjetoTipoPagoEnTabla = 0;
 	private String error = null;
 	TipoPago tipoPago = new TipoPago();
+	CompraController compraController= new CompraController();
 
 	@FXML
 	private void initialize() {
@@ -101,7 +120,9 @@ public class CompraTipoPagoListFxController extends GenericController {
 		
 		crearTablaListaProductos();
 		paginar();
-	}
+		cargarComboTipoBusquedaCompra();
+		limpiarCampos();
+		}
 
 	@FXML
 	private void btnNuevoClick(ActionEvent event) {
@@ -154,7 +175,6 @@ public class CompraTipoPagoListFxController extends GenericController {
 
 			}
 		}
-
 	}
 	@FXML
 	private void btnCancelarClick(ActionEvent event) {
@@ -167,6 +187,18 @@ public class CompraTipoPagoListFxController extends GenericController {
 
 	@FXML
 	private void btnBuscarClick(ActionEvent event) {
+		
+		List<Compra> compraListLs= compraController.getCompraList(txtBuscar.getText(),  Fecha(dtpFechaInicial.getValue()),Fecha(dtpFechaFinal.getValue()),true);
+		if (compraController != null) {
+			compraList = FXCollections.observableList(compraListLs);
+			System.out.println("Lita de compras>....."+compraList);
+			tblLista.setItems(compraList);
+		} else {
+			compraList.clear();
+		}
+		compra = compraList.get(0);		
+		tblLista.requestFocus();	
+		
 	}
 
 	@FXML
@@ -193,6 +225,12 @@ public class CompraTipoPagoListFxController extends GenericController {
 		}
 
 	}
+	public static Date Fecha(LocalDate ld) {
+
+		Instant instant = ld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date date = Date.from(instant);
+		return date;
+	}
 
 	private void crearTablaListaProductos() {
 
@@ -201,7 +239,7 @@ public class CompraTipoPagoListFxController extends GenericController {
 		identificacionCol.setCellValueFactory(
 				cellData -> new SimpleStringProperty(cellData.getValue().getProveedor().getIdentificacion()));
 
-		TableColumn<Compra, String> razonSocialCol = new TableColumn<Compra, String>("Razon Socia");
+		TableColumn<Compra, String> razonSocialCol = new TableColumn<Compra, String>("Razon Social");
 		razonSocialCol.setCellValueFactory(
 				cellData -> new SimpleStringProperty(cellData.getValue().getProveedor().getRazonSocial()));
 
@@ -359,6 +397,10 @@ public class CompraTipoPagoListFxController extends GenericController {
 		txtDetalle.setText("");
 		btnGuardar.setText("Guardar");
 		compraTipoPago = null;
+		cmbTipoBusquedaCompra.getSelectionModel().select(0);
+		dtpFechaInicial.setValue(LocalDate.now());
+		dtpFechaFinal.setValue(LocalDate.now());
+		
 	}
 
 	private boolean isCamposLlenos() {
@@ -366,6 +408,11 @@ public class CompraTipoPagoListFxController extends GenericController {
 		if (txtNombre.getText().isEmpty() || txtValor.getText().isEmpty())
 			llenos = false;
 		return llenos;
+	}
+	private void cargarComboTipoBusquedaCompra() {
+		
+			cmbTipoBusquedaCompra.setItems(FXCollections.observableArrayList(TipoBusquedaCompraEnum.values()));	
+			
 	}
 	
 	private void pagoTotal(){
